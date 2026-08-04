@@ -38,8 +38,9 @@ textarea {
 
 /* Animation system. Compositor-only properties (transform, opacity), and
    every animated class is gated behind prefers-reduced-motion: no-preference.
-   .reveal uses a scroll-driven view() timeline behind @supports, so browsers
-   without scroll-driven animations simply render the content statically. */
+   .reveal entrances are observer-driven (RevealObserver in __root.tsx):
+   elements below the first viewport get .reveal-pending and rise in with
+   .reveal-in when scrolled into view. SSR/no-JS renders statically. */
 
 @keyframes fade-up {
   from {
@@ -138,11 +139,17 @@ textarea {
     animation-delay: 0.25s;
   }
 
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: fade-up linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 45%;
-    }
+  /* A scroll-driven view() timeline would fade whatever happens to sit at
+     the fold on load, and axe then measures half-transparent text (where the
+     fold lands depends on platform font metrics: CI on Linux failed where
+     macOS passed). The observer instead only ever hides elements strictly
+     below the first viewport, so the initial paint is always fully opaque.
+     Both classes live inside this media block: with reduced motion neither
+     applies, so nothing is hidden even if the JS were to run. */
+  .reveal-pending {
+    opacity: 0;
+  }
+  .reveal-in {
+    animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 }

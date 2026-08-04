@@ -275,6 +275,51 @@ function Brand() {
   )
 }
 
+/* Drives the .reveal entrances (classes in styles.css). Only elements
+   strictly below the first viewport are hidden and animated in on scroll;
+   anything visible on load stays fully opaque, so an accessibility audit
+   never catches text mid-fade. Runs again per navigation. */
+function RevealObserver() {
+  const pathname = useLocation({ select: (l) => l.pathname })
+  useEffect(() => {
+    if (
+      !('IntersectionObserver' in window) ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return
+    }
+    const pending = Array.from(
+      document.querySelectorAll<HTMLElement>('.reveal'),
+    ).filter((el) => el.getBoundingClientRect().top > window.innerHeight)
+    if (pending.length === 0) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+          entry.target.classList.remove('reveal-pending')
+          entry.target.classList.add('reveal-in')
+          observer.unobserve(entry.target)
+        }
+      },
+      // The huge top margin counts anything already scrolled PAST as
+      // intersecting: a fast jump (keyboard End, anchor link) must never
+      // leave skipped sections permanently hidden.
+      { rootMargin: '9999px 0px -10% 0px' },
+    )
+    for (const el of pending) {
+      el.classList.add('reveal-pending')
+      observer.observe(el)
+    }
+    return () => {
+      observer.disconnect()
+      for (const el of pending) {
+        el.classList.remove('reveal-pending')
+      }
+    }
+  }, [pathname])
+  return null
+}
+
 function RootLayout() {
   const lang = useLang()
   const t = chrome[lang]
@@ -336,6 +381,7 @@ function RootLayout() {
       <main id="main" className="flex-1">
         <Outlet />
       </main>
+      <RevealObserver />
 
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
