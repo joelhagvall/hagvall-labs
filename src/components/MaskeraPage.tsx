@@ -64,7 +64,8 @@ const highlightClass =
 const PREVIEW_SEGMENTS: Array<{ text: string; label?: string }> = [
   { text: 'Anna Lindqvist', label: 'NAMN' },
   { text: ' (' },
-  { text: '640823-3234', label: 'PERSONNUMMER' },
+  // Intentionally invalid Luhn checksum, so this cannot be a real personnummer.
+  { text: '900101-0000', label: 'PERSONNUMMER' },
   { text: ') på ' },
   { text: 'Verkstadsgatan 12', label: 'ADRESS' },
   { text: ' i ' },
