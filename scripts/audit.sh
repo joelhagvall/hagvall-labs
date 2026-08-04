@@ -11,6 +11,21 @@ mkdir -p "$S"
 BASE="http://localhost:4173"
 FAIL=0
 
+# Lighthouse simulates a mid-tier phone by slowing the host CPU 4x, which
+# over-penalizes slow CI runners (a GitHub runner scored 84 where a laptop
+# scores 100 on the same build). Calibrate the multiplier from the machine's
+# benchmarkIndex using Lighthouse's own guidance table, via a cheap probe run.
+bun x lighthouse "$BASE/" --only-categories=seo \
+  --chrome-flags="--headless=new" \
+  --output=json --output-path="$S/lh-probe.json" --quiet 2>"$S/lh-probe.err" \
+  || { echo "calibration probe failed:"; tail -3 "$S/lh-probe.err"; exit 1; }
+BI=$(bun -e "console.log(Math.round((await Bun.file('$S/lh-probe.json').json()).environment.benchmarkIndex))")
+if   [ "$BI" -ge 1300 ]; then CPU=4
+elif [ "$BI" -ge 800 ];  then CPU=3
+elif [ "$BI" -ge 500 ];  then CPU=2
+else CPU=1; fi
+echo "benchmarkIndex $BI -> cpuSlowdownMultiplier $CPU"
+
 for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "en:/en" "enmaskera:/en/maskera" "encontact:/en/contact"; do
   name="${entry%%:*}"
   path="${entry#*:}"
@@ -20,6 +35,7 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "en:/en" "enmaskera:
   echo "== $path"
   bun x lighthouse "$BASE$path" \
     --only-categories=performance,seo,accessibility \
+    --throttling.cpuSlowdownMultiplier="$CPU" \
     --chrome-flags="--headless=new" \
     --output=json --output-path="$S/lh-$name.json" --quiet 2>"$S/lh-$name.err" \
     || { echo "  LIGHTHOUSE FAILED:"; tail -3 "$S/lh-$name.err"; FAIL=1; continue; }
