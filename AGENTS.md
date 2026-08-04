@@ -95,3 +95,62 @@ tanstackIntent:
     run: "npx @tanstack/intent@latest load @tanstack/virtual-file-routes#virtual-file-routes"
     for: "Programmatic route tree building as an alternative to filesystem conventions: rootRoute, index, route, layout, physical, defineVirtualSubtreeConfig. Use with TanStack Router plugin's virtualRouteConfig option."
 <!-- intent-skills:end -->
+
+# Hägvall Labs — project guidance
+
+Marketing site for Hägvall Labs AB (hagvall-labs.com). TanStack Start + React 19 + Tailwind CSS v4.
+
+## Package manager
+
+This project uses **bun** — never npm, yarn or pnpm.
+
+```bash
+bun install
+bun run dev        # dev server on http://localhost:3000
+bun run build      # production build
+bun run generate-routes
+```
+
+## Quality gates (SUPER IMPORTANT — run before every commit)
+
+After ANY change to pages, styles, meta tags or layout, you MUST verify with Lighthouse CLI and pa11y against the running site. Non-negotiable targets:
+
+- **Lighthouse Performance: 100**
+- **Lighthouse SEO: 100**
+- **Lighthouse Accessibility: 100**
+- **pa11y: 0 errors** on every route
+
+Always audit the **production build served with gzip** — NOT the dev server. The dev server fails the targets for reasons that don't exist in production (the TanStack Devtools overlay triggers pa11y errors, and uncompressed responses drag Performance to ~90):
+
+```bash
+bun run build
+bun run serve:prod &   # serves dist/ with gzip on http://localhost:4173 (scripts/serve-prod.ts)
+
+bunx lighthouse http://localhost:4173/ --only-categories=performance,seo,accessibility --chrome-flags="--headless=new" --output=json --quiet
+bunx lighthouse http://localhost:4173/maskera --only-categories=performance,seo,accessibility --chrome-flags="--headless=new" --output=json --quiet
+
+bunx pa11y http://localhost:4173/
+bunx pa11y http://localhost:4173/maskera
+```
+
+Audit EVERY route, including any you just added. If a score is below 100 or pa11y reports errors, fix the issues and re-run until clean.
+
+Known pitfalls that break the 100s (learned the hard way — don't reintroduce):
+
+- **Duplicate canonical tags fail Lighthouse SEO.** Canonical links live in each route's `head`, never in `__root.tsx` (route heads merge with the root, producing conflicting canonicals).
+- **A render-blocking stylesheet costs ~8 Performance points.** The Tailwind CSS is inlined in `<head>` in production (`styles.css?inline` in `__root.tsx`); dev uses a normal `?url` stylesheet link for HMR. Keep it that way.
+- The devtools overlay must stay wrapped in `import.meta.env.DEV` in `__root.tsx`.
+
+## Site structure
+
+- `src/routes/__root.tsx` — document shell, header/footer layout, global SEO meta + Organization JSON-LD
+- `src/routes/index.tsx` — home page
+- `src/routes/maskera.tsx` — Maskera product page (own meta + SoftwareApplication JSON-LD)
+- `public/llms.txt` — company summary for LLM crawlers; keep in sync when company/product copy changes
+- `public/robots.txt`, `public/sitemap.xml` — add new routes to the sitemap and llms.txt
+
+## Conventions
+
+- All site copy is in **English**; keep the minimal black-on-white design (neutral palette, generous whitespace)
+- Every new route needs: meta title + description, canonical link, entry in `sitemap.xml` and `llms.txt`
+- Domain `hagvall-labs.com` and email `hello@hagvall-labs.com` are currently placeholders — change everywhere at once if the real domain differs

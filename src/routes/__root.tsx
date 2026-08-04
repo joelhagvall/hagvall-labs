@@ -9,8 +9,9 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
+import appCssInline from '../styles.css?inline'
 
-const siteUrl = 'https://hagvalllabs.se'
+const siteUrl = 'https://hagvall-labs.com'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -21,7 +22,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'Hägvall Labs AB develops software for information security, privacy protection and AI. Our first product, Maskera, detects and masks personal data in text before it reaches AI systems, logs or analytics tools.',
+          'Hägvall Labs AB develops software for information security, privacy protection and AI. The first product, Maskera, detects and masks personal data in text before it reaches AI systems, logs or analytics tools.',
       },
       { property: 'og:site_name', content: 'Hägvall Labs' },
       { property: 'og:type', content: 'website' },
@@ -38,9 +39,8 @@ export const Route = createRootRoute({
       { name: 'twitter:card', content: 'summary' },
     ],
     links: [
-      { rel: 'stylesheet', href: appCss },
+      ...(import.meta.env.DEV ? [{ rel: 'stylesheet', href: appCss }] : []),
       { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
-      { rel: 'canonical', href: siteUrl },
     ],
     scripts: [
       {
@@ -52,7 +52,12 @@ export const Route = createRootRoute({
           url: siteUrl,
           description:
             'Hägvall Labs AB develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
-          email: 'hello@hagvalllabs.se',
+          email: 'hello@hagvall-labs.com',
+          founder: {
+            '@type': 'Person',
+            name: 'Joel Hägvall',
+            url: 'https://joelhagvall.com',
+          },
           address: { '@type': 'PostalAddress', addressCountry: 'SE' },
         }),
       },
@@ -78,7 +83,7 @@ function RootLayout() {
               Maskera
             </Link>
             <a
-              href="mailto:hello@hagvalllabs.se"
+              href="mailto:hello@hagvall-labs.com"
               className="rounded-full bg-neutral-900 px-4 py-1.5 text-white transition-colors hover:bg-neutral-700"
             >
               Contact
@@ -93,13 +98,22 @@ function RootLayout() {
 
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-2 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>© {new Date().getFullYear()} Hägvall Labs AB. Built in Sweden.</p>
+          <p>
+            © {new Date().getFullYear()} Hägvall Labs AB. Run by{' '}
+            <a
+              href="https://joelhagvall.com"
+              className="underline underline-offset-4 transition-colors hover:text-neutral-900"
+            >
+              Joel Hägvall
+            </a>
+            . Built in Sweden.
+          </p>
           <div className="flex gap-6">
             <a
-              href="mailto:hello@hagvalllabs.se"
+              href="mailto:hello@hagvall-labs.com"
               className="transition-colors hover:text-neutral-900"
             >
-              hello@hagvalllabs.se
+              hello@hagvall-labs.com
             </a>
             <a href="/llms.txt" className="transition-colors hover:text-neutral-900">
               llms.txt
@@ -115,6 +129,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {import.meta.env.PROD && (
+          <style dangerouslySetInnerHTML={{ __html: appCssInline }} />
+        )}
         <HeadContent />
       </head>
       <body className="bg-white text-neutral-900 antialiased">

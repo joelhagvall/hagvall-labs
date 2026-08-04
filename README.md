@@ -1,4 +1,4 @@
-# Hägvall Labs — hagvalllabs.se
+# Hägvall Labs — hagvall-labs.com
 
 Marketing site for **Hägvall Labs AB**, built with [TanStack Start](https://tanstack.com/start) (React 19) and Tailwind CSS v4.
 
@@ -7,11 +7,12 @@ Hägvall Labs develops, licenses and sells software for information security, pr
 ## Development
 
 ```bash
-npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run preview  # preview the production build
+bun install
+bun run dev      # http://localhost:3000
+bun run build    # production build
 ```
+
+Quality gates: every change must hit Lighthouse 100 for Performance, SEO and Accessibility, and pass pa11y with 0 errors — see `AGENTS.md`.
 
 ## Structure
 
@@ -23,4 +24,4 @@ npm run preview  # preview the production build
 
 ## Note
 
-The domain `hagvalllabs.se` and email `hello@hagvalllabs.se` are placeholders used in meta tags, JSON-LD, `llms.txt`, `robots.txt` and `sitemap.xml` — update them if the real domain differs.
+The domain `hagvall-labs.com` and email `hello@hagvall-labs.com` are placeholders used in meta tags, JSON-LD, `llms.txt`, `robots.txt` and `sitemap.xml` — update them if the real domain differs.
