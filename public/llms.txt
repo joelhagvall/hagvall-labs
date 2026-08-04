@@ -4,10 +4,10 @@
 
 Key facts:
 
-- Company: Hägvall Labs AB (Sweden) — a one-person company
+- Company: Hägvall Labs AB (Sweden), a one-person company
 - Focus: information security, privacy protection, artificial intelligence
-- First product: Maskera (https://maskera.dev) — detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools
-- Deployment: primarily self-hosted, installed in the customer's own IT environment — no data leaves the customer's infrastructure
+- First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools
+- Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
 - Offering: pilot projects, software licenses, installation, support, and consulting in systems development and IT security
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
 - Payment: invoice and bank transfer
@@ -17,5 +17,10 @@ Key facts:
 
 ## Pages
 
-- [Home](https://hagvall-labs.com/): Company overview, services and contact
-- [Maskera](https://hagvall-labs.com/maskera): Product page — use cases (AI systems, logs, analytics), deployment model and pilot projects
+The site is bilingual: Swedish (default) and English (under /en).
+
+- [Home (Swedish)](https://hagvall-labs.com/): Company overview, services and contact
+- [Home (English)](https://hagvall-labs.com/en): Same content in English
+- [Maskera (Swedish)](https://hagvall-labs.com/maskera): Product page with use cases (AI systems, logs, analytics), deployment model and pilot projects
+- [Maskera (English)](https://hagvall-labs.com/en/maskera): Same content in English
+- [Maskera product site](https://maskera.dev): Dedicated product website
