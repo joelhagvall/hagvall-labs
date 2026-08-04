@@ -1,5 +1,6 @@
 # CI for hagvall-labs.com: typecheck + build, then the quality gates from
-# AGENTS.md (Lighthouse 100/100/100 and pa11y 0 errors on every route),
+# AGENTS.md (Lighthouse Performance >= 95, SEO/Accessibility 100 and pa11y
+# 0 errors on every route),
 # sharded one route per job against the gzip prod server.
 # The route matrix below must match the route list in scripts/audit.sh.
 name: CI
@@ -12,6 +13,9 @@ on:
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -102,7 +106,7 @@ jobs:
       - name: Start prod server (gzip)
         run: |
           bun run serve:prod &
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             curl -sf http://localhost:4173/ >/dev/null && exit 0
             sleep 1
           done
@@ -111,3 +115,45 @@ jobs:
 
       - name: Lighthouse + pa11y
         run: bash scripts/audit.sh ${{ matrix.route }}
+
+  docker:
+    name: Build, scan and publish image
+    needs: [build, audit]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/joelhagvall/hagvall-labs
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build immutable production image
+        run: |
+          docker build \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --label "org.opencontainers.image.source=https://github.com/joelhagvall/hagvall-labs" \
+            -t "$IMAGE:$GITHUB_SHA" \
+            .
+
+      - name: Scan image for high and critical vulnerabilities
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ghcr.io/joelhagvall/hagvall-labs:${{ github.sha }}
+          format: table
+          exit-code: "1"
+          ignore-unfixed: false
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          version: v0.70.0
+
+      - name: Log in to GHCR
+        uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c # v4.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish commit-tagged image
+        run: docker push "$IMAGE:$GITHUB_SHA"

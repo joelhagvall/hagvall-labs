@@ -1,0 +1,16 @@
+# Imported security_headers is defined by the shared Maskera edge Caddyfile.
+www.hagvall-labs.com {
+	import security_headers
+	redir https://hagvall-labs.com{uri} permanent
+}
+
+hagvall-labs.com {
+	encode zstd gzip
+	import security_headers
+	request_body {
+		max_size 1MB
+	}
+	reverse_proxy hagvall-labs:4173 {
+		header_up X-Forwarded-For {http.request.remote.host}
+	}
+}

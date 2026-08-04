@@ -1,0 +1,73 @@
+name: Deploy
+
+# Manual production deploy. CI publishes an immutable image under the source
+# commit SHA only after typecheck, build, Lighthouse, pa11y and image scanning.
+# Required repository secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_KEY and
+# DEPLOY_KNOWN_HOSTS.
+on:
+  workflow_dispatch:
+    inputs:
+      release_sha:
+        description: Optional full commit SHA from master; defaults to the selected workflow revision
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+concurrency:
+  group: hagvall-labs-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    steps:
+      - id: release
+        name: Resolve immutable release
+        env:
+          RELEASE_SHA_INPUT: ${{ inputs.release_sha }}
+        run: |
+          release_sha="${RELEASE_SHA_INPUT:-$GITHUB_SHA}"
+          if ! [[ "$release_sha" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "release_sha must be a full lowercase Git commit SHA" >&2
+            exit 1
+          fi
+          echo "sha=$release_sha" >> "$GITHUB_OUTPUT"
+
+      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Pin the production SSH host key
+        env:
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          test -n "$DEPLOY_KNOWN_HOSTS"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Pull and activate the release
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          set -euo pipefail
+          printf '%s' "$GHCR_TOKEN" |
+            ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" "
+              set -eu
+              docker login ghcr.io --username '$GHCR_USER' --password-stdin
+              trap 'docker logout ghcr.io >/dev/null 2>&1 || true' 0
+              cd ~/hagvall-labs
+              git fetch origin master
+              git merge-base --is-ancestor '$RELEASE_SHA' origin/master
+              git checkout --detach '$RELEASE_SHA'
+              bash scripts/deploy-release.sh '$RELEASE_SHA'
+            "

@@ -1,0 +1,36 @@
+name: hagvall-labs
+
+services:
+  web:
+    image: ${HAGVALL_LABS_IMAGE:-hagvall-labs:local}
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    pids_limit: 128
+    mem_limit: 384m
+    cpus: 0.5
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+    healthcheck:
+      test:
+        - CMD
+        - /usr/local/bin/bun
+        - -e
+        - "const response = await fetch('http://127.0.0.1:4173/'); process.exit(response.ok ? 0 : 1)"
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    networks:
+      edge:
+        aliases: [hagvall-labs]
+
+networks:
+  edge:
+    external: true
+    name: maskera-cloud_edge
