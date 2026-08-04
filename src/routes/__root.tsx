@@ -13,6 +13,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import appCss from '../styles.css?url'
 import appCssInline from '../styles.css?inline'
 import { BrandSymbol } from '../components/BrandSymbol'
+import { btnPrimary, btnSmall } from '../components/ui'
 import { site } from '../seo'
 import type { Lang } from '../seo'
 
@@ -23,9 +24,9 @@ function useLang(): Lang {
 
 const chrome = {
   sv: {
+    menu: 'Meny',
     products: 'Produkter',
     maskeraDesc: 'Maskera personuppgifter i text',
-    maskeraSite: 'Produktsajt',
     services: 'Tjänster',
     contact: 'Kontakt',
     runBy: 'Drivs av',
@@ -33,9 +34,9 @@ const chrome = {
     skip: 'Hoppa till innehållet',
   },
   en: {
+    menu: 'Menu',
     products: 'Products',
     maskeraDesc: 'Mask personal data in text',
-    maskeraSite: 'Product Site',
     services: 'Services',
     contact: 'Contact',
     runBy: 'Run by',
@@ -54,14 +55,18 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'Hägvall Labs AB utvecklar programvara inom informationssäkerhet, integritetsskydd och AI. Första produkten Maskera identifierar och maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg.',
+          'Hägvall Labs bygger integritetssäker mjukvara som körs i er egen IT-miljö. Maskera maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg.',
       },
       { property: 'og:site_name', content: 'Hägvall Labs' },
       { property: 'og:type', content: 'website' },
-      { property: 'og:image', content: site + '/brand/hagvall-labs-reference.png' },
-      { property: 'og:image:width', content: '1254' },
-      { property: 'og:image:height', content: '1254' },
-      { name: 'twitter:card', content: 'summary' },
+      { property: 'og:image', content: site + '/brand/og-image.png' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      {
+        property: 'og:image:alt',
+        content: 'Hägvall Labs, integritetssäker mjukvara för AI-eran',
+      },
+      { name: 'twitter:card', content: 'summary_large_image' },
     ],
     links: [
       ...(import.meta.env.DEV ? [{ rel: 'stylesheet', href: appCss }] : []),
@@ -71,6 +76,13 @@ export const Route = createRootRoute({
         rel: 'icon',
         type: 'image/svg+xml',
         href: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%22210 110 580 580%22%3E%3Cpath fill%3D%22%231748D4%22 d%3D%22M270 350 495 438 495 566 414 535 414 680 270 625Z%22%2F%3E%3Cpath fill%3D%22%2314B8A6%22 d%3D%22M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z%22%2F%3E%3Cpath fill%3D%22%231748D4%22 d%3D%22M480 165 710 254 710 560 630 529 630 334 480 278Z%22%2F%3E%3C%2Fsvg%3E',
+      },
+      // Not fetched during page load (only when saving to a home screen),
+      // so unlike a fetched favicon it costs nothing in Lighthouse.
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png',
       },
     ],
     scripts: [
@@ -90,7 +102,11 @@ export const Route = createRootRoute({
             name: 'Joel Hägvall',
             url: 'https://joelhagvall.com',
           },
-          address: { '@type': 'PostalAddress', addressCountry: 'SE' },
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: 'Stockholm',
+            addressCountry: 'SE',
+          },
         }),
       },
     ],
@@ -103,12 +119,18 @@ export const Route = createRootRoute({
 function LangSwitch({ lang }: { lang: Lang }) {
   const pathname = useLocation({ select: (l) => l.pathname })
   const onMaskera = pathname.endsWith('/maskera')
+  const onContact =
+    pathname.endsWith('/kontakt') || pathname.endsWith('/contact')
   const active = 'text-ink'
   const inactive = 'text-neutral-400 transition-colors hover:text-ink'
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
       {onMaskera ? (
         <Link to="/maskera" className={lang === 'sv' ? active : inactive} lang="sv">
+          SV
+        </Link>
+      ) : onContact ? (
+        <Link to="/kontakt" className={lang === 'sv' ? active : inactive} lang="sv">
           SV
         </Link>
       ) : (
@@ -121,6 +143,10 @@ function LangSwitch({ lang }: { lang: Lang }) {
       </span>
       {onMaskera ? (
         <Link to="/en/maskera" className={lang === 'en' ? active : inactive} lang="en">
+          EN
+        </Link>
+      ) : onContact ? (
+        <Link to="/en/contact" className={lang === 'en' ? active : inactive} lang="en">
           EN
         </Link>
       ) : (
@@ -166,7 +192,10 @@ function ProductsMenu({ lang }: { lang: Lang }) {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-1 transition-colors hover:text-ink"
       >
-        {t.products}
+        {/* Below sm the dropdown is the whole nav (Tjänster and the Kontakt
+            pill are hidden there), so it announces itself as the menu. */}
+        <span className="sm:hidden">{t.menu}</span>
+        <span className="hidden sm:inline">{t.products}</span>
         <svg
           aria-hidden="true"
           width="10"
@@ -185,7 +214,7 @@ function ProductsMenu({ lang }: { lang: Lang }) {
         </svg>
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
+        <div className="animate-menu absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
           {lang === 'sv' ? (
             <Link to="/maskera" onClick={close} className={itemClass}>
               <span translate="no" className="block font-medium text-ink">
@@ -205,14 +234,27 @@ function ProductsMenu({ lang }: { lang: Lang }) {
               </span>
             </Link>
           )}
-          <a href="https://maskera.dev" onClick={close} className={itemClass}>
-            <span translate="no" className="block font-medium text-ink">
-              maskera.dev&nbsp;↗
-            </span>
-            <span className="block text-xs text-neutral-500">
-              {t.maskeraSite}
-            </span>
-          </a>
+          <div className="mt-1 border-t border-neutral-200 pt-1 sm:hidden">
+            {lang === 'sv' ? (
+              <>
+                <Link to="/" hash="services" onClick={close} className={itemClass}>
+                  {t.services}
+                </Link>
+                <Link to="/kontakt" onClick={close} className={itemClass}>
+                  {t.contact}
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/en" hash="services" onClick={close} className={itemClass}>
+                  {t.services}
+                </Link>
+                <Link to="/en/contact" onClick={close} className={itemClass}>
+                  {t.contact}
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -225,9 +267,9 @@ function Brand() {
       <BrandSymbol size={26} />
       <span
         translate="no"
-        className="text-sm font-semibold tracking-tight text-ink"
+        className="text-[11.5px] font-medium uppercase tracking-[0.12em] text-ink"
       >
-        Hägvall&nbsp;Labs
+        Hägvall&nbsp;<span className="text-cobalt">Labs</span>
       </span>
     </span>
   )
@@ -278,12 +320,15 @@ function RootLayout() {
               </Link>
             )}
             <LangSwitch lang={lang} />
-            <a
-              href="mailto:hello@hagvall-labs.com"
-              className="rounded-full bg-cobalt px-4 py-1.5 text-white transition-colors hover:bg-cobalt-deep"
-            >
-              {t.contact}
-            </a>
+            {lang === 'sv' ? (
+              <Link to="/kontakt" className={`${btnSmall} max-sm:hidden`}>
+                {t.contact}
+              </Link>
+            ) : (
+              <Link to="/en/contact" className={`${btnSmall} max-sm:hidden`}>
+                {t.contact}
+              </Link>
+            )}
           </nav>
         </div>
       </header>
@@ -296,7 +341,8 @@ function RootLayout() {
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()}{' '}
-            <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>. {t.runBy}{' '}
+            <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, Stockholm.{' '}
+            {t.runBy}{' '}
             <a
               href="https://joelhagvall.com"
               className="underline underline-offset-4 transition-colors hover:text-ink"
@@ -306,14 +352,26 @@ function RootLayout() {
             . {t.builtIn}
           </p>
           <div className="flex gap-6">
+            {lang === 'sv' ? (
+              <Link
+                to="/kontakt"
+                className="transition-colors hover:text-ink"
+              >
+                {t.contact}
+              </Link>
+            ) : (
+              <Link
+                to="/en/contact"
+                className="transition-colors hover:text-ink"
+              >
+                {t.contact}
+              </Link>
+            )}
             <a
               href="mailto:hello@hagvall-labs.com"
               className="transition-colors hover:text-ink"
             >
               hello@hagvall-labs.com
-            </a>
-            <a href="/llms.txt" className="transition-colors hover:text-ink">
-              llms.txt
             </a>
           </div>
         </div>
@@ -326,7 +384,7 @@ function NotFound() {
   const lang = useLang()
   return (
     <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
-      <p className="mb-4 text-sm font-medium uppercase tracking-widest text-cobalt">
+      <p className="mb-4 text-sm font-medium text-cobalt">
         404
       </p>
       <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
@@ -338,17 +396,11 @@ function NotFound() {
           : 'The address you tried to reach doesn’t exist. It may have moved or never existed.'}
       </p>
       {lang === 'sv' ? (
-        <Link
-          to="/"
-          className="mt-10 inline-block rounded-full bg-cobalt px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-cobalt-deep"
-        >
+        <Link to="/" className={`mt-10 ${btnPrimary}`}>
           Till startsidan
         </Link>
       ) : (
-        <Link
-          to="/en"
-          className="mt-10 inline-block rounded-full bg-cobalt px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-cobalt-deep"
-        >
+        <Link to="/en" className={`mt-10 ${btnPrimary}`}>
           Back to the Start Page
         </Link>
       )}

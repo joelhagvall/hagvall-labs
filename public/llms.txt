@@ -1,14 +1,15 @@
 # Hägvall Labs AB
 
-> Hägvall Labs AB is a Swedish software company that develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence. Its first product, Maskera, identifies and masks personal data in text before the information is used in AI systems, logs or analytics tools.
+> Hägvall Labs AB is a Swedish software company that builds software for information security, privacy and artificial intelligence. Its first product, Maskera, finds and masks personal data in text before it is used in AI systems, logs or analytics tools.
 
 Key facts:
 
-- Company: Hägvall Labs AB (Sweden), a one-person company
-- Focus: information security, privacy protection, artificial intelligence
+- Company: Hägvall Labs AB (Sweden), founded and run by Joel Hägvall
+- Focus: information security, privacy, artificial intelligence
 - First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools
 - Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
 - Offering: pilot projects, software licenses, installation, support, and consulting in systems development and IT security
+- Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores 100/100 in Lighthouse for performance, accessibility and SEO on every page
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
 - Payment: invoice and bank transfer
 - Operations: fully online
@@ -23,4 +24,6 @@ The site is bilingual: Swedish (default) and English (under /en).
 - [Home (English)](https://hagvall-labs.com/en): Same content in English
 - [Maskera (Swedish)](https://hagvall-labs.com/maskera): Product page with use cases (AI systems, logs, analytics), deployment model and pilot projects
 - [Maskera (English)](https://hagvall-labs.com/en/maskera): Same content in English
+- [Contact (Swedish)](https://hagvall-labs.com/kontakt): Direct contact with Joel Hägvall, email and how a pilot starts
+- [Contact (English)](https://hagvall-labs.com/en/contact): Same content in English
 - [Maskera product site](https://maskera.dev): Dedicated product website

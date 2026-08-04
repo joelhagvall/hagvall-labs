@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { MaskeraPage } from '../components/MaskeraPage'
-import { alternateLinks, site } from '../seo'
+import { alternateLinks, localeMeta, site } from '../seo'
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
@@ -10,7 +10,7 @@ const jsonLd = JSON.stringify({
   url: 'https://maskera.dev',
   operatingSystem: 'Self-hosted (Linux, Docker)',
   description:
-    'Maskera identifierar och maskerar personuppgifter i text innan informationen används i AI-system, loggar eller analysverktyg. Installeras i kundens egen IT-miljö.',
+    'Maskera hittar och maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg. Installeras i kundens egen IT-miljö.',
   publisher: { '@type': 'Organization', name: 'Hägvall Labs AB' },
 })
 
@@ -24,7 +24,7 @@ export const Route = createFileRoute('/maskera')({
       {
         name: 'description',
         content:
-          'Maskera identifierar och maskerar personuppgifter i text innan informationen används i AI-system, loggar eller analysverktyg. Self-hosted i er egen IT-miljö. Ingen data lämnar organisationen.',
+          'Maskera maskerar personuppgifter i text, som namn, personnummer och adresser, innan de når AI-system, loggar eller analysverktyg. Körs i er egen IT-miljö.',
       },
       {
         property: 'og:title',
@@ -33,10 +33,10 @@ export const Route = createFileRoute('/maskera')({
       {
         property: 'og:description',
         content:
-          'Identifiera och maskera personuppgifter i text innan AI-system, loggar och analysverktyg ser dem. Self-hosted, GDPR-vänlig, byggd i Sverige.',
+          'Hitta och maskera personuppgifter innan AI-system, loggar och analysverktyg ser dem. Self-hosted, GDPR-vänlig, byggd i Sverige.',
       },
       { property: 'og:url', content: site + '/maskera' },
-      { property: 'og:locale', content: 'sv_SE' },
+      ...localeMeta('sv'),
     ],
     links: alternateLinks('/maskera', '/en/maskera', 'sv'),
     scripts: [{ type: 'application/ld+json', children: jsonLd }],
