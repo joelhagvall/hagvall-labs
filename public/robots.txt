@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hagvalllabs.se/sitemap.xml
+Sitemap: https://hagvall-labs.com/sitemap.xml

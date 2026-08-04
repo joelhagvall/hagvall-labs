@@ -18,9 +18,9 @@ export const Route = createFileRoute('/maskera')({
         content:
           'Detect and mask personal data in text before AI systems, logs and analytics see it. Self-hosted, GDPR-friendly, built in Sweden.',
       },
-      { property: 'og:url', content: 'https://hagvalllabs.se/maskera' },
+      { property: 'og:url', content: 'https://hagvall-labs.com/maskera' },
     ],
-    links: [{ rel: 'canonical', href: 'https://hagvalllabs.se/maskera' }],
+    links: [{ rel: 'canonical', href: 'https://hagvall-labs.com/maskera' }],
     scripts: [
       {
         type: 'application/ld+json',
@@ -29,6 +29,7 @@ export const Route = createFileRoute('/maskera')({
           '@type': 'SoftwareApplication',
           name: 'Maskera',
           applicationCategory: 'SecurityApplication',
+          url: 'https://maskera.dev',
           operatingSystem: 'Self-hosted (Linux, Docker)',
           description:
             'Maskera identifies and masks personal data in text before the information is used in AI systems, logs or analytics tools. Deployed in the customer’s own IT environment.',
@@ -85,12 +86,20 @@ function Maskera() {
           identity numbers, addresses, phone numbers — before the information is
           used in AI systems, logs or analytics tools.
         </p>
-        <a
-          href="mailto:hello@hagvalllabs.se?subject=Maskera%20demo"
-          className="mt-10 inline-block rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
-        >
-          Book a demo
-        </a>
+        <div className="mt-10 flex flex-wrap items-center gap-4">
+          <a
+            href="https://maskera.dev"
+            className="rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
+          >
+            Visit maskera.dev
+          </a>
+          <a
+            href="mailto:hello@hagvall-labs.com?subject=Maskera%20demo"
+            className="rounded-full border border-neutral-300 px-6 py-3 text-sm font-medium transition-colors hover:border-neutral-900"
+          >
+            Book a demo
+          </a>
+        </div>
       </section>
 
       <section className="border-y border-neutral-200 bg-neutral-50">
@@ -131,11 +140,18 @@ function Maskera() {
             See Maskera on your own data.
           </h2>
           <p className="mx-auto mt-4 max-w-xl leading-relaxed text-neutral-600">
-            We run pilot projects with companies and organizations in Sweden.
-            Get in touch and we'll set up a demonstration.
+            I run pilot projects with companies and organizations in Sweden.
+            Get in touch and I'll set up a demonstration — or read more at{' '}
+            <a
+              href="https://maskera.dev"
+              className="underline underline-offset-4 transition-colors hover:text-neutral-900"
+            >
+              maskera.dev
+            </a>
+            .
           </p>
           <a
-            href="mailto:hello@hagvalllabs.se?subject=Maskera%20pilot"
+            href="mailto:hello@hagvall-labs.com?subject=Maskera%20pilot"
             className="mt-8 inline-block rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
           >
             Start a pilot

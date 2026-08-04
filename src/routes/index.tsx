@@ -1,6 +1,11 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({ component: Home })
+export const Route = createFileRoute('/')({
+  head: () => ({
+    links: [{ rel: 'canonical', href: 'https://hagvall-labs.com/' }],
+  }),
+  component: Home,
+})
 
 const services = [
   {
@@ -13,7 +18,7 @@ const services = [
   },
   {
     title: 'Installation & support',
-    body: 'We handle deployment, integration and ongoing support so your team can focus on using the product, not operating it.',
+    body: 'I handle deployment, integration and ongoing support so your team can focus on using the product, not operating it.',
   },
   {
     title: 'Consulting',
@@ -33,7 +38,7 @@ function Home() {
           Privacy-first software for the AI era.
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-neutral-600">
-          We develop, license and sell software for information security,
+          I develop, license and sell software for information security,
           privacy protection and artificial intelligence — built to run in your
           own IT environment.
         </p>
@@ -45,7 +50,7 @@ function Home() {
             Discover Maskera
           </Link>
           <a
-            href="mailto:hello@hagvalllabs.se"
+            href="mailto:hello@hagvall-labs.com"
             className="rounded-full border border-neutral-300 px-6 py-3 text-sm font-medium transition-colors hover:border-neutral-900"
           >
             Book a demo
@@ -58,7 +63,7 @@ function Home() {
         <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 py-20 md:grid-cols-2 md:items-center">
           <div>
             <p className="mb-3 text-sm font-medium uppercase tracking-widest text-neutral-400">
-              Our first product
+              My first product
             </p>
             <h2 className="text-3xl font-semibold tracking-tight">Maskera</h2>
             <p className="mt-4 leading-relaxed text-neutral-600">
@@ -67,12 +72,20 @@ function Home() {
               runs entirely inside your own infrastructure — no data ever leaves
               your organization.
             </p>
-            <Link
-              to="/maskera"
-              className="mt-6 inline-block text-sm font-medium underline underline-offset-4 transition-colors hover:text-neutral-500"
-            >
-              Learn more about Maskera →
-            </Link>
+            <div className="mt-6 flex flex-wrap gap-6 text-sm font-medium">
+              <Link
+                to="/maskera"
+                className="underline underline-offset-4 transition-colors hover:text-neutral-500"
+              >
+                Learn more about Maskera →
+              </Link>
+              <a
+                href="https://maskera.dev"
+                className="underline underline-offset-4 transition-colors hover:text-neutral-500"
+              >
+                maskera.dev →
+              </a>
+            </div>
           </div>
           <div className="rounded-2xl border border-neutral-200 bg-white p-6 font-mono text-sm leading-7 shadow-sm">
             <p className="text-neutral-400">// input</p>
@@ -109,16 +122,27 @@ function Home() {
       <section className="border-t border-neutral-200">
         <div className="mx-auto w-full max-w-5xl px-6 py-20">
           <h2 className="text-3xl font-semibold tracking-tight">
-            Working with us
+            Working with me
           </h2>
           <p className="mt-4 max-w-2xl leading-relaxed text-neutral-600">
-            We work directly with companies and organizations, primarily in
-            Sweden — through our website, digital meetings, demonstrations and
+            Hägvall Labs AB is a one-person company. I'm{' '}
+            <a
+              href="https://joelhagvall.com"
+              className="underline underline-offset-4 transition-colors hover:text-neutral-900"
+            >
+              Joel Hägvall
+            </a>
+            , and I'm personally responsible for everything the company builds
+            and ships — no layers, no handoffs.
+          </p>
+          <p className="mt-4 max-w-2xl leading-relaxed text-neutral-600">
+            I work directly with companies and organizations, primarily in
+            Sweden — through this website, digital meetings, demonstrations and
             agreements. Invoicing by standard bank transfer. The company
             operates fully online.
           </p>
           <a
-            href="mailto:hello@hagvalllabs.se"
+            href="mailto:hello@hagvall-labs.com"
             className="mt-8 inline-block rounded-full bg-neutral-900 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
           >
             Get in touch
