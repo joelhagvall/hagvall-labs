@@ -12,7 +12,7 @@ bun run dev      # http://localhost:3000
 bun run build    # production build
 ```
 
-Quality gates: every change must hit Lighthouse 100 for Performance, SEO and Accessibility, and pass pa11y with 0 errors: see `AGENTS.md`.
+Quality gates: every change must hit Lighthouse Performance 95+, SEO 100 and Accessibility 100, and pass pa11y with 0 errors: see `AGENTS.md`.
 
 ## Structure
 

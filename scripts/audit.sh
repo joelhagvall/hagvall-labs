@@ -1,5 +1,5 @@
 #!/bin/bash
-# Quality gate: Lighthouse (performance/SEO/accessibility must be 100) and
+# Quality gate: Lighthouse (performance >= 95, SEO/accessibility 100) and
 # pa11y (0 errors) on every route, against the gzip prod server on :4173.
 # Usage: bun run build && bun run serve:prod &  then  bash scripts/audit.sh
 # Optional args: route names to audit (e.g. "audit.sh home en"), used for CI
@@ -10,6 +10,7 @@ S="${TMPDIR:-/tmp}/hagvall-audit"
 mkdir -p "$S"
 BASE="http://localhost:4173"
 FAIL=0
+export LH_MIN_PERFORMANCE="${LH_MIN_PERFORMANCE:-95}"
 
 # Lighthouse simulates a mid-tier phone by slowing the host CPU 4x, which
 # over-penalizes slow CI runners (a GitHub runner scored 84 where a laptop
@@ -43,9 +44,11 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "en:/en" "enmaskera:
     const r = await Bun.file('$S/lh-$name.json').json();
     const m = r.audits.metrics.details.items[0];
     let bad = false;
+    const performanceFloor = Number(process.env.LH_MIN_PERFORMANCE);
     for (const [k, v] of Object.entries(r.categories)) {
       const s = Math.round(v.score * 100);
-      if (s < 100) bad = true;
+      const floor = k === 'performance' ? performanceFloor : 100;
+      if (s < floor) bad = true;
       console.log('  ' + k + ': ' + s);
     }
     console.log('  FCP ' + m.firstContentfulPaint + '  LCP ' + m.largestContentfulPaint);

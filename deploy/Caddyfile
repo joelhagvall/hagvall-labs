@@ -1,0 +1,4 @@
+# The production Caddy container mounts the Maskera base configuration at
+# /etc/caddy/base/Caddyfile and product-specific sites under /etc/caddy/sites.
+import /etc/caddy/base/Caddyfile
+import /etc/caddy/sites/*.caddy

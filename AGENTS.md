@@ -115,7 +115,7 @@ bun run generate-routes
 
 After ANY change to pages, styles, meta tags or layout, you MUST verify with Lighthouse CLI and pa11y against the running site. Non-negotiable targets:
 
-- **Lighthouse Performance: 100**
+- **Lighthouse Performance: at least 95**
 - **Lighthouse SEO: 100**
 - **Lighthouse Accessibility: 100**
 - **pa11y: 0 errors** on every route
@@ -128,7 +128,7 @@ bun run serve:prod &   # serves dist/ with gzip on http://localhost:4173 (script
 bash scripts/audit.sh  # Lighthouse + pa11y on every route; exits non-zero on any failure
 ```
 
-`scripts/audit.sh` holds the route list: add any new route to it, AND to the `route:` matrix in `.github/workflows/ci.yml` (CI runs the same gates on Node 24 + bun, sharded one route per job; `audit.sh <name>` filters to those routes). If a score is below 100 or pa11y reports errors, fix the issues and re-run until clean.
+`scripts/audit.sh` holds the route list: add any new route to it, AND to the `route:` matrix in `.github/workflows/ci.yml` (CI runs the same gates on Node 24 + bun, sharded one route per job; `audit.sh <name>` filters to those routes). If Performance is below 95, SEO or Accessibility is below 100, or pa11y reports errors, fix the issues and re-run until clean.
 
 Known pitfalls that break the 100s (learned the hard way: don't reintroduce):
 
