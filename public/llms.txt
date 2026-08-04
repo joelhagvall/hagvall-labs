@@ -1,0 +1,20 @@
+# Hägvall Labs AB
+
+> Hägvall Labs AB is a Swedish software company that develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence. Its first product, Maskera, identifies and masks personal data in text before the information is used in AI systems, logs or analytics tools.
+
+Key facts:
+
+- Company: Hägvall Labs AB (Sweden)
+- Focus: information security, privacy protection, artificial intelligence
+- First product: Maskera — detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools
+- Deployment: primarily self-hosted, installed in the customer's own IT environment — no data leaves the customer's infrastructure
+- Offering: pilot projects, software licenses, installation, support, and consulting in systems development and IT security
+- Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
+- Payment: invoice and bank transfer
+- Operations: fully online
+- Contact: hello@hagvalllabs.se
+
+## Pages
+
+- [Home](https://hagvalllabs.se/): Company overview, services and contact
+- [Maskera](https://hagvalllabs.se/maskera): Product page — use cases (AI systems, logs, analytics), deployment model and pilot projects
