@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MaskeraRouteImport } from './routes/maskera'
+import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as EnMaskeraRouteImport } from './routes/en/maskera'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,49 @@ const MaskeraRoute = MaskeraRouteImport.update({
   path: '/maskera',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnIndexRoute = EnIndexRouteImport.update({
+  id: '/en/',
+  path: '/en/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnMaskeraRoute = EnMaskeraRouteImport.update({
+  id: '/en/maskera',
+  path: '/en/maskera',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/maskera': typeof MaskeraRoute
+  '/en/maskera': typeof EnMaskeraRoute
+  '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/maskera': typeof MaskeraRoute
+  '/en/maskera': typeof EnMaskeraRoute
+  '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/maskera': typeof MaskeraRoute
+  '/en/maskera': typeof EnMaskeraRoute
+  '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/maskera'
+  fullPaths: '/' | '/maskera' | '/en/maskera' | '/en/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/maskera'
-  id: '__root__' | '/' | '/maskera'
+  to: '/' | '/maskera' | '/en/maskera' | '/en'
+  id: '__root__' | '/' | '/maskera' | '/en/maskera' | '/en/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MaskeraRoute: typeof MaskeraRoute
+  EnMaskeraRoute: typeof EnMaskeraRoute
+  EnIndexRoute: typeof EnIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MaskeraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/': {
+      id: '/en/'
+      path: '/en'
+      fullPath: '/en/'
+      preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/maskera': {
+      id: '/en/maskera'
+      path: '/en/maskera'
+      fullPath: '/en/maskera'
+      preLoaderRoute: typeof EnMaskeraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MaskeraRoute: MaskeraRoute,
+  EnMaskeraRoute: EnMaskeraRoute,
+  EnIndexRoute: EnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

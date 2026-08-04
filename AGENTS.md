@@ -96,13 +96,13 @@ tanstackIntent:
     for: "Programmatic route tree building as an alternative to filesystem conventions: rootRoute, index, route, layout, physical, defineVirtualSubtreeConfig. Use with TanStack Router plugin's virtualRouteConfig option."
 <!-- intent-skills:end -->
 
-# Hägvall Labs — project guidance
+# Hägvall Labs: project guidance
 
-Marketing site for Hägvall Labs AB (hagvall-labs.com). TanStack Start + React 19 + Tailwind CSS v4.
+Marketing site for Hägvall Labs AB (hagvall-labs.com), built with TanStack Start + React 19 + Tailwind CSS v4.
 
 ## Package manager
 
-This project uses **bun** — never npm, yarn or pnpm.
+This project uses **bun**, never npm, yarn or pnpm.
 
 ```bash
 bun install
@@ -111,7 +111,7 @@ bun run build      # production build
 bun run generate-routes
 ```
 
-## Quality gates (SUPER IMPORTANT — run before every commit)
+## Quality gates (SUPER IMPORTANT: run before every commit)
 
 After ANY change to pages, styles, meta tags or layout, you MUST verify with Lighthouse CLI and pa11y against the running site. Non-negotiable targets:
 
@@ -120,37 +120,52 @@ After ANY change to pages, styles, meta tags or layout, you MUST verify with Lig
 - **Lighthouse Accessibility: 100**
 - **pa11y: 0 errors** on every route
 
-Always audit the **production build served with gzip** — NOT the dev server. The dev server fails the targets for reasons that don't exist in production (the TanStack Devtools overlay triggers pa11y errors, and uncompressed responses drag Performance to ~90):
+Always audit the **production build served with gzip**: NOT the dev server. The dev server fails the targets for reasons that don't exist in production (the TanStack Devtools overlay triggers pa11y errors, and uncompressed responses drag Performance to ~90):
 
 ```bash
 bun run build
 bun run serve:prod &   # serves dist/ with gzip on http://localhost:4173 (scripts/serve-prod.ts)
-
-bunx lighthouse http://localhost:4173/ --only-categories=performance,seo,accessibility --chrome-flags="--headless=new" --output=json --quiet
-bunx lighthouse http://localhost:4173/maskera --only-categories=performance,seo,accessibility --chrome-flags="--headless=new" --output=json --quiet
-
-bunx pa11y http://localhost:4173/
-bunx pa11y http://localhost:4173/maskera
+bash scripts/audit.sh  # Lighthouse + pa11y on every route; exits non-zero on any failure
 ```
 
-Audit EVERY route, including any you just added. If a score is below 100 or pa11y reports errors, fix the issues and re-run until clean.
+`scripts/audit.sh` holds the route list: add any new route to it. If a score is below 100 or pa11y reports errors, fix the issues and re-run until clean.
 
-Known pitfalls that break the 100s (learned the hard way — don't reintroduce):
+Known pitfalls that break the 100s (learned the hard way: don't reintroduce):
 
 - **Duplicate canonical tags fail Lighthouse SEO.** Canonical links live in each route's `head`, never in `__root.tsx` (route heads merge with the root, producing conflicting canonicals).
 - **A render-blocking stylesheet costs ~8 Performance points.** The Tailwind CSS is inlined in `<head>` in production (`styles.css?inline` in `__root.tsx`); dev uses a normal `?url` stylesheet link for HMR. Keep it that way.
+- **Any above-fold image request costs ~1 Performance point.** Lighthouse's simulated (lantern) LCP pessimistically adds a network round-trip for image requests near the LCP paint, even when the LCP element is text. That is why the logo is an inline SVG component (`src/components/BrandSymbol.tsx`, not `<img>`) and the favicon is a data URI in `__root.tsx`. Real `<img>` content is fine below the fold with `loading="lazy"`.
 - The devtools overlay must stay wrapped in `import.meta.env.DEV` in `__root.tsx`.
 
 ## Site structure
 
-- `src/routes/__root.tsx` — document shell, header/footer layout, global SEO meta + Organization JSON-LD
-- `src/routes/index.tsx` — home page
-- `src/routes/maskera.tsx` — Maskera product page (own meta + SoftwareApplication JSON-LD)
-- `public/llms.txt` — company summary for LLM crawlers; keep in sync when company/product copy changes
-- `public/robots.txt`, `public/sitemap.xml` — add new routes to the sitemap and llms.txt
+The site is bilingual: **Swedish is the default** (`/`, `/maskera`), English lives under `/en` (`/en`, `/en/maskera`).
+
+- `src/routes/__root.tsx`: document shell (dynamic `<html lang>`), header/footer with language switcher, 404 page, global meta + Organization JSON-LD
+- `src/components/HomePage.tsx`, `MaskeraPage.tsx`: shared page components with a `sv`/`en` copy dict; ALL page copy lives here, edit both languages together
+- `src/routes/index.tsx`, `maskera.tsx`, `en/index.tsx`, `en/maskera.tsx`: thin route wrappers holding per-language meta, canonical + hreflang links (via `src/seo.ts`) and JSON-LD
+- `public/llms.txt`: company summary for LLM crawlers; keep in sync when company/product copy changes
+- `public/robots.txt`, `public/sitemap.xml`: sitemap carries hreflang alternates; add new routes (both languages) here and in llms.txt
+
+## Design (ALWAYS follow Vercel's Web Interface Guidelines)
+
+All UI work MUST comply with Vercel's Web Interface Guidelines. Fetch the latest ruleset before any UI change and review your changes against it (the `web-design-guidelines` skill does this):
+
+- Source: https://raw.githubusercontent.com/vercel-labs/web-interface-guidelines/main/command.md
+- Repo: https://github.com/vercel-labs/web-interface-guidelines
+
+Rules already applied here: keep them intact: skip link ("Hoppa till innehållet"/"Skip to Content") targeting `#main`; global `:focus-visible` outline and `touch-action: manipulation` in `styles.css`; `theme-color` meta; explicit `width`/`height` on every `<img>` (`alt=""` on decorative ones); `translate="no"` on brand names; curly apostrophes (’) and `text-balance`/`text-pretty` on headings/paragraphs; Title Case for English headings and buttons (Swedish keeps sentence case); visible `hover:` states on all interactive elements.
+
+### Brand
+
+Logos live in `public/brand/` (symbol, primary with wordmark, light/dark variants). The symbol doubles as favicon. Brand colors are Tailwind theme tokens in `src/styles.css`: `cobalt` #1748d4 (primary/CTAs), `cobalt-deep` (hover), `teal-brand` #14b8a6 (decorative only: insufficient contrast for white text; use `teal-deep` #0f766e behind white text), `ink` #20272d (text).
 
 ## Conventions
 
-- All site copy is in **English**; keep the minimal black-on-white design (neutral palette, generous whitespace)
-- Every new route needs: meta title + description, canonical link, entry in `sitemap.xml` and `llms.txt`
-- Domain `hagvall-labs.com` and email `hello@hagvall-labs.com` are currently placeholders — change everywhere at once if the real domain differs
+- **NO EM-DASHES (—), EVER.** Forbidden in all copy, meta tags, docs and code comments. Rewrite with a comma, colon or period instead; page titles use `|` as separator. Grep for `—` before committing.
+- **First-person copy**: Hägvall Labs AB is a one-person company (Joel Hägvall, joelhagvall.com); write "I", never "we", in both languages
+- **Client-side navigation only**: use TanStack Router `Link` for every internal link (including the SV/EN switcher) so navigation never causes a full-page flash; plain `<a>` is only for external links and mailto
+- Maskera links out to its product site **maskera.dev**
+- Keep the design minimal: white background, ink text, cobalt accents, generous whitespace
+- Every new page needs: sv + en variants, meta title + description per language, canonical + full hreflang set (use `alternateLinks()` from `src/seo.ts`), entries in `sitemap.xml` and `llms.txt`
+- Email `hello@hagvall-labs.com` is currently a placeholder

@@ -1,5 +1,12 @@
-
 @import "tailwindcss";
+
+@theme {
+  --color-cobalt: #1748d4;
+  --color-cobalt-deep: #1239a8;
+  --color-teal-brand: #14b8a6;
+  --color-teal-deep: #0f766e;
+  --color-ink: #20272d;
+}
 
 * {
   box-sizing: border-box;
@@ -15,3 +22,15 @@ body {
   margin: 0;
 }
 
+a,
+button,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cobalt);
+  outline-offset: 2px;
+}

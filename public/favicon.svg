@@ -1,4 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#171717"/>
-  <text x="16" y="22" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="600" fill="#ffffff">HL</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="210 110 580 580" role="img" aria-labelledby="title description">
+  <title id="title">Hägvall Labs symbol</title>
+  <desc id="description">Transparent cobalt and teal layered data symbol.</desc>
+      <g id="hagvall-labs-symbol">
+      <path fill="#1748D4" d="M270 350 495 438 495 566 414 535 414 680 270 625Z"/>
+      <path fill="#14B8A6" d="M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z"/>
+      <path fill="#1748D4" d="M480 165 710 254 710 560 630 529 630 334 480 278Z"/>
+    </g>
 </svg>
