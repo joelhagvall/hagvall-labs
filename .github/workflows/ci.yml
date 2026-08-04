@@ -1,0 +1,113 @@
+# CI for hagvall-labs.com: typecheck + build, then the quality gates from
+# AGENTS.md (Lighthouse 100/100/100 and pa11y 0 errors on every route),
+# sharded one route per job against the gzip prod server.
+# The route matrix below must match the route list in scripts/audit.sh.
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache bun downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: No em-dashes in copy or code
+        run: |
+          if grep -rn -- '—' src public; then
+            echo 'Em-dashes are forbidden (see AGENTS.md), rewrite with comma, colon or period.'
+            exit 1
+          fi
+
+      - name: Typecheck
+        run: bun x tsc --noEmit
+
+      - name: Build
+        run: bun run build
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  audit:
+    name: Audit ${{ matrix.route }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        route: [home, maskera, kontakt, en, enmaskera, encontact]
+    env:
+      # Use the runner's preinstalled Chrome for both Lighthouse (chrome-launcher)
+      # and pa11y (puppeteer), instead of downloading a browser per job.
+      CHROME_PATH: /usr/bin/google-chrome
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
+      PUPPETEER_SKIP_DOWNLOAD: 'true'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache bun downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Start prod server (gzip)
+        run: |
+          bun run serve:prod &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4173/ >/dev/null && exit 0
+            sleep 1
+          done
+          echo 'prod server never became ready'
+          exit 1
+
+      - name: Lighthouse + pa11y
+        run: bash scripts/audit.sh ${{ matrix.route }}

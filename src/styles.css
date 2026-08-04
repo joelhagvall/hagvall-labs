@@ -28,9 +28,121 @@ input,
 select,
 textarea {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :focus-visible {
   outline: 2px solid var(--color-cobalt);
   outline-offset: 2px;
+}
+
+/* Animation system. Compositor-only properties (transform, opacity), and
+   every animated class is gated behind prefers-reduced-motion: no-preference.
+   .reveal uses a scroll-driven view() timeline behind @supports, so browsers
+   without scroll-driven animations simply render the content statically. */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes brand-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The masking preview's placeholder pills settle in with a short staggered
+   rise (opacity/transform only, so nothing reflows). Ported from
+   maskera-cloud's hero. */
+@keyframes mask-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Hero glows: radial gradients, not blur() filters. A large blurred element
+   costs real paint time in the first frame and drags FCP below target. */
+.glow-cobalt {
+  background: radial-gradient(closest-side, rgb(23 72 212 / 0.14), transparent);
+}
+
+.glow-teal {
+  background: radial-gradient(closest-side, rgb(20 184 166 / 0.14), transparent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+
+  .brand-path {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: brand-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .brand-path:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+  .brand-path:nth-child(3) {
+    animation-delay: 0.24s;
+  }
+
+  .mask-in {
+    animation: mask-in 0.35s ease-out both;
+  }
+
+  .animate-menu {
+    transform-origin: top right;
+    animation: menu-in 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glow {
+    animation: fade-up 1.2s ease-out backwards;
+  }
+  .glow-delay {
+    animation-delay: 0.25s;
+  }
+
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
 }

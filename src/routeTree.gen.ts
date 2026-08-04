@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as MaskeraRouteImport } from './routes/maskera'
 import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as EnContactRouteImport } from './routes/en/contact'
 import { Route as EnMaskeraRouteImport } from './routes/en/maskera'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontaktRoute = KontaktRouteImport.update({
+  id: '/kontakt',
+  path: '/kontakt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MaskeraRoute = MaskeraRouteImport.update({
@@ -29,6 +36,11 @@ const EnIndexRoute = EnIndexRouteImport.update({
   path: '/en/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnContactRoute = EnContactRouteImport.update({
+  id: '/en/contact',
+  path: '/en/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnMaskeraRoute = EnMaskeraRouteImport.update({
   id: '/en/maskera',
   path: '/en/maskera',
@@ -37,34 +49,50 @@ const EnMaskeraRoute = EnMaskeraRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
+  '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
+  '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
+  '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/maskera' | '/en/maskera' | '/en/'
+  fullPaths:
+    '/' | '/kontakt' | '/maskera' | '/en/contact' | '/en/maskera' | '/en/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/maskera' | '/en/maskera' | '/en'
-  id: '__root__' | '/' | '/maskera' | '/en/maskera' | '/en/'
+  to: '/' | '/kontakt' | '/maskera' | '/en/contact' | '/en/maskera' | '/en'
+  id:
+    | '__root__'
+    | '/'
+    | '/kontakt'
+    | '/maskera'
+    | '/en/contact'
+    | '/en/maskera'
+    | '/en/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  KontaktRoute: typeof KontaktRoute
   MaskeraRoute: typeof MaskeraRoute
+  EnContactRoute: typeof EnContactRoute
   EnMaskeraRoute: typeof EnMaskeraRoute
   EnIndexRoute: typeof EnIndexRoute
 }
@@ -76,6 +104,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontakt': {
+      id: '/kontakt'
+      path: '/kontakt'
+      fullPath: '/kontakt'
+      preLoaderRoute: typeof KontaktRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/maskera': {
@@ -92,6 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/contact': {
+      id: '/en/contact'
+      path: '/en/contact'
+      fullPath: '/en/contact'
+      preLoaderRoute: typeof EnContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/maskera': {
       id: '/en/maskera'
       path: '/en/maskera'
@@ -104,7 +146,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  KontaktRoute: KontaktRoute,
   MaskeraRoute: MaskeraRoute,
+  EnContactRoute: EnContactRoute,
   EnMaskeraRoute: EnMaskeraRoute,
   EnIndexRoute: EnIndexRoute,
 }

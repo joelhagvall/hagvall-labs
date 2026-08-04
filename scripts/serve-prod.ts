@@ -1,5 +1,5 @@
 // Serves the production build (dist/) with gzip on :4173, matching how a real
-// deployment serves the site. Used for Lighthouse/pa11y audits — see AGENTS.md.
+// deployment serves the site. Used for Lighthouse/pa11y audits, see AGENTS.md.
 import { join } from 'node:path'
 import { existsSync, statSync } from 'node:fs'
 

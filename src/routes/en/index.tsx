@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { HomePage } from '../../components/HomePage'
-import { alternateLinks, site } from '../../seo'
+import { alternateLinks, localeMeta, site } from '../../seo'
 
 export const Route = createFileRoute('/en/')({
   head: () => ({
@@ -9,7 +9,7 @@ export const Route = createFileRoute('/en/')({
       {
         name: 'description',
         content:
-          'Hägvall Labs AB develops software for information security, privacy protection and AI. The first product, Maskera, detects and masks personal data in text before it reaches AI systems, logs or analytics tools.',
+          'Hägvall Labs builds privacy-first software that runs in your own IT environment. Maskera masks personal data in text before it reaches AI systems, logs or analytics tools.',
       },
       {
         property: 'og:title',
@@ -18,10 +18,10 @@ export const Route = createFileRoute('/en/')({
       {
         property: 'og:description',
         content:
-          'Software for information security, privacy protection and AI. Self-hosted, built in Sweden.',
+          'Privacy-first software for the AI era. Self-hosted, built in Sweden.',
       },
       { property: 'og:url', content: site + '/en' },
-      { property: 'og:locale', content: 'en_US' },
+      ...localeMeta('en'),
     ],
     links: alternateLinks('/', '/en', 'en'),
   }),

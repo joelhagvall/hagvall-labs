@@ -128,13 +128,15 @@ bun run serve:prod &   # serves dist/ with gzip on http://localhost:4173 (script
 bash scripts/audit.sh  # Lighthouse + pa11y on every route; exits non-zero on any failure
 ```
 
-`scripts/audit.sh` holds the route list: add any new route to it. If a score is below 100 or pa11y reports errors, fix the issues and re-run until clean.
+`scripts/audit.sh` holds the route list: add any new route to it, AND to the `route:` matrix in `.github/workflows/ci.yml` (CI runs the same gates on Node 24 + bun, sharded one route per job; `audit.sh <name>` filters to those routes). If a score is below 100 or pa11y reports errors, fix the issues and re-run until clean.
 
 Known pitfalls that break the 100s (learned the hard way: don't reintroduce):
 
 - **Duplicate canonical tags fail Lighthouse SEO.** Canonical links live in each route's `head`, never in `__root.tsx` (route heads merge with the root, producing conflicting canonicals).
 - **A render-blocking stylesheet costs ~8 Performance points.** The Tailwind CSS is inlined in `<head>` in production (`styles.css?inline` in `__root.tsx`); dev uses a normal `?url` stylesheet link for HMR. Keep it that way.
 - **Any above-fold image request costs ~1 Performance point.** Lighthouse's simulated (lantern) LCP pessimistically adds a network round-trip for image requests near the LCP paint, even when the LCP element is text. That is why the logo is an inline SVG component (`src/components/BrandSymbol.tsx`, not `<img>`) and the favicon is a data URI in `__root.tsx`. Real `<img>` content is fine below the fold with `loading="lazy"`.
+- **The same RTT penalty applies to an extra JS chunk near the paint.** A module shared by two page components (icons, the MaskingDemo) gets split into its own chunk and requested after the page chunk: that alone drops Performance to 99. Keep shared code either tiny enough to be inlined (`ui.ts`) or duplicated per page.
+- **Large `blur()` filters cost first-paint time.** The hero glows are radial-gradient divs (`glow-cobalt`/`glow-teal` in `styles.css`), not `blur-3xl` elements.
 - The devtools overlay must stay wrapped in `import.meta.env.DEV` in `__root.tsx`.
 
 ## Site structure
@@ -142,7 +144,8 @@ Known pitfalls that break the 100s (learned the hard way: don't reintroduce):
 The site is bilingual: **Swedish is the default** (`/`, `/maskera`), English lives under `/en` (`/en`, `/en/maskera`).
 
 - `src/routes/__root.tsx`: document shell (dynamic `<html lang>`), header/footer with language switcher, 404 page, global meta + Organization JSON-LD
-- `src/components/HomePage.tsx`, `MaskeraPage.tsx`: shared page components with a `sv`/`en` copy dict; ALL page copy lives here, edit both languages together
+- `src/components/HomePage.tsx`, `MaskeraPage.tsx`: shared page components with a `sv`/`en` copy dict; ALL page copy lives here, edit both languages together. The masking preview (MaskPreview: tinted source highlights + placeholder pills, ported one-to-one from maskera-cloud's `lib/labels.ts` and HeroMaskPreview, including its label colors and the "Anna Lindqvist" example) and the icons are intentionally duplicated inline in each page: a module shared by two page chunks gets split into its own chunk, and that extra request costs a Performance point (see pitfalls). The staggered pill entrance is scroll-triggered: an IntersectionObserver adds `mask-in` when the card is 25% visible (pills stay `opacity-0` below the fold; SSR/no-JS renders the final state). The icons are custom solid SVGs in the brand's folded geometry (isometric faces shaded with `fillOpacity`, no icon library)
+- `src/components/ui.ts`: shared button class strings (`btnPrimary`/`btnSecondary`/`btnSmall`, explicit transition properties, transforms disabled under reduced motion); tiny enough that the bundler inlines it into each importer
 - `src/routes/index.tsx`, `maskera.tsx`, `en/index.tsx`, `en/maskera.tsx`: thin route wrappers holding per-language meta, canonical + hreflang links (via `src/seo.ts`) and JSON-LD
 - `public/llms.txt`: company summary for LLM crawlers; keep in sync when company/product copy changes
 - `public/robots.txt`, `public/sitemap.xml`: sitemap carries hreflang alternates; add new routes (both languages) here and in llms.txt
@@ -158,14 +161,25 @@ Rules already applied here: keep them intact: skip link ("Hoppa till innehållet
 
 ### Brand
 
-Logos live in `public/brand/` (symbol, primary with wordmark, light/dark variants). The symbol doubles as favicon. Brand colors are Tailwind theme tokens in `src/styles.css`: `cobalt` #1748d4 (primary/CTAs), `cobalt-deep` (hover), `teal-brand` #14b8a6 (decorative only: insufficient contrast for white text; use `teal-deep` #0f766e behind white text), `ink` #20272d (text).
+`public/brand/` holds only what the site references: `hagvall-labs-symbol.svg` (the JSON-LD logo; the symbol also doubles as the data-URI favicon) and `og-image.png`. The wordmark is letterspaced uppercase Avenir Next Medium, "HÄGVALL" in ink and "LABS" in cobalt; the site header renders it as system-font text (`uppercase tracking-[0.12em] font-medium` in `__root.tsx`) and the OG image carries the same treatment. There are no standalone logo lockup files; if one is needed, outline the wordmark from Avenir Next Medium (0.15em tracking) next to the symbol paths. Social cards use `public/brand/og-image.png` (1200x630, symbol + wordmark + tagline, referenced in `__root.tsx` with `summary_large_image`); regenerate it if the brand changes. Brand colors are Tailwind theme tokens in `src/styles.css`: `cobalt` #1748d4 (primary/CTAs), `cobalt-deep` (hover), `teal-brand` #14b8a6 (decorative only: insufficient contrast for white text; use `teal-deep` #0f766e behind white text), `ink` #20272d (text).
 
 ## Conventions
 
 - **NO EM-DASHES (—), EVER.** Forbidden in all copy, meta tags, docs and code comments. Rewrite with a comma, colon or period instead; page titles use `|` as separator. Grep for `—` before committing.
-- **First-person copy**: Hägvall Labs AB is a one-person company (Joel Hägvall, joelhagvall.com); write "I", never "we", in both languages
+- **First-person copy**: Hägvall Labs AB is a one-person company (Joel Hägvall, joelhagvall.com); write "I", never "we", in both languages. Write like Joel talks: direct, plain, personal. No corporate stiffness ("enmansbolag", "utvecklar, licensierar och säljer") in visible copy.
 - **Client-side navigation only**: use TanStack Router `Link` for every internal link (including the SV/EN switcher) so navigation never causes a full-page flash; plain `<a>` is only for external links and mailto
 - Maskera links out to its product site **maskera.dev**
 - Keep the design minimal: white background, ink text, cobalt accents, generous whitespace
+- **Animations are CSS-only and compositor-safe** (transform/opacity), defined in `styles.css` and always gated behind `prefers-reduced-motion: no-preference`. `.reveal` is a scroll-driven entrance (`animation-timeline: view()` behind `@supports`, so unsupported browsers render statically). Never animate the hero headline/body: the LCP paint must not wait on an animation. Decorative SVG animation (`brand-path` in `BrandSymbol`, `glow` blobs) is fine since SVG/divs are not LCP candidates
 - Every new page needs: sv + en variants, meta title + description per language, canonical + full hreflang set (use `alternateLinks()` from `src/seo.ts`), entries in `sitemap.xml` and `llms.txt`
 - Email `hello@hagvall-labs.com` is currently a placeholder
+
+## TypeScript diagnostics
+
+- Treat Cursor/tsserver diagnostics as real work and reproduce them from the terminal with the narrowest project-provided command.
+- Relevant TypeScript diagnostics pass, especially for files touched in Cursor.
+- In this repo the whole project is small and must stay at zero errors, so the narrowest command is simply `bun x tsc --noEmit`. Run it after every touched TS/TSX file; do not commit with diagnostics outstanding.
+
+## Commits
+
+- Never write `Co-Authored-By: Anthropic` (or any other co-author/attribution trailer) in commit messages. Not one line, not ever.

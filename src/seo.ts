@@ -12,3 +12,16 @@ export function alternateLinks(svPath: string, enPath: string, current: Lang) {
     { rel: 'alternate', hrefLang: 'x-default', href: site + enPath },
   ]
 }
+
+// og:locale for the current language plus og:locale:alternate for the other.
+export function localeMeta(current: Lang) {
+  return current === 'sv'
+    ? [
+        { property: 'og:locale', content: 'sv_SE' },
+        { property: 'og:locale:alternate', content: 'en_US' },
+      ]
+    : [
+        { property: 'og:locale', content: 'en_US' },
+        { property: 'og:locale:alternate', content: 'sv_SE' },
+      ]
+}
