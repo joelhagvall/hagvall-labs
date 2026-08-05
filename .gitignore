@@ -4,6 +4,8 @@ dist
 dist-ssr
 *.local
 .env
+.env.*
+!.env.example
 .nitro
 .tanstack
 .wrangler
@@ -12,3 +14,9 @@ dist-ssr
 __unconfig*
 todos.json
 .omo/
+
+# Generated local audit and analytics output
+reports/
+*.report.html
+*.report.json
+/report.html

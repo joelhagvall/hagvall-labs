@@ -1,0 +1,30 @@
+FROM oven/bun:1.3.14-slim@sha256:d56a2534ffd262e92c12fd3249d3924d296d97086da773f821d7d0477435ea04 AS bun
+
+# Official Puppeteer image with Chrome for Testing and all browser runtime
+# libraries. The digest pins both Chrome and the operating system layer.
+FROM ghcr.io/puppeteer/puppeteer:25.4.0@sha256:d93009ac8e1b8f307d59847b82404b51fd1672ddd6bdd5a4016a1cd9b5afd94d
+
+USER root
+
+COPY --from=bun /usr/local/bin/bun /usr/local/bin/bun
+
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
+RUN npm install --global lighthouse@13.4.1 pa11y@9.1.1 \
+    && npm cache clean --force \
+    && chrome_path="$(find /home/pptruser/.cache/puppeteer/chrome -type f -path '*/chrome-linux64/chrome' -print -quit)" \
+    && test -n "$chrome_path" \
+    && ln -s "$chrome_path" /usr/local/bin/chrome
+
+COPY scripts/audit.sh /usr/local/lib/hagvall-labs/audit.sh
+COPY scripts/pa11y-container.json /usr/local/lib/hagvall-labs/pa11y-container.json
+
+USER 10042:999
+
+ENV AUDIT_USE_GLOBAL_TOOLS=true \
+    CHROME_PATH=/usr/local/bin/chrome \
+    PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chrome \
+    CHROME_FLAGS="--headless=new --no-sandbox --disable-dev-shm-usage" \
+    PA11Y_CONFIG=/usr/local/lib/hagvall-labs/pa11y-container.json
+
+ENTRYPOINT ["/bin/bash", "/usr/local/lib/hagvall-labs/audit.sh"]

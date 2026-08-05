@@ -20,6 +20,10 @@ hagvall-labs.com {
 	# readable outside the container.
 	log {
 		output file /var/log/caddy/hagvall-labs.access.log {
+			# The host directory is root:deploy with its setgid bit set, so
+			# rotated logs inherit the deploy group and analytics.sh can read
+			# them without running as root.
+			mode 0640
 			roll_size 10MiB
 			roll_keep 5
 			roll_keep_for 720h

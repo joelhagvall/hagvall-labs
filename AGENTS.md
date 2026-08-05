@@ -128,6 +128,13 @@ bun run serve:prod &   # serves dist/ with gzip on http://localhost:4173 (script
 bash scripts/audit.sh  # Lighthouse + pa11y on every route; exits non-zero on any failure
 ```
 
+On a host without Bun or Chrome, use the pinned on-demand audit container
+against the running production service:
+
+```bash
+bash scripts/audit-container.sh
+```
+
 `scripts/audit.sh` holds the route list: add any new route to it, AND to the `route:` matrix in `.github/workflows/ci.yml` (CI runs the same gates on Node 24 + bun, sharded one route per job; `audit.sh <name>` filters to those routes). If Performance is below 95, SEO or Accessibility is below 100, or pa11y reports errors, fix the issues and re-run until clean.
 
 Known pitfalls that break the 100s (learned the hard way: don't reintroduce):

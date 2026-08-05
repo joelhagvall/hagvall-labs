@@ -1,0 +1,6 @@
+{
+  "chromeLaunchConfig": {
+    "executablePath": "/usr/local/bin/chrome",
+    "args": ["--headless=new", "--no-sandbox", "--disable-dev-shm-usage"]
+  }
+}

@@ -8,16 +8,31 @@
 set -u
 S="${TMPDIR:-/tmp}/hagvall-audit"
 mkdir -p "$S"
-BASE="http://localhost:4173"
+BASE="${BASE:-http://localhost:4173}"
 FAIL=0
 export LH_MIN_PERFORMANCE="${LH_MIN_PERFORMANCE:-95}"
+
+CHROME_FLAGS="${CHROME_FLAGS:---headless=new}"
+
+if [[ ${AUDIT_USE_GLOBAL_TOOLS:-false} == true ]]; then
+  lighthouse_cmd=(lighthouse)
+  pa11y_cmd=(pa11y)
+else
+  lighthouse_cmd=(bun x lighthouse)
+  pa11y_cmd=(bun x pa11y)
+fi
+
+pa11y_args=()
+if [[ -n ${PA11Y_CONFIG:-} ]]; then
+  pa11y_args+=(--config "$PA11Y_CONFIG")
+fi
 
 # Lighthouse simulates a mid-tier phone by slowing the host CPU 4x, which
 # over-penalizes slow CI runners (a GitHub runner scored 84 where a laptop
 # scores 100 on the same build). Calibrate the multiplier from the machine's
 # benchmarkIndex using Lighthouse's own guidance table, via a cheap probe run.
-bun x lighthouse "$BASE/" --only-categories=seo \
-  --chrome-flags="--headless=new" \
+"${lighthouse_cmd[@]}" "$BASE/" --only-categories=seo \
+  --chrome-flags="$CHROME_FLAGS" \
   --output=json --output-path="$S/lh-probe.json" --quiet 2>"$S/lh-probe.err" \
   || { echo "calibration probe failed:"; tail -3 "$S/lh-probe.err"; exit 1; }
 BI=$(bun -e "console.log(Math.round((await Bun.file('$S/lh-probe.json').json()).environment.benchmarkIndex))")
@@ -34,10 +49,10 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "en:/en" "enmaskera:
     case " $* " in *" $name "*) ;; *) continue ;; esac
   fi
   echo "== $path"
-  bun x lighthouse "$BASE$path" \
+  "${lighthouse_cmd[@]}" "$BASE$path" \
     --only-categories=performance,seo,accessibility \
     --throttling.cpuSlowdownMultiplier="$CPU" \
-    --chrome-flags="--headless=new" \
+    --chrome-flags="$CHROME_FLAGS" \
     --output=json --output-path="$S/lh-$name.json" --quiet 2>"$S/lh-$name.err" \
     || { echo "  LIGHTHOUSE FAILED:"; tail -3 "$S/lh-$name.err"; FAIL=1; continue; }
   bun -e "
@@ -56,7 +71,7 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "en:/en" "enmaskera:
   " || FAIL=1
 
   echo "-- pa11y $path"
-  bun x pa11y "$BASE$path" > "$S/pa11y-$name.txt" 2>&1 \
+  "${pa11y_cmd[@]}" "${pa11y_args[@]}" "$BASE$path" > "$S/pa11y-$name.txt" 2>&1 \
     && echo "  0 errors" \
     || { echo "  PA11Y ERRORS:"; tail -20 "$S/pa11y-$name.txt"; FAIL=1; }
 done
