@@ -1,7 +1,12 @@
 FROM oven/bun:1.3.14-slim@sha256:d56a2534ffd262e92c12fd3249d3924d296d97086da773f821d7d0477435ea04 AS base
 
 FROM base AS build
+ARG VITE_UMAMI_ENABLED=true
 WORKDIR /app
+
+# Public build flag only. Umami credentials stay in the runtime .env file.
+ENV VITE_UMAMI_ENABLED=${VITE_UMAMI_ENABLED}
+
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .

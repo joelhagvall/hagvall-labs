@@ -460,7 +460,14 @@ export function HomePage({ lang }: { lang: Lang }) {
               <Link to={pagePaths.maskera[lang]} className={linkCobalt}>
                 {t.teaserMore}
               </Link>
-              <a href="https://maskera.dev" className={linkCobalt} translate="no">
+              <a
+                href="https://maskera.dev"
+                className={linkCobalt}
+                translate="no"
+                data-umami-event="outbound-link-click"
+                data-umami-event-destination="maskera.dev"
+                data-umami-event-placement="home-product"
+              >
                 maskera.dev →
               </a>
             </div>
@@ -507,7 +514,13 @@ export function HomePage({ lang }: { lang: Lang }) {
           </h2>
           <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
             {t.aboutP1a}
-            <a href="https://joelhagvall.com" className={linkInk}>
+            <a
+              href="https://joelhagvall.com"
+              className={linkInk}
+              data-umami-event="outbound-link-click"
+              data-umami-event-destination="joelhagvall.com"
+              data-umami-event-placement="home-founder"
+            >
               Joel Hägvall
             </a>
             {t.aboutP1b}

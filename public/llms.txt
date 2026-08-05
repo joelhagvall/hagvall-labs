@@ -10,7 +10,7 @@ Key facts:
 - Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
 - Offering: pilot projects, software licenses, installation, support, and consulting in systems development and IT security
 - Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores top marks in Lighthouse on every page, with perfect scores for accessibility and SEO
-- Privacy: the website uses no cookies and no tracking
+- Privacy: the website uses no cookies and runs privacy-friendly, self-hosted visitor analytics with Umami; replay, heatmaps and identified users are disabled
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
 - Payment: invoice and bank transfer
 - Operations: fully online

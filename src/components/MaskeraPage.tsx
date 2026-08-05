@@ -401,7 +401,14 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
             <h1 className={`${heroTitle} sm:text-5xl`}>{t.heroTitle}</h1>
             <p className={heroBody}>{t.heroBody}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <a href="https://maskera.dev" className={btnPrimary} translate="no">
+              <a
+                href="https://maskera.dev"
+                className={btnPrimary}
+                translate="no"
+                data-umami-event="outbound-link-click"
+                data-umami-event-destination="maskera.dev"
+                data-umami-event-placement="maskera-hero"
+              >
                 {t.ctaVisit}
                 <span aria-hidden="true" className={btnArrow}>
                   ↗
@@ -449,7 +456,14 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-neutral-600">
             {t.bottomBodyA}
-            <a href="https://maskera.dev" className={linkInk} translate="no">
+            <a
+              href="https://maskera.dev"
+              className={linkInk}
+              translate="no"
+              data-umami-event="outbound-link-click"
+              data-umami-event-destination="maskera.dev"
+              data-umami-event-placement="maskera-bottom"
+            >
               maskera.dev
             </a>
             .

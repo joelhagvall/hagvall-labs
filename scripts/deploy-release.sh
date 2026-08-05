@@ -6,6 +6,8 @@ set -Eeuo pipefail
 umask 077
 cd "$(dirname "$0")/.."
 
+bash scripts/init-umami-secrets.sh
+
 release_sha="${1:-}"
 if [[ ! $release_sha =~ ^[0-9a-f]{40}$ ]]; then
   echo "usage: scripts/deploy-release.sh <full-lowercase-git-sha>" >&2
@@ -80,17 +82,23 @@ digest_reference() {
   printf '%s\n' "$reference"
 }
 
-wait_for_container() {
+wait_for_service() {
+  local service="$1"
   local attempt container_id health
   for attempt in $(seq 1 30); do
-    container_id="$(docker compose ps -q web 2>/dev/null || true)"
+    container_id="$(docker compose ps -q "$service" 2>/dev/null || true)"
     if [[ -n $container_id ]]; then
       health="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$container_id")"
       [[ $health == "healthy" ]] && return 0
     fi
     sleep 2
   done
+  echo "deploy FAILED: $service did not become healthy" >&2
   return 1
+}
+
+wait_for_container() {
+  wait_for_service web
 }
 
 wait_for_edge() {
@@ -106,7 +114,7 @@ wait_for_edge() {
   return 1
 }
 
-reload_edge_proxy() {
+edge_proxy_container() {
   local caddy_container
   caddy_container="$(
     docker ps \
@@ -119,6 +127,45 @@ reload_edge_proxy() {
     echo "deploy FAILED: shared Caddy container is not running" >&2
     return 1
   }
+  printf '%s\n' "$caddy_container"
+}
+
+remount_edge_proxy_config_if_needed() {
+  local caddy_container host_hash mounted_hash working_dir config_files
+  local -a compose_args=()
+  local -a files=()
+  caddy_container="$(edge_proxy_container)"
+  host_hash="$(sha256sum deploy/caddy.hagvall-labs.caddy | awk '{ print $1 }')"
+  mounted_hash="$(
+    docker exec "$caddy_container" \
+      sha256sum /etc/caddy/sites/hagvall-labs.caddy |
+      awk '{ print $1 }'
+  )"
+  [[ $host_hash != "$mounted_hash" ]] || return 0
+
+  working_dir="$(
+    docker inspect --format \
+      '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' \
+      "$caddy_container"
+  )"
+  config_files="$(
+    docker inspect --format \
+      '{{index .Config.Labels "com.docker.compose.project.config_files"}}' \
+      "$caddy_container"
+  )"
+  IFS=',' read -r -a files <<<"$config_files"
+  for file in "${files[@]}"; do
+    compose_args+=(-f "$file")
+  done
+
+  docker compose --project-directory "$working_dir" "${compose_args[@]}" \
+    up -d --no-deps --force-recreate caddy
+}
+
+reload_edge_proxy() {
+  local caddy_container
+  remount_edge_proxy_config_if_needed
+  caddy_container="$(edge_proxy_container)"
   docker exec "$caddy_container" caddy reload \
     --config /etc/caddy/Caddyfile --adapter caddyfile
 }
@@ -172,7 +219,7 @@ cleanup() {
 trap cleanup EXIT
 
 export HAGVALL_LABS_IMAGE="$tagged_image"
-docker compose pull web
+docker compose pull web umami umami-db
 verify_revision "$tagged_image"
 new_image="$(digest_reference "$tagged_image")"
 
@@ -181,6 +228,8 @@ write_image_reference "$new_image"
 export HAGVALL_LABS_IMAGE="$new_image"
 docker compose up -d --no-build
 wait_for_container
+wait_for_service umami
+docker compose --profile bootstrap run --rm --no-deps umami-bootstrap
 reload_edge_proxy
 wait_for_edge
 bash scripts/security-check.sh "$release_sha"
