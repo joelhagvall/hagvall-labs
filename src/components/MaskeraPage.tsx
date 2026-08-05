@@ -1,6 +1,22 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
+import { Link } from '@tanstack/react-router'
+import { pagePaths } from '../seo'
 import type { Lang } from '../seo'
-import { btnArrow, btnPrimary, btnSecondary } from './ui'
+import {
+  Cards,
+  HeroGlows,
+  RevealObserver,
+  btnArrow,
+  btnPrimary,
+  btnSecondary,
+  container,
+  heroBody,
+  heroTitle,
+  kicker,
+  linkInk,
+  sectionTitle,
+  sectionTitleSm,
+} from './ui'
 
 /* The masking preview, ported one-to-one from maskera-cloud
    (apps/web/src/lib/labels.ts + the HeroMaskPreview in routes/index.tsx):
@@ -282,17 +298,16 @@ const copy = {
   sv: {
     heroTitle: 'Maskera personuppgifter innan de når er AI.',
     heroBody:
-      'Maskera hittar och maskerar namn, personnummer, adresser och telefonnummer i text, innan den används i AI-system, loggar eller analysverktyg.',
+      'Maskera hittar och maskerar namn, personnummer, adresser och telefonnummer i text, innan den används i AI-system, loggar eller analysverktyg. Byggd för svensk text och svenska personuppgifter.',
     ctaVisit: 'Besök maskera.dev',
     ctaDemo: 'Boka en demo',
-    demoSubject: 'Maskera%20demo',
     previewBefore: 'Er text',
     previewAfter: 'Det AI-modellen ser',
     fitTitle: 'Där Maskera passar in',
     useCases: [
       {
         title: 'AI-system',
-        body: 'Skicka prompter och dokument till LLM:er utan att läcka namn, personnummer eller kontaktuppgifter.',
+        body: 'Skicka prompter och dokument till AI-modeller utan att läcka namn, personnummer eller kontaktuppgifter.',
       },
       {
         title: 'Loggar',
@@ -320,24 +335,22 @@ const copy = {
     ],
     bottomTitle: 'Se Maskera på era egna data.',
     bottomBodyA:
-      'Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
+      'Hur träffsäker är den? Det svaret får ni på era egna data i piloten, inte från ett säljblad. Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
     bottomCta: 'Starta ett pilotprojekt',
-    pilotSubject: 'Maskera%20pilot',
   },
   en: {
     heroTitle: 'Mask Personal Data Before It Reaches Your AI.',
     heroBody:
-      'Maskera finds and masks names, personal identity numbers, addresses and phone numbers in text, before it is used in AI systems, logs or analytics tools.',
+      'Maskera finds and masks names, personal identity numbers, addresses and phone numbers in text, before it is used in AI systems, logs or analytics tools. Built for Swedish text and Swedish personal data.',
     ctaVisit: 'Visit maskera.dev',
     ctaDemo: 'Book a Demo',
-    demoSubject: 'Maskera%20demo',
     previewBefore: 'Your text',
     previewAfter: 'What the AI model sees',
     fitTitle: 'Where Maskera Fits',
     useCases: [
       {
         title: 'AI Systems',
-        body: 'Send prompts and documents to LLMs without leaking names, personal identity numbers or contact details.',
+        body: 'Send prompts and documents to AI models without leaking names, personal identity numbers or contact details.',
       },
       {
         title: 'Logs',
@@ -365,9 +378,8 @@ const copy = {
     ],
     bottomTitle: 'See Maskera on Your Own Data.',
     bottomBodyA:
-      'I run pilot projects with companies and organizations in Sweden. Get in touch and I’ll show you what it looks like, or read more at ',
+      'How accurate is it? You get that answer on your own data in the pilot, not from a sales deck. I run pilot projects with companies and organizations in Sweden. Get in touch and I’ll show you what it looks like, or read more at ',
     bottomCta: 'Start a Pilot',
-    pilotSubject: 'Maskera%20pilot',
   },
 }
 
@@ -376,30 +388,18 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
 
   return (
     <>
+      <RevealObserver />
       {/* Hero with the masking preview. The headline stays static so nothing
           delays the LCP paint. */}
       <section className="relative isolate overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
-        >
-          <div className="glow glow-cobalt absolute -top-32 right-[-10%] h-[28rem] w-[28rem]" />
-          <div className="glow glow-teal glow-delay absolute -left-48 top-40 h-96 w-96" />
-        </div>
+        <HeroGlows />
         <div className="mx-auto grid w-full max-w-5xl items-center gap-12 px-6 pb-20 pt-24 md:grid-cols-2">
           <div>
-            <p
-              className="mb-4 text-sm font-medium text-cobalt"
-              translate="no"
-            >
+            <p className={`mb-4 ${kicker}`} translate="no">
               Maskera
             </p>
-            <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-              {t.heroTitle}
-            </h1>
-            <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-neutral-600">
-              {t.heroBody}
-            </p>
+            <h1 className={`${heroTitle} sm:text-5xl`}>{t.heroTitle}</h1>
+            <p className={heroBody}>{t.heroBody}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a href="https://maskera.dev" className={btnPrimary} translate="no">
                 {t.ctaVisit}
@@ -407,12 +407,9 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
                   ↗
                 </span>
               </a>
-              <a
-                href={`mailto:hello@hagvall-labs.com?subject=${t.demoSubject}`}
-                className={btnSecondary}
-              >
+              <Link to={pagePaths.contact[lang]} className={btnSecondary}>
                 {t.ctaDemo}
-              </a>
+              </Link>
             </div>
           </div>
           <MaskPreview before={t.previewBefore} after={t.previewAfter} />
@@ -420,79 +417,46 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
       </section>
 
       <section className="border-y border-neutral-200">
-        <div className="mx-auto w-full max-w-5xl px-6 py-20">
-          <h2 className="reveal text-balance text-2xl font-semibold tracking-tight">
+        <div className={container}>
+          <h2 className={`reveal ${sectionTitleSm}`}>
             {t.fitTitle}
           </h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
-            {t.useCases.map((u, i) => {
-              const Icon = useCaseIcons[i]
-              return (
-                <div
-                  key={u.title}
-                  className="reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-cobalt/40"
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cobalt/10 text-cobalt">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-4 font-medium">{u.title}</h3>
-                  <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
-                    {u.body}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
+          <Cards
+            items={t.useCases}
+            icons={useCaseIcons}
+            accent="cobalt"
+            className="mt-8 sm:grid-cols-3"
+          />
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-5xl px-6 py-20">
-        <h2 className="reveal text-balance text-2xl font-semibold tracking-tight">
+      <section className={container}>
+        <h2 className={`reveal ${sectionTitleSm}`}>
           {t.builtTitle}
         </h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-3">
-          {t.principles.map((p, i) => {
-            const Icon = principleIcons[i]
-            return (
-              <div
-                key={p.title}
-                className="reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-teal-deep/40"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-deep/10 text-teal-deep">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 font-medium">{p.title}</h3>
-                <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
-                  {p.body}
-                </p>
-              </div>
-            )
-          })}
-        </div>
+        <Cards
+          items={t.principles}
+          icons={principleIcons}
+          accent="teal"
+          className="mt-8 sm:grid-cols-3"
+        />
       </section>
 
       <section className="border-t border-neutral-200">
-        <div className="reveal mx-auto w-full max-w-5xl px-6 py-20 text-center">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight">
+        <div className={`reveal ${container} text-center`}>
+          <h2 className={sectionTitle}>
             {t.bottomTitle}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-neutral-600">
             {t.bottomBodyA}
-            <a
-              href="https://maskera.dev"
-              className="underline underline-offset-4 transition-colors hover:text-ink"
-              translate="no"
-            >
+            <a href="https://maskera.dev" className={linkInk} translate="no">
               maskera.dev
             </a>
             .
           </p>
-          <a
-            href={`mailto:hello@hagvall-labs.com?subject=${t.pilotSubject}`}
-            className={`mt-8 ${btnPrimary}`}
-          >
+          <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
             {t.bottomCta}
-          </a>
+          </Link>
         </div>
       </section>
     </>

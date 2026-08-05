@@ -12,15 +12,37 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
 import appCssInline from '../styles.css?inline'
-import { BrandSymbol } from '../components/BrandSymbol'
-import { btnPrimary, btnSmall } from '../components/ui'
-import { site } from '../seo'
+import {
+  BRAND_PATHS,
+  BRAND_VIEWBOX,
+  BrandSymbol,
+} from '../components/BrandSymbol'
+import {
+  btnPrimary,
+  btnSmall,
+  heroBody,
+  heroTitle,
+  kicker,
+  linkInk,
+} from '../components/ui'
+import { contactEmail, pageFromPath, pagePaths, site } from '../seo'
 import type { Lang } from '../seo'
 
 function useLang(): Lang {
   const pathname = useLocation({ select: (l) => l.pathname })
   return pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'sv'
 }
+
+// Data URI so the favicon costs no request; a fetched favicon landing near
+// the LCP paint flips Lighthouse's simulated LCP a full RTT later. Built
+// from the same paths as the rendered symbol.
+const favicon =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${BRAND_VIEWBOX}">` +
+      BRAND_PATHS.map((p) => `<path fill="${p.fill}" d="${p.d}"/>`).join('') +
+      '</svg>',
+  )
 
 const chrome = {
   sv: {
@@ -31,7 +53,9 @@ const chrome = {
     contact: 'Kontakt',
     runBy: 'Drivs av',
     builtIn: 'Byggt i Sverige.',
+    noTracking: 'Inga kakor, ingen spårning.',
     skip: 'Hoppa till innehållet',
+    homeAria: 'Hägvall Labs, startsida',
   },
   en: {
     menu: 'Menu',
@@ -39,9 +63,11 @@ const chrome = {
     maskeraDesc: 'Mask personal data in text',
     services: 'Services',
     contact: 'Contact',
-    runBy: 'Run by',
+    runBy: 'Founded and run by',
     builtIn: 'Built in Sweden.',
+    noTracking: 'No cookies, no tracking.',
     skip: 'Skip to Content',
+    homeAria: 'Hägvall Labs, Home',
   },
 }
 
@@ -70,13 +96,7 @@ export const Route = createRootRoute({
     ],
     links: [
       ...(import.meta.env.DEV ? [{ rel: 'stylesheet', href: appCss }] : []),
-      // Data URI so the favicon costs no request; a fetched favicon landing
-      // near the LCP paint flips Lighthouse's simulated LCP a full RTT later.
-      {
-        rel: 'icon',
-        type: 'image/svg+xml',
-        href: 'data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%22210 110 580 580%22%3E%3Cpath fill%3D%22%231748D4%22 d%3D%22M270 350 495 438 495 566 414 535 414 680 270 625Z%22%2F%3E%3Cpath fill%3D%22%2314B8A6%22 d%3D%22M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z%22%2F%3E%3Cpath fill%3D%22%231748D4%22 d%3D%22M480 165 710 254 710 560 630 529 630 334 480 278Z%22%2F%3E%3C%2Fsvg%3E',
-      },
+      { rel: 'icon', type: 'image/svg+xml', href: favicon },
       // Not fetched during page load (only when saving to a home screen),
       // so unlike a fetched favicon it costs nothing in Lighthouse.
       {
@@ -96,7 +116,7 @@ export const Route = createRootRoute({
           logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
             'Hägvall Labs AB develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
-          email: 'hello@hagvall-labs.com',
+          email: contactEmail,
           founder: {
             '@type': 'Person',
             name: 'Joel Hägvall',
@@ -116,44 +136,23 @@ export const Route = createRootRoute({
   notFoundComponent: NotFound,
 })
 
+// Switches language while staying on the current page.
 function LangSwitch({ lang }: { lang: Lang }) {
   const pathname = useLocation({ select: (l) => l.pathname })
-  const onMaskera = pathname.endsWith('/maskera')
-  const onContact =
-    pathname.endsWith('/kontakt') || pathname.endsWith('/contact')
+  const paths = pagePaths[pageFromPath(pathname)]
   const active = 'text-ink'
   const inactive = 'text-neutral-400 transition-colors hover:text-ink'
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
-      {onMaskera ? (
-        <Link to="/maskera" className={lang === 'sv' ? active : inactive} lang="sv">
-          SV
-        </Link>
-      ) : onContact ? (
-        <Link to="/kontakt" className={lang === 'sv' ? active : inactive} lang="sv">
-          SV
-        </Link>
-      ) : (
-        <Link to="/" className={lang === 'sv' ? active : inactive} lang="sv">
-          SV
-        </Link>
-      )}
+      <Link to={paths.sv} className={lang === 'sv' ? active : inactive} lang="sv">
+        SV
+      </Link>
       <span aria-hidden="true" className="text-neutral-300">
         /
       </span>
-      {onMaskera ? (
-        <Link to="/en/maskera" className={lang === 'en' ? active : inactive} lang="en">
-          EN
-        </Link>
-      ) : onContact ? (
-        <Link to="/en/contact" className={lang === 'en' ? active : inactive} lang="en">
-          EN
-        </Link>
-      ) : (
-        <Link to="/en" className={lang === 'en' ? active : inactive} lang="en">
-          EN
-        </Link>
-      )}
+      <Link to={paths.en} className={lang === 'en' ? active : inactive} lang="en">
+        EN
+      </Link>
     </span>
   )
 }
@@ -215,45 +214,26 @@ function ProductsMenu({ lang }: { lang: Lang }) {
       </button>
       {open && (
         <div className="animate-menu absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
-          {lang === 'sv' ? (
-            <Link to="/maskera" onClick={close} className={itemClass}>
-              <span translate="no" className="block font-medium text-ink">
-                Maskera
-              </span>
-              <span className="block text-xs text-neutral-500">
-                {t.maskeraDesc}
-              </span>
-            </Link>
-          ) : (
-            <Link to="/en/maskera" onClick={close} className={itemClass}>
-              <span translate="no" className="block font-medium text-ink">
-                Maskera
-              </span>
-              <span className="block text-xs text-neutral-500">
-                {t.maskeraDesc}
-              </span>
-            </Link>
-          )}
+          <Link to={pagePaths.maskera[lang]} onClick={close} className={itemClass}>
+            <span translate="no" className="block font-medium text-ink">
+              Maskera
+            </span>
+            <span className="block text-xs text-neutral-500">
+              {t.maskeraDesc}
+            </span>
+          </Link>
           <div className="mt-1 border-t border-neutral-200 pt-1 sm:hidden">
-            {lang === 'sv' ? (
-              <>
-                <Link to="/" hash="services" onClick={close} className={itemClass}>
-                  {t.services}
-                </Link>
-                <Link to="/kontakt" onClick={close} className={itemClass}>
-                  {t.contact}
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/en" hash="services" onClick={close} className={itemClass}>
-                  {t.services}
-                </Link>
-                <Link to="/en/contact" onClick={close} className={itemClass}>
-                  {t.contact}
-                </Link>
-              </>
-            )}
+            <Link
+              to={pagePaths.home[lang]}
+              hash="services"
+              onClick={close}
+              className={itemClass}
+            >
+              {t.services}
+            </Link>
+            <Link to={pagePaths.contact[lang]} onClick={close} className={itemClass}>
+              {t.contact}
+            </Link>
           </div>
         </div>
       )}
@@ -275,51 +255,6 @@ function Brand() {
   )
 }
 
-/* Drives the .reveal entrances (classes in styles.css). Only elements
-   strictly below the first viewport are hidden and animated in on scroll;
-   anything visible on load stays fully opaque, so an accessibility audit
-   never catches text mid-fade. Runs again per navigation. */
-function RevealObserver() {
-  const pathname = useLocation({ select: (l) => l.pathname })
-  useEffect(() => {
-    if (
-      !('IntersectionObserver' in window) ||
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    ) {
-      return
-    }
-    const pending = Array.from(
-      document.querySelectorAll<HTMLElement>('.reveal'),
-    ).filter((el) => el.getBoundingClientRect().top > window.innerHeight)
-    if (pending.length === 0) return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          entry.target.classList.remove('reveal-pending')
-          entry.target.classList.add('reveal-in')
-          observer.unobserve(entry.target)
-        }
-      },
-      // The huge top margin counts anything already scrolled PAST as
-      // intersecting: a fast jump (keyboard End, anchor link) must never
-      // leave skipped sections permanently hidden.
-      { rootMargin: '9999px 0px -10% 0px' },
-    )
-    for (const el of pending) {
-      el.classList.add('reveal-pending')
-      observer.observe(el)
-    }
-    return () => {
-      observer.disconnect()
-      for (const el of pending) {
-        el.classList.remove('reveal-pending')
-      }
-    }
-  }, [pathname])
-  return null
-}
-
 function RootLayout() {
   const lang = useLang()
   const t = chrome[lang]
@@ -336,44 +271,25 @@ function RootLayout() {
       </a>
       <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/80 backdrop-blur">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
-          {lang === 'sv' ? (
-            <Link to="/" aria-label="Hägvall Labs, startsida">
-              <Brand />
-            </Link>
-          ) : (
-            <Link to="/en" aria-label="Hägvall Labs, Home">
-              <Brand />
-            </Link>
-          )}
+          <Link to={pagePaths.home[lang]} aria-label={t.homeAria}>
+            <Brand />
+          </Link>
           <nav className="flex items-center gap-6 text-sm text-neutral-600">
             <ProductsMenu lang={lang} />
-            {lang === 'sv' ? (
-              <Link
-                to="/"
-                hash="services"
-                className="hidden transition-colors hover:text-ink sm:block"
-              >
-                {t.services}
-              </Link>
-            ) : (
-              <Link
-                to="/en"
-                hash="services"
-                className="hidden transition-colors hover:text-ink sm:block"
-              >
-                {t.services}
-              </Link>
-            )}
+            <Link
+              to={pagePaths.home[lang]}
+              hash="services"
+              className="hidden transition-colors hover:text-ink sm:block"
+            >
+              {t.services}
+            </Link>
             <LangSwitch lang={lang} />
-            {lang === 'sv' ? (
-              <Link to="/kontakt" className={`${btnSmall} max-sm:hidden`}>
-                {t.contact}
-              </Link>
-            ) : (
-              <Link to="/en/contact" className={`${btnSmall} max-sm:hidden`}>
-                {t.contact}
-              </Link>
-            )}
+            <Link
+              to={pagePaths.contact[lang]}
+              className={`${btnSmall} max-sm:hidden`}
+            >
+              {t.contact}
+            </Link>
           </nav>
         </div>
       </header>
@@ -381,7 +297,6 @@ function RootLayout() {
       <main id="main" className="flex-1">
         <Outlet />
       </main>
-      <RevealObserver />
 
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
@@ -389,35 +304,23 @@ function RootLayout() {
             © {new Date().getFullYear()}{' '}
             <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, Stockholm.{' '}
             {t.runBy}{' '}
-            <a
-              href="https://joelhagvall.com"
-              className="underline underline-offset-4 transition-colors hover:text-ink"
-            >
+            <a href="https://joelhagvall.com" className={linkInk}>
               Joel Hägvall
             </a>
-            . {t.builtIn}
+            . {t.builtIn} {t.noTracking}
           </p>
           <div className="flex gap-6">
-            {lang === 'sv' ? (
-              <Link
-                to="/kontakt"
-                className="transition-colors hover:text-ink"
-              >
-                {t.contact}
-              </Link>
-            ) : (
-              <Link
-                to="/en/contact"
-                className="transition-colors hover:text-ink"
-              >
-                {t.contact}
-              </Link>
-            )}
-            <a
-              href="mailto:hello@hagvall-labs.com"
+            <Link
+              to={pagePaths.contact[lang]}
               className="transition-colors hover:text-ink"
             >
-              hello@hagvall-labs.com
+              {t.contact}
+            </Link>
+            <a
+              href={`mailto:${contactEmail}`}
+              className="transition-colors hover:text-ink"
+            >
+              {contactEmail}
             </a>
           </div>
         </div>
@@ -426,30 +329,30 @@ function RootLayout() {
   )
 }
 
+const notFoundCopy = {
+  sv: {
+    title: 'Sidan finns inte.',
+    body: 'Adressen du försökte nå finns inte. Den kan ha flyttats eller aldrig ha funnits.',
+    cta: 'Till startsidan',
+  },
+  en: {
+    title: 'Page Not Found.',
+    body: 'The address you tried to reach doesn’t exist. It may have moved or never existed.',
+    cta: 'Back to Home',
+  },
+}
+
 function NotFound() {
   const lang = useLang()
+  const t = notFoundCopy[lang]
   return (
     <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
-      <p className="mb-4 text-sm font-medium text-cobalt">
-        404
-      </p>
-      <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-        {lang === 'sv' ? 'Sidan finns inte.' : 'Page Not Found.'}
-      </h1>
-      <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-neutral-600">
-        {lang === 'sv'
-          ? 'Adressen du försökte nå finns inte. Den kan ha flyttats eller aldrig ha funnits.'
-          : 'The address you tried to reach doesn’t exist. It may have moved or never existed.'}
-      </p>
-      {lang === 'sv' ? (
-        <Link to="/" className={`mt-10 ${btnPrimary}`}>
-          Till startsidan
-        </Link>
-      ) : (
-        <Link to="/en" className={`mt-10 ${btnPrimary}`}>
-          Back to the Start Page
-        </Link>
-      )}
+      <p className={`mb-4 ${kicker}`}>404</p>
+      <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
+      <p className={heroBody}>{t.body}</p>
+      <Link to={pagePaths.home[lang]} className={`mt-10 ${btnPrimary}`}>
+        {t.cta}
+      </Link>
     </section>
   )
 }
