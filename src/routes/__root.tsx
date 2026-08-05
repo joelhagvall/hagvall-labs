@@ -308,7 +308,8 @@ function RootLayout() {
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
             {/* TODO: restore "Hägvall Labs AB" (footer, JSON-LD in this file
-                and seo.ts, llms.txt) once the Bolagsverket registration
+                and seo.ts, llms.txt, the controller section in
+                PrivacyPage.tsx) once the Bolagsverket registration
                 certificate arrives; the company is not a legal person yet. */}
             © {new Date().getFullYear()}{' '}
             <span translate="no">Hägvall&nbsp;Labs</span>, Stockholm. {t.runBy}{' '}

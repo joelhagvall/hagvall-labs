@@ -14,7 +14,7 @@ const copy = {
     controller: {
       title: 'Vem ansvarar?',
       paragraphs: [
-        'Hägvall Labs AB i Stockholm är personuppgiftsansvarig för behandlingen på den här webbplatsen. Jag, Joel Hägvall, driver bolaget och hanterar frågorna själv.',
+        'Jag, Joel Hägvall, är personuppgiftsansvarig för behandlingen på den här webbplatsen och hanterar frågorna själv. Verksamheten drivs i Stockholm under namnet Hägvall Labs.',
         'Kontakta mig om du undrar något eller vill använda någon av dina rättigheter:',
       ],
     },
@@ -78,7 +78,7 @@ const copy = {
     controller: {
       title: 'Who Is Responsible?',
       paragraphs: [
-        'Hägvall Labs AB in Stockholm is the controller for processing on this website. I, Joel Hägvall, run the company and handle privacy questions myself.',
+        'I, Joel Hägvall, am the controller for processing on this website and handle privacy questions myself. The business operates in Stockholm under the name Hägvall Labs.',
         'Contact me if you have a question or want to exercise any of your rights:',
       ],
     },
