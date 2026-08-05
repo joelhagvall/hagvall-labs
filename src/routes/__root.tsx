@@ -322,12 +322,14 @@ function RootLayout() {
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
               to={pagePaths.privacy[lang]}
+              preload="viewport"
               className="transition-colors hover:text-ink"
             >
               {t.privacy}
             </Link>
             <Link
               to={pagePaths.contact[lang]}
+              preload="viewport"
               className="transition-colors hover:text-ink"
             >
               {t.contact}
