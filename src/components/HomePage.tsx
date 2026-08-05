@@ -90,7 +90,15 @@ const PREVIEW_SEGMENTS: Array<{ text: string; label?: string }> = [
   { text: ' undrar om sin faktura.' },
 ]
 
-function MaskPreview({ before, after }: { before: string; after: string }) {
+function MaskPreview({
+  before,
+  after,
+  note,
+}: {
+  before: string
+  after: string
+  note?: string
+}) {
   const ref = useRef<HTMLDivElement>(null)
   // idle: SSR/first paint, pills statically visible (also the no-JS state).
   // pending: JS confirmed the card is below the fold, pills hidden until it
@@ -124,7 +132,12 @@ function MaskPreview({ before, after }: { before: string; after: string }) {
 
   return (
     <div ref={ref} className="rounded-xl border border-neutral-200 bg-white p-5">
-      <p className="text-xs font-medium text-neutral-500">{before}</p>
+      <p className="flex items-baseline justify-between gap-3 text-xs font-medium text-neutral-500">
+        <span>{before}</span>
+        {note ? (
+          <span className="font-normal text-neutral-400">{note}</span>
+        ) : null}
+      </p>
       <p className="mt-2 text-sm leading-7">
         {PREVIEW_SEGMENTS.map((segment, index) =>
           segment.label ? (
@@ -305,6 +318,7 @@ const copy = {
     teaserMore: 'Läs mer om Maskera →',
     previewBefore: 'Er text',
     previewAfter: 'Det AI-modellen ser',
+    previewNote: '',
     servicesTitle: 'Vad jag hjälper till med',
     services: [
       {
@@ -360,6 +374,7 @@ const copy = {
     teaserMore: 'Learn More About Maskera →',
     previewBefore: 'Your text',
     previewAfter: 'What the AI model sees',
+    previewNote: 'Example in Swedish',
     servicesTitle: 'How I Can Help',
     services: [
       {
@@ -473,7 +488,11 @@ export function HomePage({ lang }: { lang: Lang }) {
             </div>
           </div>
           <div className="reveal">
-            <MaskPreview before={t.previewBefore} after={t.previewAfter} />
+            <MaskPreview
+              before={t.previewBefore}
+              after={t.previewAfter}
+              note={t.previewNote}
+            />
           </div>
         </div>
       </section>

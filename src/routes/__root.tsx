@@ -53,6 +53,7 @@ const chrome = {
     contact: 'Kontakt',
     privacy: 'Integritet',
     runBy: 'Drivs av',
+    controller: ', som ansvarar för behandlingen av personuppgifter på webbplatsen.',
     builtIn: 'Byggt i Sverige.',
     noTracking: 'Inga kakor. Integritetsvänlig, egenhostad besöksstatistik.',
     skip: 'Hoppa till innehållet',
@@ -66,6 +67,7 @@ const chrome = {
     contact: 'Contact',
     privacy: 'Privacy',
     runBy: 'Founded and run by',
+    controller: ', who is responsible for the processing of personal data on this site.',
     builtIn: 'Built in Sweden.',
     noTracking: 'No cookies. Privacy-friendly, self-hosted visitor analytics.',
     skip: 'Skip to Content',
@@ -115,11 +117,11 @@ export const Route = createRootRoute({
         children: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Organization',
-          name: 'Hägvall Labs AB',
+          name: 'Hägvall Labs',
           url: site,
           logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
-            'Hägvall Labs AB develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
+            'Hägvall Labs develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
           email: contactEmail,
           founder: {
             '@type': 'Person',
@@ -305,9 +307,11 @@ function RootLayout() {
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
+            {/* TODO: restore "Hägvall Labs AB" (footer, JSON-LD in this file
+                and seo.ts, llms.txt) once the Bolagsverket registration
+                certificate arrives; the company is not a legal person yet. */}
             © {new Date().getFullYear()}{' '}
-            <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, Stockholm.{' '}
-            {t.runBy}{' '}
+            <span translate="no">Hägvall&nbsp;Labs</span>, Stockholm. {t.runBy}{' '}
             <a
               href="https://joelhagvall.com"
               className={linkInk}
@@ -317,7 +321,7 @@ function RootLayout() {
             >
               Joel Hägvall
             </a>
-            . {t.builtIn} {t.noTracking}
+            {t.controller} {t.builtIn} {t.noTracking}
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
