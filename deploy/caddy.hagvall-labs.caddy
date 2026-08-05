@@ -10,6 +10,34 @@ hagvall-labs.com {
 	request_body {
 		max_size 1MB
 	}
+
+	# Privacy-preserving visitor stats ("inga kakor, ingen spårning" stays
+	# literally true: nothing runs in the browser). IPs are truncated before
+	# they ever hit disk (IPv4 to /24, IPv6 to /48), so the log holds no
+	# personal data, and cookie/auth headers are never written. Read it with
+	# scripts/analytics.sh (GoAccess). The Caddy container needs
+	# /var/log/caddy bind-mounted to the host for the log to survive and be
+	# readable outside the container.
+	log {
+		output file /var/log/caddy/hagvall-labs.access.log {
+			roll_size 10MiB
+			roll_keep 5
+			roll_keep_for 720h
+		}
+		format filter {
+			request>remote_ip ip_mask {
+				ipv4 24
+				ipv6 48
+			}
+			request>client_ip ip_mask {
+				ipv4 24
+				ipv6 48
+			}
+			request>headers>Cookie delete
+			request>headers>Authorization delete
+		}
+	}
+
 	reverse_proxy hagvall-labs:4173 {
 		header_up X-Forwarded-For {http.request.remote.host}
 	}
