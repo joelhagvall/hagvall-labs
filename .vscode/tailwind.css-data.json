@@ -1,0 +1,47 @@
+{
+  "version": 1.1,
+  "atDirectives": [
+    {
+      "name": "@theme",
+      "description": "Tailwind CSS v4: define design tokens (colors, fonts, spacing) as CSS variables that also generate utility classes.",
+      "references": [
+        {
+          "name": "Tailwind docs",
+          "url": "https://tailwindcss.com/docs/theme"
+        }
+      ]
+    },
+    {
+      "name": "@source",
+      "description": "Tailwind CSS v4: register extra source files to scan for class names."
+    },
+    {
+      "name": "@utility",
+      "description": "Tailwind CSS v4: define a custom utility that works with variants like hover: and md:."
+    },
+    {
+      "name": "@variant",
+      "description": "Tailwind CSS v4: apply a Tailwind variant inside custom CSS."
+    },
+    {
+      "name": "@custom-variant",
+      "description": "Tailwind CSS v4: define a custom variant selector."
+    },
+    {
+      "name": "@apply",
+      "description": "Tailwind CSS: inline utility classes into custom CSS rules."
+    },
+    {
+      "name": "@reference",
+      "description": "Tailwind CSS v4: import theme/utilities for reference without emitting CSS."
+    },
+    {
+      "name": "@config",
+      "description": "Tailwind CSS v4: load a legacy JavaScript config file."
+    },
+    {
+      "name": "@plugin",
+      "description": "Tailwind CSS v4: load a Tailwind plugin."
+    }
+  ]
+}
