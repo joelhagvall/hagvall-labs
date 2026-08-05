@@ -11,13 +11,11 @@ hagvall-labs.com {
 		max_size 1MB
 	}
 
-	# Privacy-preserving visitor stats ("inga kakor, ingen spårning" stays
-	# literally true: nothing runs in the browser). IPs are truncated before
-	# they ever hit disk (IPv4 to /24, IPv6 to /48), so the log holds no
-	# personal data, and cookie/auth headers are never written. Read it with
-	# scripts/analytics.sh (GoAccess). The Caddy container needs
-	# /var/log/caddy bind-mounted to the host for the log to survive and be
-	# readable outside the container.
+	# Operational access log. IPs are truncated before they ever hit disk
+	# (IPv4 to /24, IPv6 to /48), and cookie/auth headers are never written.
+	# Visitor analytics is handled separately by the self-hosted Umami service.
+	# The Caddy container needs /var/log/caddy bind-mounted to the host for the
+	# log to survive and be readable outside the container.
 	log {
 		output file /var/log/caddy/hagvall-labs.access.log {
 			# The host directory is root:deploy with its setgid bit set, so
@@ -42,7 +40,39 @@ hagvall-labs.com {
 		}
 	}
 
-	reverse_proxy hagvall-labs:4173 {
+	# Keep the tracker and collection request same-origin. Only Umami's public
+	# collection endpoints are exposed under the marketing-site hostname.
+	@umami_public path /analytics/script.js /analytics/api/send /analytics/api/websites/*/recorder
+	handle @umami_public {
+		uri strip_prefix /analytics
+		reverse_proxy umami:3000 {
+			header_up Host analytics.hagvall-labs.com
+			header_up X-Forwarded-For {http.request.remote.host}
+		}
+	}
+
+	handle {
+		reverse_proxy hagvall-labs:4173 {
+			header_up X-Forwarded-For {http.request.remote.host}
+		}
+	}
+}
+
+# The Wix DNS record for analytics.hagvall-labs.com can be added without
+# another deploy. The sslip.io hostname makes the private dashboard reachable
+# until that record exists; collection itself never depends on either hostname.
+analytics.hagvall-labs.com, analytics.188.245.110.104.sslip.io {
+	encode zstd gzip
+	import security_headers
+	header X-Robots-Tag "noindex, nofollow, noarchive"
+	request_body {
+		max_size 1MB
+	}
+
+	@robots path /robots.txt
+	respond @robots "User-agent: *\nDisallow: /\n" 200
+
+	reverse_proxy umami:3000 {
 		header_up X-Forwarded-For {http.request.remote.host}
 	}
 }

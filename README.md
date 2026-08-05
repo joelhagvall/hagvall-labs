@@ -32,4 +32,33 @@ Bilingual: Swedish (default, `/` and `/maskera`) and English (`/en`, `/en/masker
 - `public/llms.txt`: company summary for LLM crawlers
 - `public/robots.txt`, `public/sitemap.xml`: crawler config (sitemap includes hreflang alternates)
 
+## Analytics
+
+Production runs self-hosted Umami 3.2.0 with a private PostgreSQL database.
+The tracker is served same-origin from `/analytics/script.js`, so collection
+does not depend on the dashboard hostname. Query strings and URL hashes are
+excluded, Do Not Track is respected, and replay, heatmaps and identified users
+stay disabled.
+
+Until Wix has an `analytics.hagvall-labs.com` A record pointing to
+`188.245.110.104`, open the dashboard at:
+
+`https://analytics.188.245.110.104.sslip.io`
+
+The username is `admin`. Read the generated password on the VM without
+printing the other secrets:
+
+```bash
+awk -F= '$1 == "UMAMI_ADMIN_PASSWORD" { print $2 }' .env
+```
+
+Useful production commands:
+
+```bash
+docker compose ps umami umami-db
+docker compose --profile bootstrap run --rm --no-deps umami-bootstrap
+bash scripts/umami-backup.sh
+bash scripts/analytics.sh  # low-level masked access-log stats
+```
+
 See `AGENTS.md` for conventions and the mandatory Lighthouse/pa11y quality gates.

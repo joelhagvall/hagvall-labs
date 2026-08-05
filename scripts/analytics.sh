@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Visitor stats from the edge Caddy access log (IP-anonymized JSON, written
+# Low-level request stats from the edge Caddy access log (IP-masked JSON, written
 # by the log directive in deploy/caddy.hagvall-labs.caddy). Runs GoAccess in
 # a throwaway container, so nothing needs to be installed on the VM.
 #

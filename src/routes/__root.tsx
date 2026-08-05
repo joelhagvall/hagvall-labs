@@ -53,7 +53,7 @@ const chrome = {
     contact: 'Kontakt',
     runBy: 'Drivs av',
     builtIn: 'Byggt i Sverige.',
-    noTracking: 'Inga kakor, ingen spårning.',
+    noTracking: 'Inga kakor. Integritetsvänlig, egenhostad besöksstatistik.',
     skip: 'Hoppa till innehållet',
     homeAria: 'Hägvall Labs, startsida',
   },
@@ -65,11 +65,13 @@ const chrome = {
     contact: 'Contact',
     runBy: 'Founded and run by',
     builtIn: 'Built in Sweden.',
-    noTracking: 'No cookies, no tracking.',
+    noTracking: 'No cookies. Privacy-friendly, self-hosted visitor analytics.',
     skip: 'Skip to Content',
     homeAria: 'Hägvall Labs, Home',
   },
 }
+
+const umamiWebsiteId = '4f1d3158-8b29-4380-9852-e6ba8069c881'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -304,7 +306,13 @@ function RootLayout() {
             © {new Date().getFullYear()}{' '}
             <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, Stockholm.{' '}
             {t.runBy}{' '}
-            <a href="https://joelhagvall.com" className={linkInk}>
+            <a
+              href="https://joelhagvall.com"
+              className={linkInk}
+              data-umami-event="outbound-link-click"
+              data-umami-event-destination="joelhagvall.com"
+              data-umami-event-placement="footer-founder"
+            >
               Joel Hägvall
             </a>
             . {t.builtIn} {t.noTracking}
@@ -319,6 +327,9 @@ function RootLayout() {
             <a
               href={`mailto:${contactEmail}`}
               className="transition-colors hover:text-ink"
+              data-umami-event="outbound-link-click"
+              data-umami-event-destination="email"
+              data-umami-event-placement="footer-contact"
             >
               {contactEmail}
             </a>
@@ -366,6 +377,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <style dangerouslySetInnerHTML={{ __html: appCssInline }} />
         )}
         <HeadContent />
+        {import.meta.env.PROD &&
+          import.meta.env.VITE_UMAMI_ENABLED === 'true' && (
+            <script
+              defer
+              src="/analytics/script.js"
+              data-website-id={umamiWebsiteId}
+              data-host-url="https://hagvall-labs.com/analytics"
+              data-domains="hagvall-labs.com,www.hagvall-labs.com"
+              data-exclude-search="true"
+              data-exclude-hash="true"
+              data-do-not-track="true"
+            />
+          )}
       </head>
       <body className="bg-white text-ink antialiased">
         {children}

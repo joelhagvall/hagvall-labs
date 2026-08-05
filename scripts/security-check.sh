@@ -3,6 +3,18 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 expected_revision="${1:-}"
+
+service_container() {
+  local service="$1"
+  local id
+  id="$(docker compose ps -q "$service")"
+  [[ -n $id ]] || {
+    echo "security check FAILED: $service container is not running" >&2
+    exit 1
+  }
+  printf '%s\n' "$id"
+}
+
 container_id="$(docker compose ps -q web)"
 [[ -n $container_id ]] || {
   echo "security check FAILED: web container is not running" >&2
@@ -38,6 +50,36 @@ cap_drop="$(docker inspect --format '{{json .HostConfig.CapDrop}}' "$container_i
 port_bindings="$(docker inspect --format '{{json .HostConfig.PortBindings}}' "$container_id")"
 [[ $port_bindings == "{}" || $port_bindings == "null" ]] || {
   echo "security check FAILED: the web container publishes host ports" >&2
+  exit 1
+}
+
+for service in umami umami-db; do
+  service_id="$(service_container "$service")"
+  service_health="$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$service_id")"
+  assert_equal "$service health" "$service_health" "healthy"
+  service_ports="$(docker inspect --format '{{json .HostConfig.PortBindings}}' "$service_id")"
+  [[ $service_ports == "{}" || $service_ports == "null" ]] || {
+    echo "security check FAILED: $service publishes host ports" >&2
+    exit 1
+  }
+done
+
+umami_id="$(service_container umami)"
+assert_equal "Umami read-only root filesystem" "$(docker inspect --format '{{.HostConfig.ReadonlyRootfs}}' "$umami_id")" "true"
+
+umami_security_options="$(docker inspect --format '{{json .HostConfig.SecurityOpt}}' "$umami_id")"
+[[ $umami_security_options == *no-new-privileges* ]] || {
+  echo "security check FAILED: Umami no-new-privileges is missing" >&2
+  exit 1
+}
+
+tracker_url="https://hagvall-labs.com/analytics/script.js"
+curl --fail --silent --show-error --max-time 10 --resolve hagvall-labs.com:443:127.0.0.1 "$tracker_url" >/dev/null
+
+recorder_url="https://hagvall-labs.com/analytics/api/websites/4f1d3158-8b29-4380-9852-e6ba8069c881/recorder"
+recorder="$(curl --fail --silent --show-error --max-time 10 --resolve hagvall-labs.com:443:127.0.0.1 "$recorder_url")"
+[[ $recorder == *'"enabled":false'* ]] || {
+  echo "security check FAILED: Umami replay or heatmaps may be enabled" >&2
   exit 1
 }
 
