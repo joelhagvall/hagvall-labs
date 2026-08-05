@@ -89,7 +89,15 @@ const PREVIEW_SEGMENTS: Array<{ text: string; label?: string }> = [
   { text: ' undrar om sin faktura.' },
 ]
 
-function MaskPreview({ before, after }: { before: string; after: string }) {
+function MaskPreview({
+  before,
+  after,
+  note,
+}: {
+  before: string
+  after: string
+  note?: string
+}) {
   const ref = useRef<HTMLDivElement>(null)
   // idle: SSR/first paint, pills statically visible (also the no-JS state).
   // pending: JS confirmed the card is below the fold, pills hidden until it
@@ -123,7 +131,12 @@ function MaskPreview({ before, after }: { before: string; after: string }) {
 
   return (
     <div ref={ref} className="rounded-xl border border-neutral-200 bg-white p-5">
-      <p className="text-xs font-medium text-neutral-500">{before}</p>
+      <p className="flex items-baseline justify-between gap-3 text-xs font-medium text-neutral-500">
+        <span>{before}</span>
+        {note ? (
+          <span className="font-normal text-neutral-400">{note}</span>
+        ) : null}
+      </p>
       <p className="mt-2 text-sm leading-7">
         {PREVIEW_SEGMENTS.map((segment, index) =>
           segment.label ? (
@@ -303,6 +316,7 @@ const copy = {
     ctaDemo: 'Boka en demo',
     previewBefore: 'Er text',
     previewAfter: 'Det AI-modellen ser',
+    previewNote: '',
     fitTitle: 'Där Maskera passar in',
     useCases: [
       {
@@ -346,6 +360,7 @@ const copy = {
     ctaDemo: 'Book a Demo',
     previewBefore: 'Your text',
     previewAfter: 'What the AI model sees',
+    previewNote: 'Example in Swedish',
     fitTitle: 'Where Maskera Fits',
     useCases: [
       {
@@ -419,7 +434,11 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
               </Link>
             </div>
           </div>
-          <MaskPreview before={t.previewBefore} after={t.previewAfter} />
+          <MaskPreview
+            before={t.previewBefore}
+            after={t.previewAfter}
+            note={t.previewNote}
+          />
         </div>
       </section>
 

@@ -71,7 +71,9 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "integritet:/integri
   " || FAIL=1
 
   echo "-- pa11y $path"
-  "${pa11y_cmd[@]}" "${pa11y_args[@]}" "$BASE$path" > "$S/pa11y-$name.txt" 2>&1 \
+  # ${arr[@]+...} guard: macOS bash 3.2 treats an empty array as unset under
+  # set -u, so expanding it bare would abort the script.
+  "${pa11y_cmd[@]}" ${pa11y_args[@]+"${pa11y_args[@]}"} "$BASE$path" > "$S/pa11y-$name.txt" 2>&1 \
     && echo "  0 errors" \
     || { echo "  PA11Y ERRORS:"; tail -20 "$S/pa11y-$name.txt"; FAIL=1; }
 done

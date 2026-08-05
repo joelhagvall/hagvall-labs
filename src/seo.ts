@@ -85,7 +85,7 @@ export function maskeraJsonLd(description: string) {
     url: 'https://maskera.dev',
     operatingSystem: 'Self-hosted (Linux, Docker)',
     description,
-    publisher: { '@type': 'Organization', name: 'Hägvall Labs AB' },
+    publisher: { '@type': 'Organization', name: 'Hägvall Labs' },
   }
 }
 
@@ -95,6 +95,6 @@ export function contactJsonLd(name: string, lang: Lang) {
     '@type': 'ContactPage',
     name,
     url: site + pagePaths.contact[lang],
-    about: { '@type': 'Organization', name: 'Hägvall Labs AB' },
+    about: { '@type': 'Organization', name: 'Hägvall Labs' },
   }
 }
