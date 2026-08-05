@@ -14,6 +14,14 @@ bun run build    # production build
 
 Quality gates: every change must hit Lighthouse Performance 95+, SEO 100 and Accessibility 100, and pass pa11y with 0 errors: see `AGENTS.md`.
 
+On the production VM, run the same gates in the pinned Bun + Chrome audit
+container. The image is cached after the first build:
+
+```bash
+bash scripts/audit-container.sh
+bash scripts/audit-container.sh home en  # optional route filter
+```
+
 ## Structure
 
 Bilingual: Swedish (default, `/` and `/maskera`) and English (`/en`, `/en/maskera`), with hreflang and a language switcher.
