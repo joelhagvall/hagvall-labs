@@ -51,6 +51,7 @@ const chrome = {
     maskeraDesc: 'Maskera personuppgifter i text',
     services: 'Tjänster',
     contact: 'Kontakt',
+    privacy: 'Integritet',
     runBy: 'Drivs av',
     builtIn: 'Byggt i Sverige.',
     noTracking: 'Inga kakor. Integritetsvänlig, egenhostad besöksstatistik.',
@@ -63,6 +64,7 @@ const chrome = {
     maskeraDesc: 'Mask personal data in text',
     services: 'Services',
     contact: 'Contact',
+    privacy: 'Privacy',
     runBy: 'Founded and run by',
     builtIn: 'Built in Sweden.',
     noTracking: 'No cookies. Privacy-friendly, self-hosted visitor analytics.',
@@ -317,7 +319,13 @@ function RootLayout() {
             </a>
             . {t.builtIn} {t.noTracking}
           </p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <Link
+              to={pagePaths.privacy[lang]}
+              className="transition-colors hover:text-ink"
+            >
+              {t.privacy}
+            </Link>
             <Link
               to={pagePaths.contact[lang]}
               className="transition-colors hover:text-ink"

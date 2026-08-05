@@ -13,6 +13,7 @@ export const pagePaths = {
   home: { sv: '/', en: '/en' },
   maskera: { sv: '/maskera', en: '/en/maskera' },
   contact: { sv: '/kontakt', en: '/en/contact' },
+  privacy: { sv: '/integritet', en: '/en/privacy' },
 } as const
 
 export type PageKey = keyof typeof pagePaths
@@ -21,6 +22,9 @@ export function pageFromPath(pathname: string): PageKey {
   if (pathname.endsWith('/maskera')) return 'maskera'
   if (pathname.endsWith('/kontakt') || pathname.endsWith('/contact')) {
     return 'contact'
+  }
+  if (pathname.endsWith('/integritet') || pathname.endsWith('/privacy')) {
+    return 'privacy'
   }
   return 'home'
 }

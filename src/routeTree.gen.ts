@@ -10,15 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as IntegritetRouteImport } from './routes/integritet'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as MaskeraRouteImport } from './routes/maskera'
 import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as EnContactRouteImport } from './routes/en/contact'
 import { Route as EnMaskeraRouteImport } from './routes/en/maskera'
+import { Route as EnPrivacyRouteImport } from './routes/en/privacy'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntegritetRoute = IntegritetRouteImport.update({
+  id: '/integritet',
+  path: '/integritet',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontaktRoute = KontaktRouteImport.update({
@@ -46,54 +53,84 @@ const EnMaskeraRoute = EnMaskeraRouteImport.update({
   path: '/en/maskera',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnPrivacyRoute = EnPrivacyRouteImport.update({
+  id: '/en/privacy',
+  path: '/en/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/integritet': typeof IntegritetRoute
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
+  '/en/privacy': typeof EnPrivacyRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/integritet': typeof IntegritetRoute
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
+  '/en/privacy': typeof EnPrivacyRoute
   '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/integritet': typeof IntegritetRoute
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
+  '/en/privacy': typeof EnPrivacyRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/kontakt' | '/maskera' | '/en/contact' | '/en/maskera' | '/en/'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/kontakt' | '/maskera' | '/en/contact' | '/en/maskera' | '/en'
-  id:
-    | '__root__'
     | '/'
+    | '/integritet'
     | '/kontakt'
     | '/maskera'
     | '/en/contact'
     | '/en/maskera'
+    | '/en/privacy'
+    | '/en/'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/integritet'
+    | '/kontakt'
+    | '/maskera'
+    | '/en/contact'
+    | '/en/maskera'
+    | '/en/privacy'
+    | '/en'
+  id:
+    | '__root__'
+    | '/'
+    | '/integritet'
+    | '/kontakt'
+    | '/maskera'
+    | '/en/contact'
+    | '/en/maskera'
+    | '/en/privacy'
     | '/en/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  IntegritetRoute: typeof IntegritetRoute
   KontaktRoute: typeof KontaktRoute
   MaskeraRoute: typeof MaskeraRoute
   EnContactRoute: typeof EnContactRoute
   EnMaskeraRoute: typeof EnMaskeraRoute
+  EnPrivacyRoute: typeof EnPrivacyRoute
   EnIndexRoute: typeof EnIndexRoute
 }
 
@@ -104,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/integritet': {
+      id: '/integritet'
+      path: '/integritet'
+      fullPath: '/integritet'
+      preLoaderRoute: typeof IntegritetRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontakt': {
@@ -141,26 +185,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnMaskeraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/privacy': {
+      id: '/en/privacy'
+      path: '/en/privacy'
+      fullPath: '/en/privacy'
+      preLoaderRoute: typeof EnPrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  IntegritetRoute: IntegritetRoute,
   KontaktRoute: KontaktRoute,
   MaskeraRoute: MaskeraRoute,
   EnContactRoute: EnContactRoute,
   EnMaskeraRoute: EnMaskeraRoute,
+  EnPrivacyRoute: EnPrivacyRoute,
   EnIndexRoute: EnIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

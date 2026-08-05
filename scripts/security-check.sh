@@ -83,6 +83,12 @@ recorder="$(curl --fail --silent --show-error --max-time 10 --resolve hagvall-la
   exit 1
 }
 
+maintenance_cron="$(crontab -l 2>/dev/null || true)"
+[[ $maintenance_cron == *'# hagvall-labs-umami-maintenance'* ]] || {
+  echo "security check FAILED: Umami maintenance cron is missing" >&2
+  exit 1
+}
+
 if [[ -n $expected_revision ]]; then
   revision="$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' "$container_id")"
   assert_equal "image revision" "$revision" "$expected_revision"
