@@ -38,7 +38,10 @@ Production runs self-hosted Umami 3.2.0 with a private PostgreSQL database.
 The tracker is served same-origin from `/analytics/script.js`, so collection
 does not depend on the dashboard hostname. Query strings and URL hashes are
 excluded, Do Not Track is respected, and replay, heatmaps and identified users
-stay disabled.
+stay disabled. A daily cron job at 03:17 UTC deletes live analytics data after
+90 days, creates an access-controlled PostgreSQL backup and removes backups
+after 7 days. The separate IP-masked Caddy operational log retains data for
+30 days.
 
 Until Wix has an `analytics.hagvall-labs.com` A record pointing to
 `[removed]`, open the dashboard at:
@@ -58,6 +61,8 @@ Useful production commands:
 docker compose ps umami umami-db
 docker compose --profile bootstrap run --rm --no-deps umami-bootstrap
 bash scripts/umami-backup.sh
+bash scripts/umami-maintenance.sh
+crontab -l
 bash scripts/analytics.sh  # low-level masked access-log stats
 ```
 

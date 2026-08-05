@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        route: [home, maskera, kontakt, en, enmaskera, encontact]
+        route: [home, maskera, kontakt, integritet, en, enmaskera, encontact, enprivacy]
     env:
       # Use the runner's preinstalled Chrome for both Lighthouse (chrome-launcher)
       # and pa11y (puppeteer), instead of downloading a browser per job.

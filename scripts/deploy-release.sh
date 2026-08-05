@@ -232,6 +232,7 @@ wait_for_service umami
 docker compose --profile bootstrap run --rm --no-deps umami-bootstrap
 reload_edge_proxy
 wait_for_edge
+bash scripts/install-umami-maintenance.sh
 bash scripts/security-check.sh "$release_sha"
 
 deployment_succeeded=1

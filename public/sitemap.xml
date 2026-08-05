@@ -49,4 +49,20 @@
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://hagvall-labs.com/integritet</loc>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://hagvall-labs.com/integritet"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://hagvall-labs.com/en/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://hagvall-labs.com/en/privacy"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://hagvall-labs.com/en/privacy</loc>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://hagvall-labs.com/integritet"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://hagvall-labs.com/en/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://hagvall-labs.com/en/privacy"/>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
