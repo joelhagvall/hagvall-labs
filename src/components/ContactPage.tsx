@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
+import { contactEmail } from '../seo'
 import type { Lang } from '../seo'
-import { btnPrimary, btnSecondary } from './ui'
-
-const EMAIL = 'hello@hagvall-labs.com'
+import {
+  Cards,
+  HeroGlows,
+  RevealObserver,
+  btnPrimary,
+  btnSecondary,
+  container,
+  heroBody,
+  heroTitle,
+  kicker,
+  sectionTitleSm,
+} from './ui'
 
 const copy = {
   sv: {
@@ -41,7 +51,7 @@ const copy = {
     steps: [
       {
         title: 'You Email',
-        body: 'Tell me briefly what you want to solve: a product question, a pilot or a project. A few lines is enough.',
+        body: 'Tell me briefly what you want to solve: a product question, a pilot or a project. A few lines are enough.',
       },
       {
         title: 'We Meet Online',
@@ -68,7 +78,7 @@ function CopyEmailButton({ label, copied }: { label: string; copied: string }) {
 
   const onCopy = async () => {
     try {
-      await navigator.clipboard.writeText(EMAIL)
+      await navigator.clipboard.writeText(contactEmail)
       setIsCopied(true)
       if (timer.current) clearTimeout(timer.current)
       timer.current = setTimeout(() => setIsCopied(false), 2000)
@@ -90,38 +100,29 @@ export function ContactPage({ lang }: { lang: Lang }) {
 
   return (
     <>
+      <RevealObserver />
       {/* Hero. Same static headline rule as the other pages: nothing may
           delay the LCP paint. */}
       <section className="relative isolate overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
-        >
-          <div className="glow glow-cobalt absolute -top-32 right-[-10%] h-[28rem] w-[28rem]" />
-          <div className="glow glow-teal glow-delay absolute -left-48 top-40 h-96 w-96" />
-        </div>
+        <HeroGlows />
         <div className="mx-auto w-full max-w-5xl px-6 pb-20 pt-24">
-          <p className="mb-4 text-sm font-medium text-cobalt">{t.kicker}</p>
-          <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-            {t.title}
-          </h1>
-          <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-neutral-600">
-            {t.body}
-          </p>
+          <p className={`mb-4 ${kicker}`}>{t.kicker}</p>
+          <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
+          <p className={heroBody}>{t.body}</p>
 
           <div className="mt-10 max-w-2xl rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8">
             <p className="text-sm font-medium text-neutral-500">
               {t.emailLabel}
             </p>
             <a
-              href={`mailto:${EMAIL}`}
+              href={`mailto:${contactEmail}`}
               className="mt-2 block break-all text-2xl font-semibold tracking-tight text-ink underline-offset-4 transition-colors hover:text-cobalt sm:text-3xl"
             >
-              {EMAIL}
+              {contactEmail}
             </a>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <CopyEmailButton label={t.copyBtn} copied={t.copiedBtn} />
-              <a href={`mailto:${EMAIL}`} className={btnPrimary}>
+              <a href={`mailto:${contactEmail}`} className={btnPrimary}>
                 {t.openBtn}
               </a>
             </div>
@@ -131,26 +132,15 @@ export function ContactPage({ lang }: { lang: Lang }) {
 
       {/* What happens next */}
       <section className="border-t border-neutral-200">
-        <div className="mx-auto w-full max-w-5xl px-6 py-20">
-          <h2 className="reveal text-balance text-2xl font-semibold tracking-tight">
+        <div className={container}>
+          <h2 className={`reveal ${sectionTitleSm}`}>
             {t.stepsTitle}
           </h2>
-          <div className="mt-8 grid gap-6 sm:grid-cols-3">
-            {t.steps.map((step, i) => (
-              <div
-                key={step.title}
-                className="reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-cobalt/40"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cobalt/10 text-sm font-semibold text-cobalt">
-                  {i + 1}
-                </span>
-                <h3 className="mt-4 font-medium">{step.title}</h3>
-                <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
-                  {step.body}
-                </p>
-              </div>
-            ))}
-          </div>
+          <Cards
+            items={t.steps}
+            accent="cobalt"
+            className="mt-8 sm:grid-cols-3"
+          />
         </div>
       </section>
     </>

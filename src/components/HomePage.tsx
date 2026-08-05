@@ -1,8 +1,23 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { pagePaths } from '../seo'
 import type { Lang } from '../seo'
 import { BrandSymbol } from './BrandSymbol'
-import { btnArrow, btnPrimary, btnSecondary } from './ui'
+import {
+  Cards,
+  HeroGlows,
+  RevealObserver,
+  btnArrow,
+  btnPrimary,
+  btnSecondary,
+  container,
+  heroBody,
+  heroTitle,
+  kicker,
+  linkCobalt,
+  linkInk,
+  sectionTitle,
+} from './ui'
 
 /* The masking preview, ported one-to-one from maskera-cloud
    (apps/web/src/lib/labels.ts + the HeroMaskPreview in routes/index.tsx):
@@ -278,10 +293,10 @@ const buildIcons = [IconChip, IconBolt, IconGem]
 
 const copy = {
   sv: {
-    heroAccent: 'Integritetssäker',
-    heroTitleB: ' mjukvara för AI-eran.',
+    heroAccent: 'Bygg med AI.',
+    heroTitleB: ' Behåll er data.',
     heroBody:
-      'Jag bygger mjukvara med AI i verktygskedjan varje dag. Det är därför jag vet exakt var data läcker, och därför jag bygger allt med samma utgångspunkt: er data stannar hos er.',
+      'Jag bygger mjukvara med AI i verktygskedjan varje dag. Det är därför jag vet exakt var data läcker, och därför allt jag bygger utgår från samma princip: er data stannar hos er.',
     ctaPrimary: 'Upptäck Maskera',
     ctaSecondary: 'Boka en demo',
     teaserKicker: 'Det jag säljer',
@@ -297,7 +312,7 @@ const copy = {
         body: 'Vi testar Maskera på era egna data i en avgränsad pilot: tydliga mål, fast tidsram och värdet bevisat innan ni bestämmer er. Det som håller måttet i piloten är det som får växa.',
       },
       {
-        title: 'Programvarulicenser',
+        title: 'Licenser',
         body: 'Årslicenser på mjukvara som installeras hos er. Fast pris, inga molnkonton, inga överraskningar på fakturan.',
       },
       {
@@ -306,14 +321,14 @@ const copy = {
       },
       {
         title: 'Konsulttjänster',
-        body: 'Jag skriver kod, inte rapporter. Arkitektur, säkerhet och implementation, levererat i ert repo.',
+        body: 'Jag skriver kod, inte rapporter. Arkitektur, säkerhet och implementation, levererat i er kodbas.',
       },
     ],
     buildTitle: 'Så bygger jag',
     build: [
       {
         title: 'AI i hela kedjan',
-        body: 'Codex och Claude skriver kod med mig varje dag, kopplade mot mina system via MCP. Jag säljer inte AI-skräck, jag lever i verktygen och vet precis var gränsen för er data ska gå.',
+        body: 'Codex och Claude skriver kod med mig varje dag, kopplade mot mina system. Jag säljer inte AI-skräck, jag lever i verktygen och vet precis var gränsen för er data ska gå.',
       },
       {
         title: 'Snabba releaser, hårda grindar',
@@ -321,7 +336,7 @@ const copy = {
       },
       {
         title: 'Löjligt hög ribba',
-        body: 'Sajten du läser på just nu får 100 av 100 i Lighthouse på prestanda, tillgänglighet och SEO, på varje sida. Ingen bad om det. Samma precision hamnar i det jag bygger åt er.',
+        body: 'Sajten du läser på just nu får toppbetyg i Lighthouse på varje sida, med full pott på tillgänglighet och SEO. Ingen bad om det. Samma precision hamnar i det jag bygger åt er.',
       },
     ],
     aboutTitle: 'Att jobba med mig',
@@ -333,8 +348,8 @@ const copy = {
     aboutCta: 'Hör av dig',
   },
   en: {
-    heroAccent: 'Privacy-First',
-    heroTitleB: ' Software for the AI Era.',
+    heroAccent: 'Build With AI.',
+    heroTitleB: ' Keep Your Data.',
     heroBody:
       'I build software with AI in the toolchain every day. That’s why I know exactly where data leaks, and why everything I build starts from the same principle: your data stays on your side.',
     ctaPrimary: 'Discover Maskera',
@@ -361,14 +376,14 @@ const copy = {
       },
       {
         title: 'Consulting',
-        body: 'I write code, not reports. Architecture, security and implementation, delivered in your repo.',
+        body: 'I write code, not reports. Architecture, security and implementation, delivered in your codebase.',
       },
     ],
     buildTitle: 'How I Build',
     build: [
       {
         title: 'AI in the Toolchain',
-        body: 'Codex and Claude write code with me every day, wired into my systems over MCP. I don’t sell AI fear, I live in these tools and know exactly where the line for your data should go.',
+        body: 'Codex and Claude write code with me every day, wired into my systems. I don’t sell AI fear, I live in these tools and know exactly where the line for your data should go.',
       },
       {
         title: 'Fast Releases, Hard Gates',
@@ -376,7 +391,7 @@ const copy = {
       },
       {
         title: 'A Ridiculously High Bar',
-        body: 'The site you’re reading scores 100 out of 100 in Lighthouse for performance, accessibility and SEO, on every page. Nobody asked for that. The same precision goes into everything I build for you.',
+        body: 'The site you’re reading scores top marks in Lighthouse on every page, with a perfect score for accessibility and SEO. Nobody asked for that. The same precision goes into everything I build for you.',
       },
     ],
     aboutTitle: 'Working With Me',
@@ -391,91 +406,61 @@ const copy = {
 
 export function HomePage({ lang }: { lang: Lang }) {
   const t = copy[lang]
-  const maskeraLink = (className: string, label: React.ReactNode) =>
-    lang === 'sv' ? (
-      <Link to="/maskera" className={className}>
-        {label}
-      </Link>
-    ) : (
-      <Link to="/en/maskera" className={className}>
-        {label}
-      </Link>
-    )
 
   return (
     <>
+      <RevealObserver />
       {/* Hero. Decorative glows and the symbol animate; the headline and body
           stay static so nothing delays the LCP paint. */}
       <section className="relative isolate overflow-hidden">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10"
-        >
-          <div className="glow glow-cobalt absolute -top-32 right-[-10%] h-[28rem] w-[28rem]" />
-          <div className="glow glow-teal glow-delay absolute -left-48 top-40 h-96 w-96" />
-        </div>
+        <HeroGlows />
         <div className="mx-auto grid w-full max-w-5xl items-center gap-8 px-6 pb-12 pt-16 md:grid-cols-[1fr_auto] md:gap-12 md:pb-24 md:pt-24">
           <div>
-            <h1 className="max-w-3xl text-balance text-4xl font-semibold tracking-tight sm:text-6xl">
+            <h1 className={`${heroTitle} sm:text-6xl`}>
               <span className="text-cobalt">{t.heroAccent}</span>
               {t.heroTitleB}
             </h1>
-            <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-neutral-600">
-              {t.heroBody}
-            </p>
+            <p className={heroBody}>{t.heroBody}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              {maskeraLink(
-                btnPrimary,
-                <>
-                  {t.ctaPrimary}
-                  <span aria-hidden="true" className={btnArrow}>
-                    →
-                  </span>
-                </>,
-              )}
-              <a href="mailto:hello@hagvall-labs.com" className={btnSecondary}>
+              <Link to={pagePaths.maskera[lang]} className={btnPrimary}>
+                {t.ctaPrimary}
+                <span aria-hidden="true" className={btnArrow}>
+                  →
+                </span>
+              </Link>
+              <Link to={pagePaths.contact[lang]} className={btnSecondary}>
                 {t.ctaSecondary}
-              </a>
+              </Link>
             </div>
           </div>
           {/* Visually first on mobile (CSS order, DOM order unchanged), so
               the headline stays the first element and the LCP paint. */}
-          <div className="animate-float order-first md:order-none">
+          <div className="animate-float order-first md:order-0">
             <BrandSymbol
               size={230}
               animated
-              className="h-20 w-20 md:h-[230px] md:w-[230px]"
+              className="size-20 md:size-57.5"
             />
           </div>
         </div>
       </section>
 
       {/* Maskera teaser */}
-      <section className="border-y border-neutral-200 bg-cobalt/[0.03]">
+      <section className="border-y border-neutral-200 bg-cobalt/3">
         <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 py-20 md:grid-cols-2 md:items-center">
           <div className="reveal">
-            <p className="mb-3 text-sm font-medium text-cobalt">
-              {t.teaserKicker}
-            </p>
-            <h2
-              className="text-balance text-3xl font-semibold tracking-tight"
-              translate="no"
-            >
+            <p className={`mb-3 ${kicker}`}>{t.teaserKicker}</p>
+            <h2 className={sectionTitle} translate="no">
               Maskera
             </h2>
             <p className="mt-4 text-pretty leading-relaxed text-neutral-600">
               {t.teaserBody}
             </p>
             <div className="mt-6 flex flex-wrap gap-6 text-sm font-medium">
-              {maskeraLink(
-                'text-cobalt underline underline-offset-4 transition-colors hover:text-cobalt-deep',
-                t.teaserMore,
-              )}
-              <a
-                href="https://maskera.dev"
-                className="text-cobalt underline underline-offset-4 transition-colors hover:text-cobalt-deep"
-                translate="no"
-              >
+              <Link to={pagePaths.maskera[lang]} className={linkCobalt}>
+                {t.teaserMore}
+              </Link>
+              <a href="https://maskera.dev" className={linkCobalt} translate="no">
                 maskera.dev →
               </a>
             </div>
@@ -487,74 +472,42 @@ export function HomePage({ lang }: { lang: Lang }) {
       </section>
 
       {/* Services */}
-      <section
-        id="services"
-        className="mx-auto w-full max-w-5xl scroll-mt-20 px-6 py-20"
-      >
-        <h2 className="reveal text-balance text-3xl font-semibold tracking-tight">
+      <section id="services" className={`${container} scroll-mt-20`}>
+        <h2 className={`reveal ${sectionTitle}`}>
           {t.servicesTitle}
         </h2>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {t.services.map((s, i) => {
-            const Icon = serviceIcons[i]
-            return (
-              <div
-                key={s.title}
-                className="reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-cobalt/40"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cobalt/10 text-cobalt">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 font-medium">{s.title}</h3>
-                <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
-                  {s.body}
-                </p>
-              </div>
-            )
-          })}
-        </div>
+        <Cards
+          items={t.services}
+          icons={serviceIcons}
+          accent="cobalt"
+          className="mt-10 sm:grid-cols-2"
+        />
       </section>
 
       {/* How I build */}
       <section className="border-t border-neutral-200">
-        <div className="mx-auto w-full max-w-5xl px-6 py-20">
-          <h2 className="reveal text-balance text-3xl font-semibold tracking-tight">
+        <div className={container}>
+          <h2 className={`reveal ${sectionTitle}`}>
             {t.buildTitle}
           </h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-3">
-            {t.build.map((b, i) => {
-              const Icon = buildIcons[i]
-              return (
-                <div
-                  key={b.title}
-                  className="reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-teal-deep/40"
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-deep/10 text-teal-deep">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <h3 className="mt-4 font-medium">{b.title}</h3>
-                  <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
-                    {b.body}
-                  </p>
-                </div>
-              )
-            })}
-          </div>
+          <Cards
+            items={t.build}
+            icons={buildIcons}
+            accent="teal"
+            className="mt-10 sm:grid-cols-3"
+          />
         </div>
       </section>
 
       {/* About / contact */}
       <section className="border-t border-neutral-200">
-        <div className="reveal mx-auto w-full max-w-5xl px-6 py-20">
-          <h2 className="text-balance text-3xl font-semibold tracking-tight">
+        <div className={`reveal ${container}`}>
+          <h2 className={sectionTitle}>
             {t.aboutTitle}
           </h2>
           <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
             {t.aboutP1a}
-            <a
-              href="https://joelhagvall.com"
-              className="underline underline-offset-4 transition-colors hover:text-ink"
-            >
+            <a href="https://joelhagvall.com" className={linkInk}>
               Joel Hägvall
             </a>
             {t.aboutP1b}
@@ -562,15 +515,9 @@ export function HomePage({ lang }: { lang: Lang }) {
           <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
             {t.aboutP2}
           </p>
-          {lang === 'sv' ? (
-            <Link to="/kontakt" className={`mt-8 ${btnPrimary}`}>
-              {t.aboutCta}
-            </Link>
-          ) : (
-            <Link to="/en/contact" className={`mt-8 ${btnPrimary}`}>
-              {t.aboutCta}
-            </Link>
-          )}
+          <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
+            {t.aboutCta}
+          </Link>
         </div>
       </section>
     </>

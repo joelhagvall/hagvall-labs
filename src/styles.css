@@ -38,7 +38,8 @@ textarea {
 
 /* Animation system. Compositor-only properties (transform, opacity), and
    every animated class is gated behind prefers-reduced-motion: no-preference.
-   .reveal entrances are observer-driven (RevealObserver in __root.tsx):
+   .reveal entrances are observer-driven (RevealObserver in ui.tsx,
+   rendered by each page so it never races the lazy page chunk's hydration):
    elements below the first viewport get .reveal-pending and rise in with
    .reveal-in when scrolled into view. SSR/no-JS renders statically. */
 
