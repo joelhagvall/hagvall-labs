@@ -3,8 +3,6 @@
 @theme {
   --color-cobalt: #1748d4;
   --color-cobalt-deep: #1239a8;
-  --color-teal-brand: #14b8a6;
-  --color-teal-deep: #0f766e;
   --color-ink: #20272d;
 }
 
@@ -99,11 +97,11 @@ textarea {
 /* Hero glows: radial gradients, not blur() filters. A large blurred element
    costs real paint time in the first frame and drags FCP below target. */
 .glow-cobalt {
-  background: radial-gradient(closest-side, rgb(23 72 212 / 0.14), transparent);
+  background: radial-gradient(closest-side, rgb(23 72 212 / 0.22), transparent);
 }
 
-.glow-teal {
-  background: radial-gradient(closest-side, rgb(20 184 166 / 0.14), transparent);
+.glow-cobalt-soft {
+  background: radial-gradient(closest-side, rgb(23 72 212 / 0.09), transparent);
 }
 
 @media (prefers-reduced-motion: no-preference) {

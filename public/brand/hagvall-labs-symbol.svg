@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="210 110 580 580" role="img" aria-labelledby="title description">
   <title id="title">Hägvall Labs symbol</title>
-  <desc id="description">Transparent cobalt and teal layered data symbol.</desc>
+  <desc id="description">Layered cobalt data symbol.</desc>
       <g id="hagvall-labs-symbol">
       <path fill="#1748D4" d="M270 350 495 438 495 566 414 535 414 680 270 625Z"/>
-      <path fill="#14B8A6" d="M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z"/>
+      <path fill="#5B7CE4" d="M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z"/>
       <path fill="#1748D4" d="M480 165 710 254 710 560 630 529 630 334 480 278Z"/>
     </g>
 </svg>
