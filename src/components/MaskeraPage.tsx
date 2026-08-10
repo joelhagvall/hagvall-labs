@@ -450,7 +450,6 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
           <Cards
             items={t.useCases}
             icons={useCaseIcons}
-            accent="cobalt"
             className="mt-8 sm:grid-cols-3"
           />
         </div>
@@ -463,7 +462,6 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
         <Cards
           items={t.principles}
           icons={principleIcons}
-          accent="teal"
           className="mt-8 sm:grid-cols-3"
         />
       </section>

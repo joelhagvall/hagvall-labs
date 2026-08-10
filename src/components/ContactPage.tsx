@@ -145,11 +145,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
           <h2 className={`reveal ${sectionTitleSm}`}>
             {t.stepsTitle}
           </h2>
-          <Cards
-            items={t.steps}
-            accent="cobalt"
-            className="mt-8 sm:grid-cols-3"
-          />
+          <Cards items={t.steps} className="mt-8 sm:grid-cols-3" />
         </div>
       </section>
     </>

@@ -46,21 +46,11 @@ export const sectionTitle = 'text-balance text-3xl font-semibold tracking-tight'
 export const sectionTitleSm =
   'text-balance text-2xl font-semibold tracking-tight'
 
-type Accent = 'cobalt' | 'teal'
+const cardClass =
+  'reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-cobalt/40'
 
-// The teal accent uses teal-deep, not teal-brand: teal-brand lacks contrast
-// behind white text (see the brand rules in AGENTS.md).
-const cardClass: Record<Accent, string> = {
-  cobalt:
-    'reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-cobalt/40',
-  teal: 'reveal rounded-2xl border border-neutral-200 bg-white p-6 transition-colors duration-200 hover:border-teal-deep/40',
-}
-
-const chipClass: Record<Accent, string> = {
-  cobalt:
-    'flex h-10 w-10 items-center justify-center rounded-xl bg-cobalt/10 text-cobalt',
-  teal: 'flex h-10 w-10 items-center justify-center rounded-xl bg-teal-deep/10 text-teal-deep',
-}
+const chipClass =
+  'flex h-10 w-10 items-center justify-center rounded-xl bg-cobalt/10 text-cobalt'
 
 /* Drives the .reveal entrances (classes in styles.css). Only elements
    strictly below the first viewport are hidden and animated in on scroll;
@@ -121,7 +111,7 @@ export function HeroGlows() {
       className="pointer-events-none absolute inset-0 -z-10"
     >
       <div className="glow glow-cobalt absolute -top-32 right-[-10%] size-112" />
-      <div className="glow glow-teal glow-delay absolute -left-48 top-40 size-96" />
+      <div className="glow glow-cobalt-soft glow-delay absolute -left-48 top-40 size-120" />
     </div>
   )
 }
@@ -131,12 +121,10 @@ export function HeroGlows() {
 export function Cards({
   items,
   icons,
-  accent,
   className,
 }: {
   items: ReadonlyArray<{ title: string; body: string }>
   icons?: ReadonlyArray<(props: { className?: string }) => React.ReactNode>
-  accent: Accent
   className?: string
 }) {
   return (
@@ -144,9 +132,9 @@ export function Cards({
       {items.map((item, i) => {
         const Icon = icons?.[i]
         return (
-          <div key={item.title} className={cardClass[accent]}>
+          <div key={item.title} className={cardClass}>
             <span
-              className={`${chipClass[accent]}${Icon ? '' : ' text-sm font-semibold'}`}
+              className={`${chipClass}${Icon ? '' : ' text-sm font-semibold'}`}
             >
               {Icon ? <Icon className="h-5 w-5" /> : i + 1}
             </span>

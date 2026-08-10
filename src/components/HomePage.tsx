@@ -505,7 +505,6 @@ export function HomePage({ lang }: { lang: Lang }) {
         <Cards
           items={t.services}
           icons={serviceIcons}
-          accent="cobalt"
           className="mt-10 sm:grid-cols-2"
         />
       </section>
@@ -519,7 +518,6 @@ export function HomePage({ lang }: { lang: Lang }) {
           <Cards
             items={t.build}
             icons={buildIcons}
-            accent="teal"
             className="mt-10 sm:grid-cols-3"
           />
         </div>
