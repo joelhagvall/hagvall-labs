@@ -7,10 +7,10 @@ export const Route = createFileRoute('/en/privacy')({
     pageHead({
       lang: 'en',
       page: 'privacy',
-      title: 'Privacy | Hägvall Labs',
+      title: 'Privacy and Personal Data | Hägvall Labs',
       description:
-        'How Hägvall Labs handles visitor analytics, operational logs and information you provide when getting in touch.',
-      ogTitle: 'Privacy | Hägvall Labs',
+        'Learn how Hägvall Labs handles visitor analytics, operational logs, contact details, retention periods and your data protection rights.',
+      ogTitle: 'Privacy and Personal Data | Hägvall Labs',
       ogDescription:
         'Clear information about visitor analytics, operational logs, retention periods and your rights.',
     }),

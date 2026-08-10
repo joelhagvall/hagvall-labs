@@ -7,10 +7,10 @@ export const Route = createFileRoute('/integritet')({
     pageHead({
       lang: 'sv',
       page: 'privacy',
-      title: 'Integritet | Hägvall Labs',
+      title: 'Integritet och personuppgifter | Hägvall Labs',
       description:
-        'Så hanterar Hägvall Labs besöksstatistik, driftloggar och uppgifter du skickar när du tar kontakt.',
-      ogTitle: 'Integritet | Hägvall Labs',
+        'Läs hur Hägvall Labs hanterar besöksstatistik, driftloggar, kontaktuppgifter, lagringstider och dina rättigheter enligt GDPR.',
+      ogTitle: 'Integritet och personuppgifter | Hägvall Labs',
       ogDescription:
         'Tydlig information om besöksstatistik, driftloggar, lagringstider och dina rättigheter.',
     }),

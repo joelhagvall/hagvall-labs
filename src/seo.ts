@@ -58,7 +58,7 @@ export function pageHead(opts: {
       { rel: 'canonical', href: site + paths[opts.lang] },
       { rel: 'alternate', hrefLang: 'sv', href: site + paths.sv },
       { rel: 'alternate', hrefLang: 'en', href: site + paths.en },
-      { rel: 'alternate', hrefLang: 'x-default', href: site + paths.en },
+      { rel: 'alternate', hrefLang: 'x-default', href: site + paths.sv },
     ],
     ...(opts.jsonLd
       ? {
@@ -76,6 +76,19 @@ export function pageHead(opts: {
 // Structured data shared by the sv and en route variants: only the
 // human-readable strings differ per language.
 
+export function websiteJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': site + '/#website',
+    name: 'Hägvall Labs',
+    alternateName: ['Hägvall Labs AB', 'hagvall-labs.com'],
+    url: site + '/',
+    inLanguage: ['sv', 'en'],
+    publisher: { '@id': site + '/#organization' },
+  }
+}
+
 export function maskeraJsonLd(description: string) {
   return {
     '@context': 'https://schema.org',
@@ -85,7 +98,7 @@ export function maskeraJsonLd(description: string) {
     url: 'https://maskera.dev',
     operatingSystem: 'Self-hosted (Linux, Docker)',
     description,
-    publisher: { '@type': 'Organization', name: 'Hägvall Labs' },
+    publisher: { '@id': site + '/#organization' },
   }
 }
 
@@ -95,6 +108,6 @@ export function contactJsonLd(name: string, lang: Lang) {
     '@type': 'ContactPage',
     name,
     url: site + pagePaths.contact[lang],
-    about: { '@type': 'Organization', name: 'Hägvall Labs' },
+    about: { '@id': site + '/#organization' },
   }
 }
