@@ -117,7 +117,10 @@ export const Route = createRootRoute({
         children: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'Organization',
+          '@id': site + '/#organization',
           name: 'Hägvall Labs',
+          legalName: 'Hägvall Labs AB',
+          alternateName: 'Hägvall Labs AB',
           url: site,
           logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
