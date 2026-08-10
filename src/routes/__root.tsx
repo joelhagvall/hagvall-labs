@@ -6,6 +6,7 @@ import {
   Scripts,
   createRootRoute,
   useLocation,
+  useRouter,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
@@ -31,6 +32,31 @@ import type { Lang } from '../seo'
 function useLang(): Lang {
   const pathname = useLocation({ select: (l) => l.pathname })
   return pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'sv'
+}
+
+function useFooterRoutePreload(lang: Lang) {
+  const router = useRouter()
+
+  useEffect(() => {
+    const preload = () => {
+      void Promise.all([
+        router.preloadRoute({ to: pagePaths.privacy[lang] }),
+        router.preloadRoute({ to: pagePaths.contact[lang] }),
+      ]).catch(() => undefined)
+    }
+
+    const idleWindow = window as typeof window & {
+      requestIdleCallback?: typeof window.requestIdleCallback
+      cancelIdleCallback?: typeof window.cancelIdleCallback
+    }
+    if (idleWindow.requestIdleCallback) {
+      const idleId = idleWindow.requestIdleCallback(preload, { timeout: 2_000 })
+      return () => idleWindow.cancelIdleCallback?.(idleId)
+    }
+
+    const timeoutId = window.setTimeout(preload, 1_000)
+    return () => window.clearTimeout(timeoutId)
+  }, [lang, router])
 }
 
 // Data URI so the favicon costs no request; a fetched favicon landing near
@@ -267,6 +293,7 @@ function Brand() {
 function RootLayout() {
   const lang = useLang()
   const t = chrome[lang]
+  useFooterRoutePreload(lang)
   useEffect(() => {
     document.documentElement.lang = lang
   }, [lang])
