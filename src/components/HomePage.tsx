@@ -217,32 +217,8 @@ function Svg({
   )
 }
 
-// Pilot: paper plane, two folds
-function IconPilot({ className }: { className?: string }) {
-  return (
-    <Svg className={className}>
-      <path d="M2.5 9.5 21.5 2.5 12 12.5Z" />
-      <path fillOpacity="0.4" d="M12 12.5 21.5 2.5 13.5 21.5Z" />
-    </Svg>
-  )
-}
-
-// License: rosette with ribbon tails
-function IconLicense({ className }: { className?: string }) {
-  return (
-    <Svg className={className}>
-      <path
-        fillRule="evenodd"
-        d="M12 2.5 16.6 5.1 16.6 10.4 12 13 7.4 10.4 7.4 5.1ZM12 5 14.8 6.6 14.8 9 12 10.6 9.2 9 9.2 6.6Z"
-      />
-      <path fillOpacity="0.55" d="M8 12.6 10.6 12.6 10.6 21 9.3 19.7 8 21Z" />
-      <path fillOpacity="0.55" d="M13.4 12.6 16 12.6 16 21 14.7 19.7 13.4 21Z" />
-    </Svg>
-  )
-}
-
-// Install: isometric cube
-function IconInstall({ className }: { className?: string }) {
+// Software development: isometric cube
+function IconBuild({ className }: { className?: string }) {
   return (
     <Svg className={className}>
       <path fillOpacity="0.35" d="M12 3 19.5 7.2 12 11.4 4.5 7.2Z" />
@@ -252,18 +228,7 @@ function IconInstall({ className }: { className?: string }) {
   )
 }
 
-// Consulting: folded map, three panels
-function IconConsult({ className }: { className?: string }) {
-  return (
-    <Svg className={className}>
-      <path d="M4 6 9.3 4 9.3 18 4 20Z" />
-      <path fillOpacity="0.35" d="M9.3 4 14.6 6 14.6 20 9.3 18Z" />
-      <path fillOpacity="0.65" d="M14.6 6 20 4 20 18 14.6 20Z" />
-    </Svg>
-  )
-}
-
-// AI toolchain: chip with a folded core
+// AI automation: chip with a folded core
 function IconChip({ className }: { className?: string }) {
   return (
     <Svg className={className}>
@@ -276,6 +241,27 @@ function IconChip({ className }: { className?: string }) {
       <rect x="7.6" y="19.8" width="1.6" height="2.2" rx="0.8" />
       <rect x="11.2" y="19.8" width="1.6" height="2.2" rx="0.8" />
       <rect x="14.8" y="19.8" width="1.6" height="2.2" rx="0.8" />
+    </Svg>
+  )
+}
+
+// Security and privacy: shield with two folded faces
+function IconShield({ className }: { className?: string }) {
+  return (
+    <Svg className={className}>
+      <path fillOpacity="0.45" d="M4.5 5.5 12 2.5 12 21.5C7 19 4.5 15.1 4.5 10Z" />
+      <path d="M12 2.5 19.5 5.5V10C19.5 15.1 17 19 12 21.5Z" />
+    </Svg>
+  )
+}
+
+// AI toolchain: folded workflow, three connected panels
+function IconWorkflow({ className }: { className?: string }) {
+  return (
+    <Svg className={className}>
+      <path d="M4 6 9.3 4 9.3 18 4 20Z" />
+      <path fillOpacity="0.35" d="M9.3 4 14.6 6 14.6 20 9.3 18Z" />
+      <path fillOpacity="0.65" d="M14.6 6 20 4 20 18 14.6 20Z" />
     </Svg>
   )
 }
@@ -301,8 +287,8 @@ function IconGem({ className }: { className?: string }) {
   )
 }
 
-const serviceIcons = [IconPilot, IconLicense, IconInstall, IconConsult]
-const buildIcons = [IconChip, IconBolt, IconGem]
+const serviceIcons = [IconBuild, IconChip, IconShield]
+const buildIcons = [IconWorkflow, IconBolt, IconGem]
 
 const copy = {
   sv: {
@@ -319,23 +305,35 @@ const copy = {
     previewBefore: 'Er text',
     previewAfter: 'Det AI-modellen ser',
     previewNote: '',
-    servicesTitle: 'Vad jag hjälper till med',
+    servicesTitle: 'Tjänster',
+    servicesIntro:
+      'Jag tar avgränsade uppdrag från idé och arkitektur till kod i produktion.',
     services: [
       {
-        title: 'Pilotprojekt',
-        body: 'Vi testar Maskera på era egna data i en avgränsad pilot: tydliga mål, fast tidsram och värdet bevisat innan ni bestämmer er. Det som håller måttet i piloten är det som får växa.',
+        title: 'Mjukvaruutveckling',
+        body: 'Jag bygger webbappar, API:er, interna verktyg och integrationer, i er befintliga kodbas eller från grunden.',
       },
       {
-        title: 'Licenser',
-        body: 'Årslicenser på mjukvara som installeras hos er. Fast pris, inga molnkonton, inga överraskningar på fakturan.',
+        title: 'AI & automation',
+        body: 'Jag bygger AI-funktioner, agenter och automatiserade arbetsflöden runt era system, krav och känsliga data.',
       },
       {
-        title: 'Installation & support',
-        body: 'Jag driftsätter, integrerar och finns till hands när ni behöver mig. Ni pratar med den som skrev koden, inte med ett ärendesystem.',
+        title: 'Säkerhet & integritet',
+        body: 'Jag granskar och bygger system som hanterar känslig data. Konkreta förbättringar i arkitektur och kod, inte rapporter för hyllan.',
+      },
+    ],
+    technologies: [
+      {
+        title: 'Gränssnitt',
+        items: ['TypeScript', 'React', 'TanStack'],
       },
       {
-        title: 'Konsulttjänster',
-        body: 'Jag skriver kod, inte rapporter. Arkitektur, säkerhet och implementation, levererat i er kodbas.',
+        title: 'Backend',
+        items: ['Node.js', 'Bun', 'Python', 'PostgreSQL', 'Docker'],
+      },
+      {
+        title: 'AI & integrationer',
+        items: ['AI-SDK:er', 'API:er', 'MCP', 'webhooks'],
       },
     ],
     buildTitle: 'Så bygger jag',
@@ -375,23 +373,35 @@ const copy = {
     previewBefore: 'Your text',
     previewAfter: 'What the AI model sees',
     previewNote: 'Example in Swedish',
-    servicesTitle: 'How I Can Help',
+    servicesTitle: 'Services',
+    servicesIntro:
+      'I take on scoped projects from idea and architecture to production code.',
     services: [
       {
-        title: 'Pilot Projects',
-        body: 'We test Maskera on your own data in a scoped pilot: clear goals, a fixed timeline, and value proven before you commit. What holds up in the pilot is what gets to grow.',
+        title: 'Software Development',
+        body: 'I build web apps, APIs, internal tools and integrations, in your existing codebase or from scratch.',
       },
       {
-        title: 'Software Licensing',
-        body: 'Annual licenses for software installed on your side. Fixed price, no cloud accounts, no surprises on the invoice.',
+        title: 'AI & Automation',
+        body: 'I build AI features, agents and automated workflows around your systems, requirements and sensitive data.',
       },
       {
-        title: 'Installation & Support',
-        body: 'I deploy, integrate and stay available when you need me. You talk to the person who wrote the code, not a ticket queue.',
+        title: 'Security & Privacy',
+        body: 'I review and build systems that handle sensitive data. Concrete improvements to architecture and code, not reports that gather dust.',
+      },
+    ],
+    technologies: [
+      {
+        title: 'Interfaces',
+        items: ['TypeScript', 'React', 'TanStack'],
       },
       {
-        title: 'Consulting',
-        body: 'I write code, not reports. Architecture, security and implementation, delivered in your codebase.',
+        title: 'Backend',
+        items: ['Node.js', 'Bun', 'Python', 'PostgreSQL', 'Docker'],
+      },
+      {
+        title: 'AI & Integrations',
+        items: ['AI SDKs', 'APIs', 'MCP', 'webhooks'],
       },
     ],
     buildTitle: 'How I Build',
@@ -502,11 +512,29 @@ export function HomePage({ lang }: { lang: Lang }) {
         <h2 className={`reveal ${sectionTitle}`}>
           {t.servicesTitle}
         </h2>
+        <p className="reveal mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+          {t.servicesIntro}
+        </p>
         <Cards
           items={t.services}
           icons={serviceIcons}
-          className="mt-10 sm:grid-cols-2"
+          className="mt-10 sm:grid-cols-3"
         />
+        <dl className="reveal mt-8 grid gap-5 border-t border-neutral-200 pt-6 sm:grid-cols-3 sm:gap-6">
+          {t.technologies.map((group) => (
+            <div key={group.title}>
+              <dt className="text-xs font-medium tracking-wide text-neutral-500">
+                {group.title}
+              </dt>
+              <dd
+                translate="no"
+                className="mt-1 text-pretty text-sm leading-relaxed text-ink"
+              >
+                {group.items.join(', ')}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       {/* How I build */}
