@@ -38,24 +38,29 @@ function useFooterRoutePreload(lang: Lang) {
   const router = useRouter()
 
   useEffect(() => {
+    let started = false
+
     const preload = () => {
+      if (started) return
+      started = true
+      removeListeners()
       void Promise.all([
         router.preloadRoute({ to: pagePaths.privacy[lang] }),
         router.preloadRoute({ to: pagePaths.contact[lang] }),
       ]).catch(() => undefined)
     }
 
-    const idleWindow = window as typeof window & {
-      requestIdleCallback?: typeof window.requestIdleCallback
-      cancelIdleCallback?: typeof window.cancelIdleCallback
-    }
-    if (idleWindow.requestIdleCallback) {
-      const idleId = idleWindow.requestIdleCallback(preload, { timeout: 2_000 })
-      return () => idleWindow.cancelIdleCallback?.(idleId)
+    const removeListeners = () => {
+      window.removeEventListener('scroll', preload)
+      window.removeEventListener('pointerdown', preload)
+      window.removeEventListener('keydown', preload)
     }
 
-    const timeoutId = window.setTimeout(preload, 1_000)
-    return () => window.clearTimeout(timeoutId)
+    window.addEventListener('scroll', preload, { passive: true })
+    window.addEventListener('pointerdown', preload, { passive: true })
+    window.addEventListener('keydown', preload)
+
+    return removeListeners
   }, [lang, router])
 }
 
@@ -179,13 +184,23 @@ function LangSwitch({ lang }: { lang: Lang }) {
   const inactive = 'text-neutral-400 transition-colors hover:text-ink'
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
-      <Link to={paths.sv} className={lang === 'sv' ? active : inactive} lang="sv">
+      <Link
+        to={paths.sv}
+        resetScroll={false}
+        className={lang === 'sv' ? active : inactive}
+        lang="sv"
+      >
         SV
       </Link>
       <span aria-hidden="true" className="text-neutral-300">
         /
       </span>
-      <Link to={paths.en} className={lang === 'en' ? active : inactive} lang="en">
+      <Link
+        to={paths.en}
+        resetScroll={false}
+        className={lang === 'en' ? active : inactive}
+        lang="en"
+      >
         EN
       </Link>
     </span>

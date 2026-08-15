@@ -8,7 +8,7 @@ Key facts:
 - Focus: information security, privacy, artificial intelligence
 - First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools; built for Swedish text and Swedish personal data formats
 - Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
-- Offering: pilot projects, software licenses, installation, support, and consulting in systems development and IT security
+- Offering: software development, APIs and integrations, AI SDK implementation and automation, information security and privacy consulting; Maskera pilot projects, software licenses, installation and support
 - Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores top marks in Lighthouse on every page, with perfect scores for accessibility and SEO
 - Privacy: the website uses no cookies and runs privacy-friendly, self-hosted visitor analytics with Umami; replay, heatmaps and identified users are disabled; live analytics data is retained for 90 days and recovery backups for 7 additional days
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
