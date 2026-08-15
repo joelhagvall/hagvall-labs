@@ -60,6 +60,10 @@ jobs:
       CHROME_PATH: /usr/bin/google-chrome
       PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome
       PUPPETEER_SKIP_DOWNLOAD: 'true'
+      # Use the median of three runs to absorb shared-runner variance. Retry
+      # Chrome transport failures without weakening any score threshold.
+      LH_RUNS: '3'
+      LH_MAX_ATTEMPTS: '3'
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 

@@ -11,6 +11,17 @@ mkdir -p "$S"
 BASE="${BASE:-http://localhost:4173}"
 FAIL=0
 export LH_MIN_PERFORMANCE="${LH_MIN_PERFORMANCE:-95}"
+LH_RUNS="${LH_RUNS:-1}"
+LH_MAX_ATTEMPTS="${LH_MAX_ATTEMPTS:-2}"
+
+case "$LH_RUNS:$LH_MAX_ATTEMPTS" in
+  :*|*:) echo "LH_RUNS and LH_MAX_ATTEMPTS must be positive integers"; exit 1 ;;
+  *[!0-9:]*) echo "LH_RUNS and LH_MAX_ATTEMPTS must be positive integers"; exit 1 ;;
+esac
+if [ "$LH_RUNS" -lt 1 ] || [ $((LH_RUNS % 2)) -eq 0 ] || [ "$LH_MAX_ATTEMPTS" -lt 1 ]; then
+  echo "LH_RUNS must be a positive odd integer and LH_MAX_ATTEMPTS must be positive"
+  exit 1
+fi
 
 CHROME_FLAGS="${CHROME_FLAGS:---headless=new}"
 
@@ -27,13 +38,34 @@ if [[ -n ${PA11Y_CONFIG:-} ]]; then
   pa11y_args+=(--config "$PA11Y_CONFIG")
 fi
 
+run_lighthouse() {
+  local output_path="$1"
+  local error_path="$2"
+  shift 2
+
+  local attempt=1
+  while [ "$attempt" -le "$LH_MAX_ATTEMPTS" ]; do
+    if "${lighthouse_cmd[@]}" "$@" \
+      --output=json --output-path="$output_path" --quiet 2>"$error_path"; then
+      return 0
+    fi
+
+    if [ "$attempt" -lt "$LH_MAX_ATTEMPTS" ]; then
+      echo "  Lighthouse attempt $attempt failed, retrying"
+    fi
+    attempt=$((attempt + 1))
+  done
+
+  return 1
+}
+
 # Lighthouse simulates a mid-tier phone by slowing the host CPU 4x, which
 # over-penalizes slow CI runners (a GitHub runner scored 84 where a laptop
 # scores 100 on the same build). Calibrate the multiplier from the machine's
 # benchmarkIndex using Lighthouse's own guidance table, via a cheap probe run.
-"${lighthouse_cmd[@]}" "$BASE/" --only-categories=seo \
+run_lighthouse "$S/lh-probe.json" "$S/lh-probe.err" \
+  "$BASE/" --only-categories=seo \
   --chrome-flags="$CHROME_FLAGS" \
-  --output=json --output-path="$S/lh-probe.json" --quiet 2>"$S/lh-probe.err" \
   || { echo "calibration probe failed:"; tail -3 "$S/lh-probe.err"; exit 1; }
 BI=$(bun -e "console.log(Math.round((await Bun.file('$S/lh-probe.json').json()).environment.benchmarkIndex))")
 if   [ "$BI" -ge 1300 ]; then CPU=4
@@ -49,26 +81,52 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "integritet:/integri
     case " $* " in *" $name "*) ;; *) continue ;; esac
   fi
   echo "== $path"
-  "${lighthouse_cmd[@]}" "$BASE$path" \
-    --only-categories=performance,seo,accessibility \
-    --throttling.cpuSlowdownMultiplier="$CPU" \
-    --chrome-flags="$CHROME_FLAGS" \
-    --output=json --output-path="$S/lh-$name.json" --quiet 2>"$S/lh-$name.err" \
-    || { echo "  LIGHTHOUSE FAILED:"; tail -3 "$S/lh-$name.err"; FAIL=1; continue; }
-  bun -e "
-    const r = await Bun.file('$S/lh-$name.json').json();
-    const m = r.audits.metrics.details.items[0];
-    let bad = false;
-    const performanceFloor = Number(process.env.LH_MIN_PERFORMANCE);
-    for (const [k, v] of Object.entries(r.categories)) {
-      const s = Math.round(v.score * 100);
-      const floor = k === 'performance' ? performanceFloor : 100;
-      if (s < floor) bad = true;
-      console.log('  ' + k + ': ' + s);
-    }
-    console.log('  FCP ' + m.firstContentfulPaint + '  LCP ' + m.largestContentfulPaint);
-    if (bad) process.exit(2);
-  " || FAIL=1
+  lighthouse_ok=true
+  for run in $(seq 1 "$LH_RUNS"); do
+    if ! run_lighthouse "$S/lh-$name-$run.json" "$S/lh-$name-$run.err" \
+      "$BASE$path" \
+      --only-categories=performance,seo,accessibility \
+      --throttling.cpuSlowdownMultiplier="$CPU" \
+      --chrome-flags="$CHROME_FLAGS"; then
+      echo "  LIGHTHOUSE FAILED after $LH_MAX_ATTEMPTS attempts:"
+      tail -3 "$S/lh-$name-$run.err"
+      FAIL=1
+      lighthouse_ok=false
+      break
+    fi
+  done
+
+  if [[ $lighthouse_ok == true ]]; then
+    AUDIT_DIR="$S" AUDIT_NAME="$name" LH_RUNS="$LH_RUNS" bun -e '
+      const runs = await Promise.all(
+        Array.from({ length: Number(process.env.LH_RUNS) }, (_, index) =>
+          Bun.file(`${process.env.AUDIT_DIR}/lh-${process.env.AUDIT_NAME}-${index + 1}.json`).json(),
+        ),
+      );
+      const performanceFloor = Number(process.env.LH_MIN_PERFORMANCE);
+      const performanceScores = [];
+      let bad = false;
+
+      for (const [index, result] of runs.entries()) {
+        const performance = Math.round(result.categories.performance.score * 100);
+        const accessibility = Math.round(result.categories.accessibility.score * 100);
+        const seo = Math.round(result.categories.seo.score * 100);
+        const metrics = result.audits.metrics.details.items[0];
+        performanceScores.push(performance);
+        if (accessibility < 100 || seo < 100) bad = true;
+        console.log(
+          `  run ${index + 1}: performance ${performance}, accessibility ${accessibility}, seo ${seo}`,
+        );
+        console.log(`    FCP ${metrics.firstContentfulPaint}  LCP ${metrics.largestContentfulPaint}`);
+      }
+
+      performanceScores.sort((a, b) => a - b);
+      const medianPerformance = performanceScores[Math.floor(performanceScores.length / 2)];
+      console.log(`  median performance: ${medianPerformance}`);
+      if (medianPerformance < performanceFloor) bad = true;
+      if (bad) process.exit(2);
+    ' || FAIL=1
+  fi
 
   echo "-- pa11y $path"
   # ${arr[@]+...} guard: macOS bash 3.2 treats an empty array as unset under
