@@ -4,6 +4,20 @@ export const site = 'https://hagvall-labs.com'
 // address appears in code; llms.txt carries it as prose, switch both together.
 export const contactEmail = 'work@joelhagvall.com'
 
+// Public profiles and open Maskera artifacts. Referenced by the pages,
+// the footer and the JSON-LD so the URLs live in exactly one place.
+export const founderLinks = {
+  site: 'https://joelhagvall.com',
+  linkedin: 'https://www.linkedin.com/in/joel-h%C3%A4gvall-810601147/',
+  github: 'https://github.com/joelhagvall',
+}
+
+export const maskeraLinks = {
+  github: 'https://github.com/joelhagvall/maskera',
+  npm: 'https://www.npmjs.com/package/maskera',
+  huggingFace: 'https://huggingface.co/joelhagvall/maskera-sv-ner',
+}
+
 export type Lang = 'sv' | 'en'
 
 // Every page exists in both languages. This map is the single source of
@@ -98,6 +112,7 @@ export function maskeraJsonLd(description: string) {
     url: 'https://maskera.dev',
     operatingSystem: 'Self-hosted (Linux, Docker)',
     description,
+    sameAs: [maskeraLinks.github, maskeraLinks.npm, maskeraLinks.huggingFace],
     publisher: { '@id': site + '/#organization' },
   }
 }

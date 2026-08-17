@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { pagePaths } from '../seo'
+import { founderLinks, pagePaths } from '../seo'
 import type { Lang } from '../seo'
 import { BrandSymbol } from './BrandSymbol'
 import {
@@ -352,11 +352,12 @@ const copy = {
       },
     ],
     aboutTitle: 'Att jobba med mig',
-    aboutP1a: 'Hägvall Labs är jag, ',
-    aboutP1b:
-      '. Det är jag som bygger produkterna, säljer dem och står för det som levereras. Inga mellanled.',
+    aboutP1:
+      'Hägvall Labs är jag. Det är jag som bygger produkterna, säljer dem och står för det som levereras. Inga mellanled.',
     aboutP2:
       'Jag jobbar direkt med företag och organisationer, främst i Sverige. Vi träffas digitalt och jag visar produkten på era egna data. Räcker inte det som bevis ska ni inte köpa.',
+    aboutRole: 'Grundare och utvecklare',
+    aboutLinks: 'Kolla upp mig på',
     aboutCta: 'Hör av dig',
   },
   en: {
@@ -420,11 +421,12 @@ const copy = {
       },
     ],
     aboutTitle: 'Working With Me',
-    aboutP1a: 'Hägvall Labs is me, ',
-    aboutP1b:
-      '. I build the products, I sell them and I stand behind what ships. No layers in between.',
+    aboutP1:
+      'Hägvall Labs is me. I build the products, I sell them and I stand behind what ships. No layers in between.',
     aboutP2:
       'I work directly with companies and organizations, primarily in Sweden. We meet online and I show you the product on your own data. If that doesn’t convince you, you shouldn’t buy.',
+    aboutRole: 'Founder and Developer',
+    aboutLinks: 'Look me up on',
     aboutCta: 'Get in Touch',
   },
 }
@@ -551,31 +553,70 @@ export function HomePage({ lang }: { lang: Lang }) {
         </div>
       </section>
 
-      {/* About / contact */}
+      {/* About / contact. The portrait is a real photo of Joel: below the
+          fold and lazy, so it never touches the LCP. */}
       <section className="border-t border-neutral-200">
         <div className={`reveal ${container}`}>
           <h2 className={sectionTitle}>
             {t.aboutTitle}
           </h2>
-          <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-            {t.aboutP1a}
-            <a
-              href="https://joelhagvall.com"
-              className={linkInk}
-              data-umami-event="outbound-link-click"
-              data-umami-event-destination="joelhagvall.com"
-              data-umami-event-placement="home-founder"
-            >
-              Joel Hägvall
-            </a>
-            {t.aboutP1b}
-          </p>
-          <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-            {t.aboutP2}
-          </p>
-          <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
-            {t.aboutCta}
-          </Link>
+          <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
+            <img
+              src="/joel-hagvall.webp"
+              alt="Joel Hägvall"
+              width={112}
+              height={112}
+              loading="lazy"
+              decoding="async"
+              className="h-28 w-28 shrink-0 rounded-2xl object-cover"
+            />
+            <div>
+              <p className="font-medium">
+                <a
+                  href={founderLinks.site}
+                  className={linkInk}
+                  data-umami-event="outbound-link-click"
+                  data-umami-event-destination="joelhagvall.com"
+                  data-umami-event-placement="home-founder"
+                >
+                  Joel Hägvall
+                </a>
+              </p>
+              <p className="text-sm text-neutral-600">{t.aboutRole}</p>
+              <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+                {t.aboutP1}
+              </p>
+              <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+                {t.aboutP2}
+              </p>
+              <p className="mt-4 text-sm text-neutral-600">
+                {t.aboutLinks}{' '}
+                <a
+                  href={founderLinks.linkedin}
+                  className={linkInk}
+                  data-umami-event="outbound-link-click"
+                  data-umami-event-destination="linkedin.com"
+                  data-umami-event-placement="home-founder"
+                >
+                  LinkedIn
+                </a>
+                {' / '}
+                <a
+                  href={founderLinks.github}
+                  className={linkInk}
+                  data-umami-event="outbound-link-click"
+                  data-umami-event-destination="github.com"
+                  data-umami-event-placement="home-founder"
+                >
+                  GitHub
+                </a>
+                .
+              </p>
+              <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
+                {t.aboutCta}
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </>

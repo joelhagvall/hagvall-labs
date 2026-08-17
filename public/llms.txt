@@ -7,6 +7,7 @@ Key facts:
 - Company: Hägvall Labs (Stockholm, Sweden), founded and run by Joel Hägvall
 - Focus: information security, privacy, artificial intelligence
 - First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools; built for Swedish text and Swedish personal data formats
+- Open artifacts: Maskera source on GitHub (https://github.com/joelhagvall/maskera), package on npm (https://www.npmjs.com/package/maskera), Swedish NER model on Hugging Face (https://huggingface.co/joelhagvall/maskera-sv-ner)
 - Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
 - Offering: software development, APIs and integrations, AI SDK implementation and automation, information security and privacy consulting; Maskera pilot projects, software licenses, installation and support
 - Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores top marks in Lighthouse on every page, with perfect scores for accessibility and SEO
@@ -14,7 +15,7 @@ Key facts:
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
 - Payment: invoice and bank transfer
 - Operations: fully online
-- Founder and responsible: Joel Hägvall (https://joelhagvall.com)
+- Founder and responsible: Joel Hägvall (https://joelhagvall.com, LinkedIn: https://www.linkedin.com/in/joel-h%C3%A4gvall-810601147/, GitHub: https://github.com/joelhagvall)
 - Contact: work@joelhagvall.com
 
 ## Pages

@@ -26,7 +26,7 @@ import {
   kicker,
   linkInk,
 } from '../components/ui'
-import { contactEmail, pageFromPath, pagePaths, site } from '../seo'
+import { contactEmail, founderLinks, pageFromPath, pagePaths, site } from '../seo'
 import type { Lang } from '../seo'
 
 function useLang(): Lang {
@@ -160,7 +160,8 @@ export const Route = createRootRoute({
           founder: {
             '@type': 'Person',
             name: 'Joel Hägvall',
-            url: 'https://joelhagvall.com',
+            url: founderLinks.site,
+            sameAs: [founderLinks.linkedin, founderLinks.github],
           },
           address: {
             '@type': 'PostalAddress',

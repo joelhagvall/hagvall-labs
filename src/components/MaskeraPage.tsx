@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { pagePaths } from '../seo'
+import { maskeraLinks, pagePaths } from '../seo'
 import type { Lang } from '../seo'
 import {
   Cards,
@@ -347,6 +347,14 @@ const copy = {
         body: 'Ett rakt API som passar in i flödena ni redan har: före AI-anropet, före loggningen, före exporten.',
       },
     ],
+    openTitle: 'Granska själv',
+    openBody:
+      'Kärnan i Maskera är öppen: koden ligger på GitHub, paketet på npm och NER-modellen på Hugging Face. Ni behöver inte ta mitt ord för hur den fungerar, ni kan läsa den och köra den innan ni pratar med mig.',
+    openLinks: [
+      { label: 'Källkod på GitHub', href: maskeraLinks.github, destination: 'github.com' },
+      { label: 'Paketet på npm', href: maskeraLinks.npm, destination: 'npmjs.com' },
+      { label: 'Modellen på Hugging Face', href: maskeraLinks.huggingFace, destination: 'huggingface.co' },
+    ],
     bottomTitle: 'Se Maskera på era egna data.',
     bottomBodyA:
       'Hur träffsäker är den? Det svaret får ni på era egna data i piloten, inte från ett säljblad. Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
@@ -390,6 +398,14 @@ const copy = {
         title: 'Simple to Integrate',
         body: 'A straightforward API that fits the flows you already have: before the AI call, before the log write, before the export.',
       },
+    ],
+    openTitle: 'Inspect It Yourself',
+    openBody:
+      'The core of Maskera is open: the code is on GitHub, the package on npm and the NER model on Hugging Face. You don’t have to take my word for how it works, you can read it and run it before you talk to me.',
+    openLinks: [
+      { label: 'Source on GitHub', href: maskeraLinks.github, destination: 'github.com' },
+      { label: 'Package on npm', href: maskeraLinks.npm, destination: 'npmjs.com' },
+      { label: 'Model on Hugging Face', href: maskeraLinks.huggingFace, destination: 'huggingface.co' },
     ],
     bottomTitle: 'See Maskera on Your Own Data.',
     bottomBodyA:
@@ -464,6 +480,37 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
           icons={principleIcons}
           className="mt-8 sm:grid-cols-3"
         />
+      </section>
+
+      {/* Open source: the trust argument is that the code, package and model
+          are public, so the links are the content of this section. */}
+      <section className="border-t border-neutral-200">
+        <div className={`reveal ${container} md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-12`}>
+          <div>
+            <h2 className={sectionTitleSm}>{t.openTitle}</h2>
+            <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+              {t.openBody}
+            </p>
+          </div>
+          <ul className="mt-8 flex flex-col gap-3 md:mt-0">
+            {t.openLinks.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={link.href}
+                  className={`${btnSecondary} group w-full justify-between md:w-64`}
+                  data-umami-event="outbound-link-click"
+                  data-umami-event-destination={link.destination}
+                  data-umami-event-placement="maskera-open"
+                >
+                  {link.label}
+                  <span aria-hidden="true" className={btnArrow}>
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
       <section className="border-t border-neutral-200">
