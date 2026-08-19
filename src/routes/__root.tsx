@@ -85,9 +85,7 @@ const chrome = {
     privacy: 'Integritet',
     orgNr: 'org.nr',
     runBy: 'Drivs av',
-    controller: ', som ansvarar för behandlingen av personuppgifter på webbplatsen.',
-    builtIn: 'Byggt i Sverige.',
-    noTracking: 'Inga kakor. Integritetsvänlig, egenhostad besöksstatistik.',
+    noCookies: 'Inga kakor.',
     skip: 'Hoppa till innehållet',
     homeAria: 'Hägvall Labs, startsida',
   },
@@ -100,9 +98,7 @@ const chrome = {
     privacy: 'Privacy',
     orgNr: 'org. no.',
     runBy: 'Founded and run by',
-    controller: ', who is responsible for the processing of personal data on this site.',
-    builtIn: 'Built in Sweden.',
-    noTracking: 'No cookies. Privacy-friendly, self-hosted visitor analytics.',
+    noCookies: 'No cookies.',
     skip: 'Skip to Content',
     homeAria: 'Hägvall Labs, Home',
   },
@@ -361,8 +357,8 @@ function RootLayout() {
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()}{' '}
-            <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, {t.orgNr}{' '}
-            <span translate="no">559598-0110</span>, Stockholm. {t.runBy}{' '}
+            <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span> · {t.orgNr}{' '}
+            <span translate="no">559598-0110</span> · Stockholm. {t.runBy}{' '}
             <a
               href="https://joelhagvall.com"
               className={linkInk}
@@ -372,7 +368,7 @@ function RootLayout() {
             >
               Joel Hägvall
             </a>
-            {t.controller} {t.builtIn} {t.noTracking}
+            . {t.noCookies}
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
