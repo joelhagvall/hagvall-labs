@@ -85,7 +85,7 @@ const chrome = {
     privacy: 'Integritet',
     orgNr: 'org.nr',
     runBy: 'Drivs av',
-    noCookies: 'Inga kakor.',
+    noCookies: 'Inga cookies.',
     skip: 'Hoppa till innehållet',
     homeAria: 'Hägvall Labs, startsida',
   },

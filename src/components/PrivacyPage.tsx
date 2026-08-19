@@ -22,7 +22,7 @@ const copy = {
       title: 'Besöksstatistik',
       paragraphs: [
         'Jag använder en egenhostad installation av Umami för att förstå vilka sidor och länkar som är användbara. Statistiken används inte för annonsering, försäljning av data eller spårning mellan webbplatser.',
-        'Umami använder inga kakor. Session replay, heatmaps och identifierade användarprofiler är avstängda. Inställningen Do Not Track respekteras.',
+        'Umami använder inga cookies. Session replay, heatmaps och identifierade användarprofiler är avstängda. Inställningen Do Not Track respekteras.',
       ],
       items: [
         'Besökt sida och sidtitel. URL-parametrar och hashvärden tas bort.',
