@@ -1,0 +1,5 @@
+# CVE-2026-14456: OpenSSL DoS via unbounded memory growth in QUIC *server*
+# (libssl3t64 in the distroless base). No Debian fix yet (fix_deferred).
+# Not reachable here: Bun serves plain HTTP behind Caddy; no QUIC server.
+# Expires so the exception is re-evaluated once a fixed base image exists.
+CVE-2026-14456 exp:2026-10-31
