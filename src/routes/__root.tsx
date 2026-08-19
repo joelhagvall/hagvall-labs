@@ -34,33 +34,28 @@ function useLang(): Lang {
   return pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'sv'
 }
 
-function useFooterRoutePreload(lang: Lang) {
+/* Preload the small secondary routes (contact, privacy) as soon as the
+   browser is idle after hydration. Waiting for pointerdown raced the click
+   itself: the chunk started downloading at the moment of navigation, and on
+   a slow connection the router fell through to an empty pending state, so
+   <main> blanked for a beat before the page appeared. */
+function useSecondaryRoutePreload(lang: Lang) {
   const router = useRouter()
 
   useEffect(() => {
-    let started = false
-
     const preload = () => {
-      if (started) return
-      started = true
-      removeListeners()
       void Promise.all([
         router.preloadRoute({ to: pagePaths.privacy[lang] }),
         router.preloadRoute({ to: pagePaths.contact[lang] }),
       ]).catch(() => undefined)
     }
 
-    const removeListeners = () => {
-      window.removeEventListener('scroll', preload)
-      window.removeEventListener('pointerdown', preload)
-      window.removeEventListener('keydown', preload)
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(preload, { timeout: 2000 })
+      return () => window.cancelIdleCallback(id)
     }
-
-    window.addEventListener('scroll', preload, { passive: true })
-    window.addEventListener('pointerdown', preload, { passive: true })
-    window.addEventListener('keydown', preload)
-
-    return removeListeners
+    const id = window.setTimeout(preload, 1000)
+    return () => window.clearTimeout(id)
   }, [lang, router])
 }
 
@@ -312,7 +307,7 @@ function Brand() {
 function RootLayout() {
   const lang = useLang()
   const t = chrome[lang]
-  useFooterRoutePreload(lang)
+  useSecondaryRoutePreload(lang)
   useEffect(() => {
     document.documentElement.lang = lang
   }, [lang])

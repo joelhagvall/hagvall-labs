@@ -6,6 +6,9 @@ export function getRouter() {
     routeTree,
     scrollRestoration: true,
     defaultPreload: 'intent',
+    // Never hold an empty pending state on screen: if a chunk is still
+    // loading, keep the previous page until the new one is ready.
+    defaultPendingMinMs: 0,
   })
 
   return router
