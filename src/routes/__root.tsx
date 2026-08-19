@@ -83,6 +83,7 @@ const chrome = {
     services: 'Tjänster',
     contact: 'Kontakt',
     privacy: 'Integritet',
+    orgNr: 'org.nr',
     runBy: 'Drivs av',
     controller: ', som ansvarar för behandlingen av personuppgifter på webbplatsen.',
     builtIn: 'Byggt i Sverige.',
@@ -97,6 +98,7 @@ const chrome = {
     services: 'Services',
     contact: 'Contact',
     privacy: 'Privacy',
+    orgNr: 'org. no.',
     runBy: 'Founded and run by',
     controller: ', who is responsible for the processing of personal data on this site.',
     builtIn: 'Built in Sweden.',
@@ -152,6 +154,11 @@ export const Route = createRootRoute({
           name: 'Hägvall Labs',
           legalName: 'Hägvall Labs AB',
           alternateName: 'Hägvall Labs AB',
+          identifier: {
+            '@type': 'PropertyValue',
+            propertyID: 'Swedish organisation number',
+            value: '559598-0110',
+          },
           url: site,
           logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
@@ -353,12 +360,9 @@ function RootLayout() {
       <footer className="border-t border-neutral-200">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            {/* TODO: restore "Hägvall Labs AB" (footer, JSON-LD in this file
-                and seo.ts, llms.txt, the controller section in
-                PrivacyPage.tsx) once the Bolagsverket registration
-                certificate arrives; the company is not a legal person yet. */}
             © {new Date().getFullYear()}{' '}
-            <span translate="no">Hägvall&nbsp;Labs</span>, Stockholm. {t.runBy}{' '}
+            <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, {t.orgNr}{' '}
+            <span translate="no">559598-0110</span>, Stockholm. {t.runBy}{' '}
             <a
               href="https://joelhagvall.com"
               className={linkInk}

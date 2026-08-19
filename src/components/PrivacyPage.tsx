@@ -2,7 +2,7 @@ import { contactEmail } from '../seo'
 import type { Lang } from '../seo'
 import { heroBody, heroTitle, kicker, linkInk, sectionTitleSm } from './ui'
 
-const updatedAt = new Date('2026-08-05T12:00:00Z')
+const updatedAt = new Date('2026-08-19T12:00:00Z')
 
 const copy = {
   sv: {
@@ -14,7 +14,7 @@ const copy = {
     controller: {
       title: 'Vem ansvarar?',
       paragraphs: [
-        'Jag, Joel Hägvall, är personuppgiftsansvarig för behandlingen på den här webbplatsen och hanterar frågorna själv. Verksamheten drivs i Stockholm under namnet Hägvall Labs.',
+        'Hägvall Labs AB (org.nr 559598-0110), Stockholm, är personuppgiftsansvarig för behandlingen på den här webbplatsen. Jag, Joel Hägvall, driver bolaget och hanterar frågorna själv.',
         'Kontakta mig om du undrar något eller vill använda någon av dina rättigheter:',
       ],
     },
@@ -78,7 +78,7 @@ const copy = {
     controller: {
       title: 'Who Is Responsible?',
       paragraphs: [
-        'I, Joel Hägvall, am the controller for processing on this website and handle privacy questions myself. The business operates in Stockholm under the name Hägvall Labs.',
+        'Hägvall Labs AB (Swedish org. no. 559598-0110), Stockholm, is the controller for processing on this website. I, Joel Hägvall, run the company and handle privacy questions myself.',
         'Contact me if you have a question or want to exercise any of your rights:',
       ],
     },
@@ -163,7 +163,7 @@ export function PrivacyPage({ lang }: { lang: Lang }) {
           <p className={heroBody}>{t.intro}</p>
           <p className="mt-6 text-sm text-neutral-500">
             {t.updatedLabel}:{' '}
-            <time dateTime="2026-08-05">{updated}</time>
+            <time dateTime="2026-08-19">{updated}</time>
           </p>
         </div>
       </section>

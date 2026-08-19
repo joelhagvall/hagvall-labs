@@ -4,7 +4,7 @@
 
 Key facts:
 
-- Company: Hägvall Labs (Stockholm, Sweden), founded and run by Joel Hägvall
+- Company: Hägvall Labs AB (Swedish org. no. 559598-0110, Stockholm, Sweden), founded and run by Joel Hägvall
 - Focus: information security, privacy, artificial intelligence
 - First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools; built for Swedish text and Swedish personal data formats
 - Open artifacts: Maskera source on GitHub (https://github.com/joelhagvall/maskera), package on npm (https://www.npmjs.com/package/maskera), Swedish NER model on Hugging Face (https://huggingface.co/joelhagvall/maskera-sv-ner)
