@@ -72,7 +72,7 @@ const tokenClass = `rounded-sm border px-[5px] font-mono text-[0.92em] whitespac
 // The same hue in the source text: a 16% fill plus a 2px underline drawn
 // with an inset shadow, which adds no width.
 const highlightClass =
-  'rounded-xs bg-(--pill)/16 shadow-[inset_0_-2px_0_var(--pill)]'
+  'rounded-xs bg-(--pill)/16 pill-underline'
 
 // The preview sentence, one segment per run of text. Labelled segments
 // render highlighted in the before-row and as placeholder pills in the
