@@ -155,6 +155,13 @@ export const Route = createRootRoute({
           description:
             'Hägvall Labs develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
           email: contactEmail,
+          contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'sales',
+            email: contactEmail,
+            url: site + pagePaths.contact.sv,
+            availableLanguage: ['sv', 'en'],
+          },
           founder: {
             '@type': 'Person',
             name: 'Joel Hägvall',
@@ -262,7 +269,7 @@ function ProductsMenu({ lang }: { lang: Lang }) {
         </svg>
       </button>
       {open && (
-        <div className="animate-menu absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg">
+        <div className="animate-menu absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-flat-lg">
           <Link to={pagePaths.maskera[lang]} onClick={close} className={itemClass}>
             <span translate="no" className="block font-medium text-ink">
               Maskera
@@ -319,7 +326,7 @@ function RootLayout() {
       >
         {t.skip}
       </a>
-      <header className="sticky top-0 z-10 border-b border-neutral-200 bg-white/80 backdrop-blur">
+      <header className="header-blur sticky top-0 z-10 border-b border-neutral-200 bg-white/80">
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
           <Link to={pagePaths.home[lang]} aria-label={t.homeAria}>
             <Brand />
@@ -401,17 +408,38 @@ const notFoundCopy = {
     title: 'Sidan finns inte.',
     body: 'Adressen du försökte nå finns inte. Den kan ha flyttats eller aldrig ha funnits.',
     cta: 'Till startsidan',
+    next: 'Leta vidare här:',
+    pages: {
+      home: 'Startsidan',
+      maskera: 'Maskera',
+      contact: 'Kontakt',
+      privacy: 'Integritet',
+    },
+    agents: 'För sökmotorer och agenter:',
   },
   en: {
     title: 'Page Not Found.',
     body: 'The address you tried to reach doesn’t exist. It may have moved or never existed.',
     cta: 'Back to Home',
+    next: 'Where to look next:',
+    pages: {
+      home: 'Home',
+      maskera: 'Maskera',
+      contact: 'Contact',
+      privacy: 'Privacy',
+    },
+    agents: 'For crawlers and agents:',
   },
 }
 
+// The 404 keeps its real status (the router sets it) and points at the pages
+// that do exist, plus the sitemap and llms.txt, so a visitor or an agent can
+// recover instead of guessing. The Markdown representation (see
+// scripts/serve-prod.ts) is derived from this same markup.
 function NotFound() {
   const lang = useLang()
   const t = notFoundCopy[lang]
+  const pages = Object.keys(t.pages) as Array<keyof typeof t.pages>
   return (
     <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
       <p className={`mb-4 ${kicker}`}>404</p>
@@ -420,6 +448,26 @@ function NotFound() {
       <Link to={pagePaths.home[lang]} className={`mt-10 ${btnPrimary}`}>
         {t.cta}
       </Link>
+      <h2 className="mt-14 text-sm font-medium text-neutral-500">{t.next}</h2>
+      <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        {pages.map((page) => (
+          <li key={page}>
+            <Link to={pagePaths[page][lang]} className={linkInk}>
+              {t.pages[page]}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-6 text-xs text-neutral-500">
+        {t.agents}{' '}
+        <a href="/sitemap.xml" className={linkInk}>
+          sitemap.xml
+        </a>
+        {' · '}
+        <a href="/llms.txt" className={linkInk}>
+          llms.txt
+        </a>
+      </p>
     </section>
   )
 }

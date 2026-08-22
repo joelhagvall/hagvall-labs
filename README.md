@@ -12,7 +12,7 @@ bun run dev      # http://localhost:3000
 bun run build    # production build
 ```
 
-Quality gates: every change must hit Lighthouse Performance 95+, SEO 100 and Accessibility 100, and pass pa11y with 0 errors: see `AGENTS.md`.
+Quality gates: every change must hit Lighthouse Performance 95+, SEO 100 and Accessibility 100, and pass pa11y with 0 errors: see `AGENTS.md`. `scripts/agent-checks.sh` covers the agent-readiness behaviour of the production server (Markdown content negotiation, real 404s, trust-anchor aliases).
 
 On the production VM, run the same gates in the pinned Bun + Chrome audit
 container. The image is cached after the first build:
@@ -30,6 +30,7 @@ Bilingual: Swedish (default, `/` and `/maskera`) and English (`/en`, `/en/masker
 - `src/components/`: shared page components with sv/en copy dicts
 - `src/routes/*`: thin per-language route wrappers with meta, canonical/hreflang and JSON-LD
 - `public/llms.txt`: company summary for LLM crawlers
+- `scripts/serve-prod.ts` + `scripts/html-to-markdown.ts`: the production server; every page also serves Markdown for `Accept: text/markdown` (acceptmarkdown.com)
 - `public/robots.txt`, `public/sitemap.xml`: crawler config (sitemap includes hreflang alternates)
 
 ## Analytics

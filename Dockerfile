@@ -25,7 +25,7 @@ WORKDIR /app
 COPY --from=production-dependencies --chown=65532:65532 /usr/local/bin/bun /usr/local/bin/bun
 COPY --from=production-dependencies --chown=65532:65532 /app/node_modules ./node_modules
 COPY --from=build --chown=65532:65532 /app/dist ./dist
-COPY --from=build --chown=65532:65532 /app/scripts/serve-prod.ts ./scripts/serve-prod.ts
+COPY --from=build --chown=65532:65532 /app/scripts/serve-prod.ts /app/scripts/html-to-markdown.ts ./scripts/
 
 ENV NODE_ENV=production
 USER 65532:65532

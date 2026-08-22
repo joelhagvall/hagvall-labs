@@ -39,6 +39,15 @@ jobs:
       - name: Build
         run: bun run build
 
+      - name: Agent-readiness checks (markdown negotiation, 404s, aliases)
+        run: |
+          bun run serve:prod &
+          for _ in $(seq 1 30); do
+            curl -sf http://localhost:4173/ >/dev/null && break
+            sleep 1
+          done
+          bash scripts/agent-checks.sh
+
       - name: Upload dist
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

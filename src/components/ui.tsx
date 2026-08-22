@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 // Transitions list properties explicitly (never transition-all), transforms
 // are disabled under prefers-reduced-motion.
 export const btnPrimary =
-  'group inline-flex items-center gap-2 rounded-full bg-cobalt px-6 py-3 text-sm font-medium text-white shadow-sm transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-cobalt-deep hover:shadow-md active:translate-y-0 motion-reduce:transition-none motion-reduce:hover:-translate-y-0'
+  'group inline-flex items-center gap-2 rounded-full bg-cobalt px-6 py-3 text-sm font-medium text-white shadow-flat-sm transition-[background-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-cobalt-deep hover:shadow-flat-md active:translate-y-0 motion-reduce:transition-none motion-reduce:hover:-translate-y-0'
 
 export const btnSecondary =
   'inline-flex items-center gap-2 rounded-full border border-neutral-300 px-6 py-3 text-sm font-medium transition-[border-color,color,transform] duration-200 hover:-translate-y-0.5 hover:border-cobalt hover:text-cobalt active:translate-y-0 motion-reduce:transition-none motion-reduce:hover:-translate-y-0'
@@ -117,7 +117,10 @@ export function HeroGlows() {
 }
 
 /** A grid of feature cards. Renders a 1-based step number when no icons are
-    given (the contact page). Pass grid columns and top margin via className. */
+    given (the contact page); the chip is decorative (aria-hidden) like the
+    icons, so neither assistive tech nor the Markdown representation gets a
+    stray "1" before each heading. Pass grid columns and top margin via
+    className. */
 export function Cards({
   items,
   icons,
@@ -134,6 +137,7 @@ export function Cards({
         return (
           <div key={item.title} className={cardClass}>
             <span
+              aria-hidden="true"
               className={`${chipClass}${Icon ? '' : ' text-sm font-semibold'}`}
             >
               {Icon ? <Icon className="h-5 w-5" /> : i + 1}

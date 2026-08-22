@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* source(".") limits class detection to src/: the docs mention utilities
+   (blur-3xl, ...) that must not end up in the inlined stylesheet. */
+@import "tailwindcss" source(".");
 
 @theme {
   --color-cobalt: #1748d4;
@@ -92,6 +94,38 @@ textarea {
     opacity: 0;
     transform: translateY(4px);
   }
+}
+
+/* Flat shadows. Tailwind's shadow-* utilities compose through a chain of
+   --tw-shadow/--tw-ring variables (a dozen @property rules, about 2 KB of
+   the inlined stylesheet) and nothing here ever combines a shadow with a
+   ring, so these carry the same values as shadow-sm/md/lg as plain
+   box-shadow. pill-underline is the masking preview's inset underline. */
+@utility shadow-flat-sm {
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+@utility shadow-flat-md {
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+@utility shadow-flat-lg {
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+@utility pill-underline {
+  box-shadow: inset 0 -2px 0 var(--pill);
+}
+
+/* The header's frosted backdrop. Hand-written instead of Tailwind's
+   backdrop-blur: that utility pulls in the whole backdrop-filter variable
+   chain (a dozen @property rules, ~1 KB of inlined CSS) for one element. */
+.header-blur {
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 /* Hero glows: radial gradients, not blur() filters. A large blurred element
