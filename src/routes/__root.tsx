@@ -195,6 +195,7 @@ export const Route = createRootRoute({
           },
           founder: {
             '@type': 'Person',
+            '@id': site + '/#founder',
             name: 'Joel Hägvall',
             url: founderLinks.site,
             sameAs: [founderLinks.linkedin, founderLinks.github],

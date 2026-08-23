@@ -1,0 +1,6 @@
+# Security contact for Hägvall Labs AB (RFC 9116).
+# Please report vulnerabilities in hagvall-labs.com or Maskera here.
+Contact: mailto:work@joelhagvall.com
+Expires: 2027-08-23T00:00:00.000Z
+Preferred-Languages: sv, en
+Canonical: https://hagvall-labs.com/.well-known/security.txt

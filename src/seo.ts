@@ -10,6 +10,7 @@ export const founderLinks = {
   site: 'https://joelhagvall.com',
   linkedin: 'https://www.linkedin.com/in/joel-h%C3%A4gvall-810601147/',
   github: 'https://github.com/joelhagvall',
+  huggingFace: 'https://huggingface.co/joelhagvall',
 }
 
 export const maskeraLinks = {
@@ -17,6 +18,10 @@ export const maskeraLinks = {
   npm: 'https://www.npmjs.com/package/maskera',
   huggingFace: 'https://huggingface.co/joelhagvall/maskera-sv-ner',
 }
+
+// Published version of the maskera npm package, used in the
+// SoftwareApplication JSON-LD. Bump when a new version is published.
+export const maskeraVersion = '0.10.2'
 
 export type Lang = 'sv' | 'en'
 
@@ -73,6 +78,13 @@ export function pageHead(opts: {
       { rel: 'alternate', hrefLang: 'sv', href: site + paths.sv },
       { rel: 'alternate', hrefLang: 'en', href: site + paths.en },
       { rel: 'alternate', hrefLang: 'x-default', href: site + paths.sv },
+      // The same URL also serves Markdown via content negotiation
+      // (Accept: text/markdown, handled in scripts/serve-prod.ts).
+      {
+        rel: 'alternate',
+        type: 'text/markdown',
+        href: site + paths[opts.lang],
+      },
     ],
     ...(opts.jsonLd
       ? {
@@ -90,30 +102,74 @@ export function pageHead(opts: {
 // Structured data shared by the sv and en route variants: only the
 // human-readable strings differ per language.
 
-export function websiteJsonLd() {
+/** WebSite + founder Person for the home pages. The Person shares the
+    @id of the founder node in the Organization JSON-LD (__root.tsx), so
+    the two merge into one entity that AI search can attribute Maskera and
+    Hägvall Labs to. */
+export function homeJsonLd() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': site + '/#website',
-    name: 'Hägvall Labs',
-    alternateName: ['Hägvall Labs AB', 'hagvall-labs.com'],
-    url: site + '/',
-    inLanguage: ['sv', 'en'],
-    publisher: { '@id': site + '/#organization' },
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': site + '/#website',
+        name: 'Hägvall Labs',
+        alternateName: ['Hägvall Labs AB', 'hagvall-labs.com'],
+        url: site + '/',
+        inLanguage: ['sv', 'en'],
+        publisher: { '@id': site + '/#organization' },
+      },
+      {
+        '@type': 'Person',
+        '@id': site + '/#founder',
+        name: 'Joel Hägvall',
+        url: founderLinks.site,
+        jobTitle: 'Founder',
+        worksFor: { '@id': site + '/#organization' },
+        sameAs: [
+          founderLinks.site,
+          founderLinks.linkedin,
+          founderLinks.github,
+          founderLinks.huggingFace,
+        ],
+        knowsLanguage: ['sv', 'en'],
+      },
+    ],
   }
 }
 
 export function maskeraJsonLd(description: string) {
+  const appId = 'https://maskera.dev/#software'
   return {
     '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: 'Maskera',
-    applicationCategory: 'SecurityApplication',
-    url: 'https://maskera.dev',
-    operatingSystem: 'Self-hosted (Linux, Docker)',
-    description,
-    sameAs: [maskeraLinks.github, maskeraLinks.npm, maskeraLinks.huggingFace],
-    publisher: { '@id': site + '/#organization' },
+    '@graph': [
+      {
+        '@type': 'SoftwareApplication',
+        '@id': appId,
+        name: 'Maskera',
+        applicationCategory: 'SecurityApplication',
+        url: 'https://maskera.dev',
+        operatingSystem: 'Self-hosted (Linux, Docker)',
+        softwareVersion: maskeraVersion,
+        license: 'https://opensource.org/license/mit/',
+        downloadUrl: maskeraLinks.npm,
+        description,
+        sameAs: [maskeraLinks.github, maskeraLinks.npm, maskeraLinks.huggingFace],
+        author: { '@id': site + '/#organization' },
+        publisher: { '@id': site + '/#organization' },
+      },
+      {
+        '@type': 'SoftwareSourceCode',
+        '@id': maskeraLinks.github,
+        name: 'Maskera source code',
+        codeRepository: maskeraLinks.github,
+        programmingLanguage: 'TypeScript',
+        runtimePlatform: 'Node.js',
+        license: 'https://opensource.org/license/mit/',
+        targetProduct: { '@id': appId },
+        author: { '@id': site + '/#founder' },
+      },
+    ],
   }
 }
 

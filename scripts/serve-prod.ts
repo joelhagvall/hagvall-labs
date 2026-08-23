@@ -164,6 +164,8 @@ async function markdownResponse(req: Request): Promise<Response> {
     headers: {
       'content-type': 'text/markdown; charset=utf-8',
       vary: 'Accept',
+      // Advertise the HTML representation of the same URL (RFC 8288).
+      link: `<${site + url.pathname}>; rel="alternate"; type="text/html"`,
       'cache-control': 'public, max-age=300',
     },
   })
@@ -186,11 +188,13 @@ function notAcceptable(accept: string): Response {
 
 // Conventional English paths agents and people try by hand. Permanent
 // redirects to the pages that carry the content (the site is bilingual with
-// Swedish URLs by default, see pagePaths in src/seo.ts).
+// Swedish URLs by default, see pagePaths in src/seo.ts). /security.txt is
+// the RFC 9116 legacy location for the real file under /.well-known/.
 const aliases: Record<string, string> = {
   '/about': '/en',
   '/contact': '/en/contact',
   '/privacy': '/en/privacy',
+  '/security.txt': '/.well-known/security.txt',
 }
 
 
@@ -237,6 +241,12 @@ Bun.serve({
     const page = new Response(res.body, { status: res.status, headers: res.headers })
     if ((res.headers.get('content-type') ?? '').includes('text/html')) {
       addVary(page.headers, 'Accept')
+      // Advertise the Markdown representation of the same URL so agents
+      // find the content negotiation without guessing (RFC 8288).
+      page.headers.append(
+        'link',
+        `<${site + pathname}>; rel="alternate"; type="text/markdown"`,
+      )
     }
     return respond(page, req)
   },

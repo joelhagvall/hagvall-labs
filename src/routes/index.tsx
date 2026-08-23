@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { HomePage } from '../components/HomePage'
-import { pageHead, websiteJsonLd } from '../seo'
+import { homeJsonLd, pageHead } from '../seo'
 
 export const Route = createFileRoute('/')({
   head: () =>
@@ -13,7 +13,7 @@ export const Route = createFileRoute('/')({
       ogTitle: 'Hägvall Labs | Integritetssäker AI-mjukvara',
       ogDescription:
         'Integritetssäker mjukvara för AI-eran. Self-hosted, byggd i Sverige.',
-      jsonLd: websiteJsonLd(),
+      jsonLd: homeJsonLd(),
     }),
   component: () => <HomePage lang="sv" />,
 })

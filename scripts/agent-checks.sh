@@ -65,7 +65,7 @@ for path in /this-path-does-not-exist /en/this-path-does-not-exist; do
 done
 
 echo "== trust-anchor aliases"
-for entry in "/about:/en" "/contact:/en/contact" "/privacy:/en/privacy"; do
+for entry in "/about:/en" "/contact:/en/contact" "/privacy:/en/privacy" "/security.txt:/.well-known/security.txt"; do
   path="${entry%%:*}"; target="${entry#*:}"
   code=$(status_of "$BASE$path")
   loc=$(header_of location "$BASE$path")
@@ -74,10 +74,32 @@ for entry in "/about:/en" "/contact:/en/contact" "/privacy:/en/privacy"; do
   [ "$final" = 200 ] && pass "$path follows to 200" || fail "$path follows to $final"
 done
 
+echo "== security.txt (RFC 9116)"
+code=$(status_of "$BASE/.well-known/security.txt")
+ct=$(header_of content-type "$BASE/.well-known/security.txt")
+body=$(curl -s "$BASE/.well-known/security.txt")
+[ "$code" = 200 ] && pass "/.well-known/security.txt -> 200 ($ct)" || fail "/.well-known/security.txt -> $code"
+case "$ct" in text/plain*) pass "security.txt content-type" ;; *) fail "security.txt content-type '$ct'" ;; esac
+case "$body" in *"Contact: mailto:"*) pass "security.txt has Contact" ;; *) fail "security.txt lacks Contact" ;; esac
+case "$body" in *"Expires: "*) pass "security.txt has Expires" ;; *) fail "security.txt lacks Expires" ;; esac
+case "$body" in *"Canonical: "*) pass "security.txt has Canonical" ;; *) fail "security.txt lacks Canonical" ;; esac
+
+echo "== alternate representation links"
+lnk=$(header_of link "$BASE/")
+case "$lnk" in *'type="text/markdown"'*) pass "HTML Link header advertises markdown" ;; *) fail "HTML Link header missing markdown alternate (got '$lnk')" ;; esac
+lnk=$(header_of link "$BASE/" -H 'Accept: text/markdown')
+case "$lnk" in *'type="text/html"'*) pass "Markdown Link header advertises html" ;; *) fail "Markdown Link header missing html alternate (got '$lnk')" ;; esac
+html=$(curl -s "$BASE/maskera")
+case "$html" in *'type="text/markdown"'*) pass "HTML head has markdown alternate link" ;; *) fail "HTML head lacks markdown alternate link" ;; esac
+
 echo "== Organization JSON-LD"
 home=$(curl -s "$BASE/")
 case "$home" in *'"@type":"ContactPoint"'*'"contactType"'*) pass "contactPoint present" ;; *) fail "contactPoint missing" ;; esac
 case "$home" in *'"@type":"PostalAddress"'*) pass "PostalAddress present" ;; *) fail "PostalAddress missing" ;; esac
+case "$home" in *'"@id":"https://hagvall-labs.com/#founder"'*'"jobTitle"'*) pass "founder Person entity present" ;; *) fail "founder Person entity missing" ;; esac
+maskera=$(curl -s "$BASE/maskera")
+case "$maskera" in *'"@type":"SoftwareApplication"'*'"softwareVersion"'*) pass "SoftwareApplication has softwareVersion" ;; *) fail "SoftwareApplication lacks softwareVersion" ;; esac
+case "$maskera" in *'"@type":"SoftwareSourceCode"'*'"codeRepository"'*) pass "SoftwareSourceCode with codeRepository present" ;; *) fail "SoftwareSourceCode missing" ;; esac
 
 echo "== static files"
 ct=$(header_of content-type "$BASE/llms.txt")
