@@ -9,7 +9,7 @@ export const Route = createFileRoute('/')({
       page: 'home',
       title: 'Integritetssäker AI-mjukvara | Hägvall Labs',
       description:
-        'Hägvall Labs bygger self-hosted mjukvara som skyddar personuppgifter innan text når AI-system, loggar eller analys. Er data stannar hos er.',
+        'Hägvall Labs är Joel Hägvalls bolag i Stockholm. Self-hosted mjukvara som skyddar personuppgifter innan text når AI-system, loggar eller analys.',
       ogTitle: 'Hägvall Labs | Integritetssäker AI-mjukvara',
       ogDescription:
         'Integritetssäker mjukvara för AI-eran. Self-hosted, byggd i Sverige.',

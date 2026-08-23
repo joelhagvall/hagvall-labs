@@ -9,7 +9,7 @@ export const Route = createFileRoute('/en/')({
       page: 'home',
       title: 'Privacy-First AI Software | Hägvall Labs',
       description:
-        'Hägvall Labs builds self-hosted software that protects personal data before text reaches AI systems, logs or analytics. Your data stays with you.',
+        'Hägvall Labs is Joel Hägvall’s company in Stockholm. Self-hosted tools that protect personal data before text reaches AI systems, logs or analytics.',
       ogTitle: 'Hägvall Labs | Privacy-First AI Software',
       ogDescription:
         'Privacy-first software for the AI era. Self-hosted, built in Sweden.',
