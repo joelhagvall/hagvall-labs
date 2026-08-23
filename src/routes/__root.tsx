@@ -21,6 +21,7 @@ import {
 import {
   btnPrimary,
   btnSmall,
+  externalLinkProps,
   heroBody,
   heroTitle,
   kicker,
@@ -36,9 +37,8 @@ function useLang(): Lang {
 
 /* Preload the small secondary routes (contact, privacy) as soon as the
    browser is idle after hydration. Waiting for pointerdown raced the click
-   itself: the chunk started downloading at the moment of navigation, and on
-   a slow connection the router fell through to an empty pending state, so
-   <main> blanked for a beat before the page appeared. */
+   itself: the chunk started downloading at the moment of navigation, so on
+   a slow connection the click felt dead until the page appeared. */
 function useSecondaryRoutePreload(lang: Lang) {
   const router = useRouter()
 
@@ -57,6 +57,37 @@ function useSecondaryRoutePreload(lang: Lang) {
     const id = window.setTimeout(preload, 1000)
     return () => window.clearTimeout(id)
   }, [lang, router])
+}
+
+/* Scroll to the top before the new page is painted. The router's own
+   scroll reset runs on onRendered, which waits for the React transition to
+   settle: that is often a frame after the new matches were committed, so the
+   next page was painted once at the old scroll position (the footer links
+   sit at the bottom of a tall page) and then jumped to the top, a visible
+   flash. onBeforeRouteMount fires in the layout effect of the commit that
+   mounts the new matches, before paint. Only forward navigations are
+   handled here: back/forward keep the router's cached-position restore, and
+   resetScroll={false} links (the language switcher) keep their position. */
+function useEarlyScrollReset() {
+  const router = useRouter()
+
+  useEffect(() => {
+    let action: string | undefined
+    const unsubHistory = router.history.subscribe((event) => {
+      action = event.action.type
+    })
+    const unsubRouter = router.subscribe('onBeforeRouteMount', (event) => {
+      if (action !== 'PUSH' && action !== 'REPLACE') return
+      if (!event.pathChanged || event.toLocation.hash || !router._scroll.next) {
+        return
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    })
+    return () => {
+      unsubRouter()
+      unsubHistory()
+    }
+  }, [router])
 }
 
 // Data URI so the favicon costs no request; a fetched favicon landing near
@@ -315,6 +346,7 @@ function RootLayout() {
   const lang = useLang()
   const t = chrome[lang]
   useSecondaryRoutePreload(lang)
+  useEarlyScrollReset()
   useEffect(() => {
     document.documentElement.lang = lang
   }, [lang])
@@ -363,6 +395,7 @@ function RootLayout() {
             <span translate="no">559598-0110</span> · Stockholm. {t.runBy}{' '}
             <a
               href="https://joelhagvall.com"
+              {...externalLinkProps}
               className={linkInk}
               data-umami-event="outbound-link-click"
               data-umami-event-destination="joelhagvall.com"
