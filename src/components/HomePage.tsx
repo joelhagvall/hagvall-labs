@@ -11,6 +11,7 @@ import {
   btnPrimary,
   btnSecondary,
   container,
+  externalLinkProps,
   heroBody,
   heroTitle,
   kicker,
@@ -489,6 +490,7 @@ export function HomePage({ lang }: { lang: Lang }) {
               </Link>
               <a
                 href="https://maskera.dev"
+                {...externalLinkProps}
                 className={linkCobalt}
                 translate="no"
                 data-umami-event="outbound-link-click"
@@ -574,6 +576,7 @@ export function HomePage({ lang }: { lang: Lang }) {
               <p className="font-medium">
                 <a
                   href={founderLinks.site}
+                  {...externalLinkProps}
                   className={linkInk}
                   data-umami-event="outbound-link-click"
                   data-umami-event-destination="joelhagvall.com"
@@ -593,6 +596,7 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {t.aboutLinks}{' '}
                 <a
                   href={founderLinks.linkedin}
+                  {...externalLinkProps}
                   className={linkInk}
                   data-umami-event="outbound-link-click"
                   data-umami-event-destination="linkedin.com"
@@ -603,6 +607,7 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {' / '}
                 <a
                   href={founderLinks.github}
+                  {...externalLinkProps}
                   className={linkInk}
                   data-umami-event="outbound-link-click"
                   data-umami-event-destination="github.com"

@@ -1,6 +1,13 @@
 import { contactEmail } from '../seo'
 import type { Lang } from '../seo'
-import { heroBody, heroTitle, kicker, linkInk, sectionTitleSm } from './ui'
+import {
+  externalLinkProps,
+  heroBody,
+  heroTitle,
+  kicker,
+  linkInk,
+  sectionTitleSm,
+} from './ui'
 
 const updatedAt = new Date('2026-08-19T12:00:00Z')
 
@@ -193,7 +200,7 @@ export function PrivacyPage({ lang }: { lang: Lang }) {
                 </a>
               )}
               {'authorityLabel' in section && (
-                <a href={authorityUrl} className={linkInk}>
+                <a href={authorityUrl} {...externalLinkProps} className={linkInk}>
                   {section.authorityLabel}
                 </a>
               )}

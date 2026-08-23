@@ -10,6 +10,7 @@ import {
   btnPrimary,
   btnSecondary,
   container,
+  externalLinkProps,
   heroBody,
   heroTitle,
   kicker,
@@ -434,6 +435,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
                 href="https://maskera.dev"
+                {...externalLinkProps}
                 className={btnPrimary}
                 translate="no"
                 data-umami-event="outbound-link-click"
@@ -497,6 +499,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
               <li key={link.href}>
                 <a
                   href={link.href}
+                  {...externalLinkProps}
                   className={`${btnSecondary} group w-full justify-between md:w-64`}
                   data-umami-event="outbound-link-click"
                   data-umami-event-destination={link.destination}
@@ -522,6 +525,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
             {t.bottomBodyA}
             <a
               href="https://maskera.dev"
+              {...externalLinkProps}
               className={linkInk}
               translate="no"
               data-umami-event="outbound-link-click"
