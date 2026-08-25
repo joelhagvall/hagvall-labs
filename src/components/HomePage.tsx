@@ -356,7 +356,7 @@ const copy = {
     aboutP1:
       'Hägvall Labs är jag. Det är jag som bygger produkterna, säljer dem och står för det som levereras. Inga mellanled.',
     aboutP2:
-      'Jag jobbar direkt med företag och organisationer, främst i Sverige. Vi träffas digitalt och jag visar produkten på era egna data. Räcker inte det som bevis ska ni inte köpa.',
+      'Jag jobbar direkt med företag och organisationer, främst i Sverige. Vi träffas digitalt, går igenom ert case och du får se vad jag bygger i praktiken. Sedan avgör du.',
     aboutRole: 'Grundare och utvecklare',
     aboutLinks: 'Kolla upp mig på',
     aboutCta: 'Hör av dig',
@@ -425,7 +425,7 @@ const copy = {
     aboutP1:
       'Hägvall Labs is me. I build the products, I sell them and I stand behind what ships. No layers in between.',
     aboutP2:
-      'I work directly with companies and organizations, primarily in Sweden. We meet online and I show you the product on your own data. If that doesn’t convince you, you shouldn’t buy.',
+      'I work directly with companies and organizations, primarily in Sweden. We meet online, walk through your case and you see what I build in practice. Then you decide.',
     aboutRole: 'Founder and Developer',
     aboutLinks: 'Look me up on',
     aboutCta: 'Get in Touch',

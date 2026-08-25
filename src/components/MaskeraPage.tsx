@@ -356,9 +356,9 @@ const copy = {
       { label: 'Paketet på npm', href: maskeraLinks.npm, destination: 'npmjs.com' },
       { label: 'Modellen på Hugging Face', href: maskeraLinks.huggingFace, destination: 'huggingface.co' },
     ],
-    bottomTitle: 'Se Maskera på era egna data.',
+    bottomTitle: 'Se Maskera i praktiken.',
     bottomBodyA:
-      'Hur träffsäker är den? Det svaret får ni på era egna data i piloten, inte från ett säljblad. Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
+      'Hur träffsäker är den? Det får piloten svara på, inte ett säljblad. Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
     bottomCta: 'Starta ett pilotprojekt',
   },
   en: {
@@ -408,9 +408,9 @@ const copy = {
       { label: 'Package on npm', href: maskeraLinks.npm, destination: 'npmjs.com' },
       { label: 'Model on Hugging Face', href: maskeraLinks.huggingFace, destination: 'huggingface.co' },
     ],
-    bottomTitle: 'See Maskera on Your Own Data.',
+    bottomTitle: 'See Maskera in Practice.',
     bottomBodyA:
-      'How accurate is it? You get that answer on your own data in the pilot, not from a sales deck. I run pilot projects with companies and organizations in Sweden. Get in touch and I’ll show you what it looks like, or read more at ',
+      'How accurate is it? That’s for the pilot to answer, not a sales deck. I run pilot projects with companies and organizations in Sweden. Get in touch and I’ll show you what it looks like, or read more at ',
     bottomCta: 'Start a Pilot',
   },
 }
