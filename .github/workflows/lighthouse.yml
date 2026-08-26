@@ -1,0 +1,85 @@
+# Public Lighthouse check of the live site (https://hagvall-labs.com), so the
+# scores shown in the site footer are produced by a third party against the
+# real deployment, not by a local run. Runs daily and after every Deploy.
+# Every run uploads the full HTML reports as an artifact; when the lowest
+# score per category changes, src/lighthouse-scores.json is committed so the
+# footer shows the honest number on the next deploy. A score below the
+# AGENTS.md gates still fails the run after that commit.
+name: Lighthouse
+
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Deploy]
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lighthouse-public
+  cancel-in-progress: false
+
+jobs:
+  lighthouse:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CHROME_PATH: /usr/bin/google-chrome
+      LH_RUNS: '3'
+      OUT_DIR: lighthouse-reports
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: master
+
+      - uses: ./.github/actions/setup
+
+      - name: Wait for the new release to be live after a deploy
+        if: github.event_name == 'workflow_run'
+        run: sleep 60
+
+      - name: Calibrate CPU throttling for this runner
+        # Same benchmarkIndex table as scripts/audit.sh: a slow shared runner
+        # with the default 4x slowdown would report a phone far slower than
+        # Lighthouse's reference device.
+        run: |
+          bun x lighthouse https://hagvall-labs.com/ --only-categories=seo \
+            --output=json --output-path=probe.json --quiet \
+            --chrome-flags=--headless=new
+          BI=$(bun -e "console.log(Math.round((await Bun.file('probe.json').json()).environment.benchmarkIndex))")
+          if   [ "$BI" -ge 1300 ]; then CPU=4
+          elif [ "$BI" -ge 800 ];  then CPU=3
+          elif [ "$BI" -ge 500 ];  then CPU=2
+          else CPU=1; fi
+          echo "benchmarkIndex $BI -> cpuSlowdownMultiplier $CPU"
+          echo "CPU_SLOWDOWN=$CPU" >> "$GITHUB_ENV"
+
+      - name: Audit the live site
+        id: audit
+        run: bun scripts/lighthouse-public.ts
+
+      - name: Upload HTML reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-reports-${{ github.run_number }}
+          path: lighthouse-reports/*.report.html
+          retention-days: 90
+
+      - name: Commit changed scores
+        if: always() && steps.audit.conclusion != 'skipped'
+        run: |
+          if git diff --quiet -- src/lighthouse-scores.json; then
+            echo 'scores unchanged, nothing to commit'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/lighthouse-scores.json
+          git commit -m "Update public Lighthouse scores"
+          git push origin HEAD:master

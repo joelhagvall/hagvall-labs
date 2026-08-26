@@ -349,7 +349,7 @@ const copy = {
       },
       {
         title: 'Löjligt hög ribba',
-        body: 'Sajten du läser på just nu får toppbetyg i Lighthouse på varje sida, med full pott på tillgänglighet och SEO. Ingen bad om det. Samma precision hamnar i det jag bygger åt er.',
+        body: 'Sajten du läser på just nu får toppbetyg i Lighthouse på varje sida, med full pott på tillgänglighet och SEO. Ingen bad om det. Siffrorna mäts dagligen, se sidfoten. Samma precision hamnar i det jag bygger åt er.',
       },
     ],
     aboutTitle: 'Att jobba med mig',
@@ -418,7 +418,7 @@ const copy = {
       },
       {
         title: 'A Ridiculously High Bar',
-        body: 'The site you’re reading scores top marks in Lighthouse on every page, with a perfect score for accessibility and SEO. Nobody asked for that. The same precision goes into everything I build for you.',
+        body: 'The site you’re reading scores top marks in Lighthouse on every page, with a perfect score for accessibility and SEO. Nobody asked for that. The scores are measured daily, see the footer. The same precision goes into everything I build for you.',
       },
     ],
     aboutTitle: 'Working With Me',

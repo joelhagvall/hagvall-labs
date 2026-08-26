@@ -21,3 +21,4 @@ reports/
 *.report.json
 /report.html
 /backups/
+lighthouse-reports/

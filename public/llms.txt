@@ -10,7 +10,7 @@ Key facts:
 - Open artifacts: Maskera source on GitHub (https://github.com/joelhagvall/maskera), package on npm (https://www.npmjs.com/package/maskera), Swedish NER model on Hugging Face (https://huggingface.co/joelhagvall/maskera-sv-ner)
 - Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
 - Offering: software development, APIs and integrations, AI SDK implementation and automation, information security and privacy consulting; Maskera pilot projects, software licenses, installation and support
-- Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores top marks in Lighthouse on every page, with perfect scores for accessibility and SEO
+- Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores top marks in Lighthouse on every page, with perfect scores for accessibility and SEO, measured daily against the live site by a public GitHub Actions workflow and shown in the site footer
 - Privacy: the website uses no cookies and runs privacy-friendly, self-hosted visitor analytics with Umami; replay, heatmaps and identified users are disabled; live analytics data is retained for 90 days and recovery backups for 7 additional days
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
 - Payment: invoice and bank transfer
