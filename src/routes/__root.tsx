@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react'
 import {
   HeadContent,
   Link,
@@ -7,17 +7,17 @@ import {
   createRootRoute,
   useLocation,
   useRouter,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { TanStackDevtools } from "@tanstack/react-devtools";
+} from '@tanstack/react-router'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 
-import appCss from "../styles.css?url";
-import appCssInline from "../styles.css?inline";
+import appCss from '../styles.css?url'
+import appCssInline from '../styles.css?inline'
 import {
   BRAND_PATHS,
   BRAND_VIEWBOX,
   BrandSymbol,
-} from "../components/BrandSymbol";
+} from '../components/BrandSymbol'
 import {
   btnPrimary,
   btnSmall,
@@ -26,20 +26,20 @@ import {
   heroTitle,
   kicker,
   linkInk,
-} from "../components/ui";
+} from '../components/ui'
 import {
   contactEmail,
   founderLinks,
   pageFromPath,
   pagePaths,
   site,
-} from "../seo";
-import lighthouse from "../lighthouse-scores.json";
-import type { Lang } from "../seo";
+} from '../seo'
+import lighthouse from '../lighthouse-scores.json'
+import type { Lang } from '../seo'
 
 function useLang(): Lang {
-  const pathname = useLocation({ select: (l) => l.pathname });
-  return pathname === "/en" || pathname.startsWith("/en/") ? "en" : "sv";
+  const pathname = useLocation({ select: (l) => l.pathname })
+  return pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'sv'
 }
 
 /* Preload the small secondary routes (contact, privacy) as soon as the
@@ -47,23 +47,23 @@ function useLang(): Lang {
    itself: the chunk started downloading at the moment of navigation, so on
    a slow connection the click felt dead until the page appeared. */
 function useSecondaryRoutePreload(lang: Lang) {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     const preload = () => {
       void Promise.all([
         router.preloadRoute({ to: pagePaths.privacy[lang] }),
         router.preloadRoute({ to: pagePaths.contact[lang] }),
-      ]).catch(() => undefined);
-    };
-
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(preload, { timeout: 2000 });
-      return () => window.cancelIdleCallback(id);
+      ]).catch(() => undefined)
     }
-    const id = window.setTimeout(preload, 1000);
-    return () => window.clearTimeout(id);
-  }, [lang, router]);
+
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(preload, { timeout: 2000 })
+      return () => window.cancelIdleCallback(id)
+    }
+    const id = window.setTimeout(preload, 1000)
+    return () => window.clearTimeout(id)
+  }, [lang, router])
 }
 
 /* Scroll to the top before the new page is painted. The router's own
@@ -76,157 +76,158 @@ function useSecondaryRoutePreload(lang: Lang) {
    handled here: back/forward keep the router's cached-position restore, and
    resetScroll={false} links (the language switcher) keep their position. */
 function useEarlyScrollReset() {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
-    let action: string | undefined;
+    let action: string | undefined
     const unsubHistory = router.history.subscribe((event) => {
-      action = event.action.type;
-    });
-    const unsubRouter = router.subscribe("onBeforeRouteMount", (event) => {
-      if (action !== "PUSH" && action !== "REPLACE") return;
+      action = event.action.type
+    })
+    const unsubRouter = router.subscribe('onBeforeRouteMount', (event) => {
+      if (action !== 'PUSH' && action !== 'REPLACE') return
       if (!event.pathChanged || event.toLocation.hash || !router._scroll.next) {
-        return;
+        return
       }
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    });
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    })
     return () => {
-      unsubRouter();
-      unsubHistory();
-    };
-  }, [router]);
+      unsubRouter()
+      unsubHistory()
+    }
+  }, [router])
 }
 
 // Data URI so the favicon costs no request; a fetched favicon landing near
 // the LCP paint flips Lighthouse's simulated LCP a full RTT later. Built
 // from the same paths as the rendered symbol.
 const favicon =
-  "data:image/svg+xml," +
+  'data:image/svg+xml,' +
   encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${BRAND_VIEWBOX}">` +
-      BRAND_PATHS.map((p) => `<path fill="${p.fill}" d="${p.d}"/>`).join("") +
-      "</svg>",
-  );
+      BRAND_PATHS.map((p) => `<path fill="${p.fill}" d="${p.d}"/>`).join('') +
+      '</svg>',
+  )
 
 const chrome = {
   sv: {
-    menu: "Meny",
-    products: "Produkter",
-    maskeraDesc: "Maskera personuppgifter i text",
-    services: "Tjänster",
-    contact: "Kontakt",
-    privacy: "Integritet",
-    orgNr: "org.nr",
-    runBy: "Drivs av",
-    noCookies: "Inga cookies.",
-    lh: "Lighthouse",
-    lhCats: ["Prestanda", "Tillgänglighet", "Best practices", "SEO"],
-    lhChecked: "kontrolleras dagligen mot den här sajten i",
-    lhVerify: "Kolla själv i",
-    skip: "Hoppa till innehållet",
-    homeAria: "Hägvall Labs, startsida",
+    menu: 'Meny',
+    products: 'Produkter',
+    maskeraDesc: 'Maskera personuppgifter i text',
+    services: 'Tjänster',
+    contact: 'Kontakt',
+    privacy: 'Integritet',
+    orgNr: 'org.nr',
+    runBy: 'Drivs av',
+    noCookies: 'Inga cookies.',
+    lh: 'Lighthouse',
+    lhCats: ['Prestanda', 'Tillgänglighet', 'Best practices', 'SEO'],
+    lhChecked: 'kontrolleras dagligen mot den här sajten, se',
+    lhReports: 'rapporterna',
+    lhVerify: 'Kolla själv i',
+    skip: 'Hoppa till innehållet',
+    homeAria: 'Hägvall Labs, startsida',
   },
   en: {
-    menu: "Menu",
-    products: "Products",
-    maskeraDesc: "Mask personal data in text",
-    services: "Services",
-    contact: "Contact",
-    privacy: "Privacy",
-    orgNr: "org. no.",
-    runBy: "Founded and run by",
-    noCookies: "No cookies.",
-    lh: "Lighthouse",
-    lhCats: ["Performance", "Accessibility", "Best practices", "SEO"],
-    lhChecked: "checked daily against this site in",
-    lhVerify: "Verify it yourself in",
-    skip: "Skip to Content",
-    homeAria: "Hägvall Labs, Home",
+    menu: 'Menu',
+    products: 'Products',
+    maskeraDesc: 'Mask personal data in text',
+    services: 'Services',
+    contact: 'Contact',
+    privacy: 'Privacy',
+    orgNr: 'org. no.',
+    runBy: 'Founded and run by',
+    noCookies: 'No cookies.',
+    lh: 'Lighthouse',
+    lhCats: ['Performance', 'Accessibility', 'Best practices', 'SEO'],
+    lhChecked: 'checked daily against this site, see',
+    lhReports: 'the reports',
+    lhVerify: 'Verify it yourself in',
+    skip: 'Skip to Content',
+    homeAria: 'Hägvall Labs, Home',
   },
-};
+}
 
 // The public Lighthouse check (.github/workflows/lighthouse.yml) runs against
-// the live site and keeps src/lighthouse-scores.json current; the footer links
-// to its run history and to Google's own PageSpeed Insights so anyone can
-// re-run the numbers.
-const lighthouseRunsUrl =
-  "https://github.com/joelhagvall/hagvall-labs/actions/workflows/lighthouse.yml";
-const pageSpeedUrl = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(site + "/")}`;
+// the live site, keeps src/lighthouse-scores.json current and publishes the
+// HTML reports to GitHub Pages; the footer links there and to Google's own
+// PageSpeed Insights so anyone can read or re-run the numbers.
+const lighthouseReportsUrl = 'https://joelhagvall.github.io/hagvall-labs/'
+const pageSpeedUrl = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(site + '/')}`
 
-const umamiWebsiteId = "4f1d3158-8b29-4380-9852-e6ba8069c881";
+const umamiWebsiteId = '4f1d3158-8b29-4380-9852-e6ba8069c881'
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#ffffff" },
-      { title: "Hägvall Labs | Integritetssäker mjukvara för AI-eran" },
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { name: 'theme-color', content: '#ffffff' },
+      { title: 'Hägvall Labs | Integritetssäker mjukvara för AI-eran' },
       {
-        name: "description",
+        name: 'description',
         content:
-          "Hägvall Labs bygger integritetssäker mjukvara som körs i er egen IT-miljö. Maskera maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg.",
+          'Hägvall Labs bygger integritetssäker mjukvara som körs i er egen IT-miljö. Maskera maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg.',
       },
-      { property: "og:site_name", content: "Hägvall Labs" },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: site + "/brand/og-image.png" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
+      { property: 'og:site_name', content: 'Hägvall Labs' },
+      { property: 'og:type', content: 'website' },
+      { property: 'og:image', content: site + '/brand/og-image.png' },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
       {
-        property: "og:image:alt",
-        content: "Hägvall Labs, integritetssäker mjukvara för AI-eran",
+        property: 'og:image:alt',
+        content: 'Hägvall Labs, integritetssäker mjukvara för AI-eran',
       },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: 'twitter:card', content: 'summary_large_image' },
     ],
     links: [
-      ...(import.meta.env.DEV ? [{ rel: "stylesheet", href: appCss }] : []),
-      { rel: "icon", type: "image/svg+xml", href: favicon },
+      ...(import.meta.env.DEV ? [{ rel: 'stylesheet', href: appCss }] : []),
+      { rel: 'icon', type: 'image/svg+xml', href: favicon },
       // Not fetched during page load (only when saving to a home screen),
       // so unlike a fetched favicon it costs nothing in Lighthouse.
       {
-        rel: "apple-touch-icon",
-        sizes: "180x180",
-        href: "/apple-touch-icon.png",
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png',
       },
     ],
     scripts: [
       {
-        type: "application/ld+json",
+        type: 'application/ld+json',
         children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          "@id": site + "/#organization",
-          name: "Hägvall Labs",
-          legalName: "Hägvall Labs AB",
-          alternateName: "Hägvall Labs AB",
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          '@id': site + '/#organization',
+          name: 'Hägvall Labs',
+          legalName: 'Hägvall Labs AB',
+          alternateName: 'Hägvall Labs AB',
           identifier: {
-            "@type": "PropertyValue",
-            propertyID: "Swedish organisation number",
-            value: "559598-0110",
+            '@type': 'PropertyValue',
+            propertyID: 'Swedish organisation number',
+            value: '559598-0110',
           },
           url: site,
-          logo: site + "/brand/hagvall-labs-symbol.svg",
+          logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
-            "Hägvall Labs develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.",
+            'Hägvall Labs develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
           email: contactEmail,
           contactPoint: {
-            "@type": "ContactPoint",
-            contactType: "sales",
+            '@type': 'ContactPoint',
+            contactType: 'sales',
             email: contactEmail,
             url: site + pagePaths.contact.sv,
-            availableLanguage: ["sv", "en"],
+            availableLanguage: ['sv', 'en'],
           },
           founder: {
-            "@type": "Person",
-            "@id": site + "/#founder",
-            name: "Joel Hägvall",
+            '@type': 'Person',
+            '@id': site + '/#founder',
+            name: 'Joel Hägvall',
             url: founderLinks.site,
             sameAs: [founderLinks.linkedin, founderLinks.github],
           },
           address: {
-            "@type": "PostalAddress",
-            addressLocality: "Stockholm",
-            addressCountry: "SE",
+            '@type': 'PostalAddress',
+            addressLocality: 'Stockholm',
+            addressCountry: 'SE',
           },
         }),
       },
@@ -235,20 +236,20 @@ export const Route = createRootRoute({
   shellComponent: RootDocument,
   component: RootLayout,
   notFoundComponent: NotFound,
-});
+})
 
 // Switches language while staying on the current page.
 function LangSwitch({ lang }: { lang: Lang }) {
-  const pathname = useLocation({ select: (l) => l.pathname });
-  const paths = pagePaths[pageFromPath(pathname)];
-  const active = "text-ink";
-  const inactive = "text-neutral-400 transition-colors hover:text-ink";
+  const pathname = useLocation({ select: (l) => l.pathname })
+  const paths = pagePaths[pageFromPath(pathname)]
+  const active = 'text-ink'
+  const inactive = 'text-neutral-400 transition-colors hover:text-ink'
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
       <Link
         to={paths.sv}
         resetScroll={false}
-        className={lang === "sv" ? active : inactive}
+        className={lang === 'sv' ? active : inactive}
         lang="sv"
       >
         SV
@@ -259,39 +260,39 @@ function LangSwitch({ lang }: { lang: Lang }) {
       <Link
         to={paths.en}
         resetScroll={false}
-        className={lang === "en" ? active : inactive}
+        className={lang === 'en' ? active : inactive}
         lang="en"
       >
         EN
       </Link>
     </span>
-  );
+  )
 }
 
 function ProductsMenu({ lang }: { lang: Lang }) {
-  const t = chrome[lang];
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const t = chrome[lang]
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) return
     const onPointerDown = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) setOpen(false);
-    };
+      if (!ref.current?.contains(e.target as Node)) setOpen(false)
+    }
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
+      if (e.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
     return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open])
 
-  const close = () => setOpen(false);
+  const close = () => setOpen(false)
   const itemClass =
-    "block rounded-lg px-3 py-2 transition-colors hover:bg-neutral-50";
+    'block rounded-lg px-3 py-2 transition-colors hover:bg-neutral-50'
 
   return (
     <div ref={ref} className="relative">
@@ -311,7 +312,7 @@ function ProductsMenu({ lang }: { lang: Lang }) {
           width="10"
           height="10"
           viewBox="0 0 10 10"
-          className={`transition-transform motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
+          className={`transition-transform motion-reduce:transition-none ${open ? 'rotate-180' : ''}`}
         >
           <path
             d="M1.5 3.5 5 7l3.5-3.5"
@@ -357,7 +358,7 @@ function ProductsMenu({ lang }: { lang: Lang }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function Brand() {
@@ -371,17 +372,17 @@ function Brand() {
         Hägvall&nbsp;<span className="text-cobalt">Labs</span>
       </span>
     </span>
-  );
+  )
 }
 
 function RootLayout() {
-  const lang = useLang();
-  const t = chrome[lang];
-  useSecondaryRoutePreload(lang);
-  useEarlyScrollReset();
+  const lang = useLang()
+  const t = chrome[lang]
+  useSecondaryRoutePreload(lang)
+  useEarlyScrollReset()
   useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
+    document.documentElement.lang = lang
+  }, [lang])
   return (
     <div className="flex min-h-screen flex-col">
       <a
@@ -423,9 +424,9 @@ function RootLayout() {
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-2">
             <p>
-              © {new Date().getFullYear()}{" "}
-              <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span> · {t.orgNr}{" "}
-              <span translate="no">559598-0110</span> · Stockholm. {t.runBy}{" "}
+              © {new Date().getFullYear()}{' '}
+              <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span> · {t.orgNr}{' '}
+              <span translate="no">559598-0110</span> · Stockholm. {t.runBy}{' '}
               <a
                 href="https://joelhagvall.com"
                 {...externalLinkProps}
@@ -439,33 +440,33 @@ function RootLayout() {
               . {t.noCookies}
             </p>
             <p>
-              {t.lh}{" "}
+              {t.lh}{' '}
               {(
                 [
-                  "performance",
-                  "accessibility",
-                  "best-practices",
-                  "seo",
+                  'performance',
+                  'accessibility',
+                  'best-practices',
+                  'seo',
                 ] as const
               ).map((c, i) => (
                 <span key={c}>
-                  {i > 0 && " · "}
-                  {t.lhCats[i]}{" "}
+                  {i > 0 && ' · '}
+                  {t.lhCats[i]}{' '}
                   <span className="text-ink">{lighthouse.scores[c]}</span>
                 </span>
               ))}
-              , {t.lhChecked}{" "}
+              , {t.lhChecked}{' '}
               <a
-                href={lighthouseRunsUrl}
+                href={lighthouseReportsUrl}
                 {...externalLinkProps}
                 className={linkInk}
                 data-umami-event="outbound-link-click"
-                data-umami-event-destination="github.com"
+                data-umami-event-destination="github.io"
                 data-umami-event-placement="footer-lighthouse"
               >
-                GitHub Actions
+                {t.lhReports}
               </a>
-              . {t.lhVerify}{" "}
+              . {t.lhVerify}{' '}
               <a
                 href={pageSpeedUrl}
                 {...externalLinkProps}
@@ -507,46 +508,46 @@ function RootLayout() {
         </div>
       </footer>
     </div>
-  );
+  )
 }
 
 const notFoundCopy = {
   sv: {
-    title: "Sidan finns inte.",
-    body: "Adressen du försökte nå finns inte. Den kan ha flyttats eller aldrig ha funnits.",
-    cta: "Till startsidan",
-    next: "Leta vidare här:",
+    title: 'Sidan finns inte.',
+    body: 'Adressen du försökte nå finns inte. Den kan ha flyttats eller aldrig ha funnits.',
+    cta: 'Till startsidan',
+    next: 'Leta vidare här:',
     pages: {
-      home: "Startsidan",
-      maskera: "Maskera",
-      contact: "Kontakt",
-      privacy: "Integritet",
+      home: 'Startsidan',
+      maskera: 'Maskera',
+      contact: 'Kontakt',
+      privacy: 'Integritet',
     },
-    agents: "För sökmotorer och agenter:",
+    agents: 'För sökmotorer och agenter:',
   },
   en: {
-    title: "Page Not Found.",
-    body: "The address you tried to reach doesn’t exist. It may have moved or never existed.",
-    cta: "Back to Home",
-    next: "Where to look next:",
+    title: 'Page Not Found.',
+    body: 'The address you tried to reach doesn’t exist. It may have moved or never existed.',
+    cta: 'Back to Home',
+    next: 'Where to look next:',
     pages: {
-      home: "Home",
-      maskera: "Maskera",
-      contact: "Contact",
-      privacy: "Privacy",
+      home: 'Home',
+      maskera: 'Maskera',
+      contact: 'Contact',
+      privacy: 'Privacy',
     },
-    agents: "For crawlers and agents:",
+    agents: 'For crawlers and agents:',
   },
-};
+}
 
 // The 404 keeps its real status (the router sets it) and points at the pages
 // that do exist, plus the sitemap and llms.txt, so a visitor or an agent can
 // recover instead of guessing. The Markdown representation (see
 // scripts/serve-prod.ts) is derived from this same markup.
 function NotFound() {
-  const lang = useLang();
-  const t = notFoundCopy[lang];
-  const pages = Object.keys(t.pages) as Array<keyof typeof t.pages>;
+  const lang = useLang()
+  const t = notFoundCopy[lang]
+  const pages = Object.keys(t.pages) as Array<keyof typeof t.pages>
   return (
     <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
       <p className={`mb-4 ${kicker}`}>404</p>
@@ -566,21 +567,21 @@ function NotFound() {
         ))}
       </ul>
       <p className="mt-6 text-xs text-neutral-500">
-        {t.agents}{" "}
+        {t.agents}{' '}
         <a href="/sitemap.xml" className={linkInk}>
           sitemap.xml
         </a>
-        {" · "}
+        {' · '}
         <a href="/llms.txt" className={linkInk}>
           llms.txt
         </a>
       </p>
     </section>
-  );
+  )
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const lang = useLang();
+  const lang = useLang()
   return (
     <html lang={lang}>
       <head>
@@ -589,7 +590,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         )}
         <HeadContent />
         {import.meta.env.PROD &&
-          import.meta.env.VITE_UMAMI_ENABLED === "true" && (
+          import.meta.env.VITE_UMAMI_ENABLED === 'true' && (
             <script
               defer
               src="/analytics/script.js"
@@ -606,10 +607,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         {children}
         {import.meta.env.DEV && (
           <TanStackDevtools
-            config={{ position: "bottom-right" }}
+            config={{ position: 'bottom-right' }}
             plugins={[
               {
-                name: "Tanstack Router",
+                name: 'Tanstack Router',
                 render: <TanStackRouterDevtoolsPanel />,
               },
             ]}
@@ -618,5 +619,5 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <Scripts />
       </body>
     </html>
-  );
+  )
 }

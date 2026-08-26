@@ -3,8 +3,10 @@
 # real deployment, not by a local run. Runs daily and after every Deploy.
 # Every run uploads the full HTML reports as an artifact; when the lowest
 # score per category changes, src/lighthouse-scores.json is committed so the
-# footer shows the honest number on the next deploy. A score below the
-# AGENTS.md gates still fails the run after that commit.
+# footer shows the honest number on the next deploy. The reports are also
+# published to GitHub Pages (https://joelhagvall.github.io/hagvall-labs/) so
+# they can be read in the browser. A score below the AGENTS.md gates still
+# fails the run after the commit and the Pages deploy.
 name: Lighthouse
 
 on:
@@ -17,6 +19,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: lighthouse-public
@@ -27,6 +31,9 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
     env:
       CHROME_PATH: /usr/bin/google-chrome
       LH_RUNS: '3'
@@ -70,6 +77,17 @@ jobs:
           name: lighthouse-reports-${{ github.run_number }}
           path: lighthouse-reports/*.report.html
           retention-days: 90
+
+      - name: Upload reports for GitHub Pages
+        if: always() && steps.audit.conclusion != 'skipped'
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: lighthouse-reports
+
+      - name: Publish reports to GitHub Pages
+        id: pages
+        if: always() && steps.audit.conclusion != 'skipped'
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
 
       - name: Commit changed scores
         if: always() && steps.audit.conclusion != 'skipped'
