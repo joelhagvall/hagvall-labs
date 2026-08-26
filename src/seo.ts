@@ -51,6 +51,11 @@ export function pageFromPath(pathname: string): PageKey {
 /** The full per-route head: title, description, OG tags, canonical + hreflang
     set and optional JSON-LD. Canonicals must come from here (route heads),
     never from __root.tsx, where they would merge into duplicates. */
+const ogImageAlt: Record<Lang, string> = {
+  sv: 'Hägvall Labs, integritetssäker mjukvara för AI-eran',
+  en: 'Hägvall Labs, privacy-first software for the AI era',
+}
+
 export function pageHead(opts: {
   lang: Lang
   page: PageKey
@@ -72,6 +77,14 @@ export function pageHead(opts: {
       { property: 'og:url', content: site + paths[opts.lang] },
       { property: 'og:locale', content: locale[opts.lang] },
       { property: 'og:locale:alternate', content: locale[other] },
+      // Per-language social card (tagline in the page's language), generated
+      // by scripts/build-brand.ts. Lives here, not in __root.tsx, so the two
+      // never merge into duplicate og:image tags.
+      { property: 'og:image', content: `${site}/brand/og-image-${opts.lang}.png` },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { property: 'og:image:alt', content: ogImageAlt[opts.lang] },
+      { name: 'twitter:card', content: 'summary_large_image' },
     ],
     links: [
       { rel: 'canonical', href: site + paths[opts.lang] },

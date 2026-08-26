@@ -2,11 +2,13 @@
 // <img> adds a simulated RTT to Lighthouse's pessimistic LCP estimate, which
 // alone drops Performance from 100 to 99 on every page.
 
-// The symbol geometry, single source for the component and the data-URI
-// favicon in __root.tsx. public/brand/hagvall-labs-symbol.svg carries the
-// same paths for the JSON-LD logo; regenerate it if these change.
+// The symbol geometry, single source for the component, the data-URI
+// favicon in __root.tsx and the whole brand package (brand/, public/brand,
+// favicon.ico, apple-touch-icon.png): run `bun run build:brand` after any
+// change here. The shapes span x 270..710 and y 165..680; the viewBox is a
+// square of the same scale centred on that box (490, 422.5).
 // Monochrome cobalt: the middle ribbon is a lighter tint of the same hue.
-export const BRAND_VIEWBOX = '210 110 580 580'
+export const BRAND_VIEWBOX = '200 132.5 580 580'
 export const BRAND_PATHS = [
   { fill: '#1748D4', d: 'M270 350 495 438 495 566 414 535 414 680 270 625Z' },
   { fill: '#5B7CE4', d: 'M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z' },

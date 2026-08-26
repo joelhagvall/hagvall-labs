@@ -1,10 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="210 110 580 580" role="img" aria-labelledby="title description">
-  <title id="title">Hägvall Labs symbol</title>
-  <desc id="description">Layered cobalt data symbol.</desc>
-      <g id="hagvall-labs-symbol">
-      <path fill="#1748D4" d="M270 350 495 438 495 566 414 535 414 680 270 625Z"/>
-      <path fill="#5B7CE4" d="M365 254 610 349 610 650 438 584 438 494 525 528 525 395 365 333Z"/>
-      <path fill="#1748D4" d="M480 165 710 254 710 560 630 529 630 334 480 278Z"/>
-    </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="640" height="640" role="img" aria-label="Hägvall Labs"><path fill="#1748D4" d="M63.01 235.31 325.84 338.11 325.84 487.63 231.22 451.42 231.22 620.8 63.01 556.55Z"/><path fill="#5B7CE4" d="M173.98 123.17 460.18 234.14 460.18 585.76 259.26 508.66 259.26 403.52 360.89 443.24 360.89 287.88 173.98 215.45Z"/><path fill="#1748D4" d="M308.32 19.2 576.99 123.17 576.99 480.62 483.54 444.41 483.54 216.62 308.32 151.2Z"/></svg>

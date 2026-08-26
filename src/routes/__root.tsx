@@ -170,14 +170,6 @@ export const Route = createRootRoute({
       },
       { property: 'og:site_name', content: 'Hägvall Labs' },
       { property: 'og:type', content: 'website' },
-      { property: 'og:image', content: site + '/brand/og-image.png' },
-      { property: 'og:image:width', content: '1200' },
-      { property: 'og:image:height', content: '630' },
-      {
-        property: 'og:image:alt',
-        content: 'Hägvall Labs, integritetssäker mjukvara för AI-eran',
-      },
-      { name: 'twitter:card', content: 'summary_large_image' },
     ],
     links: [
       ...(import.meta.env.DEV ? [{ rel: 'stylesheet', href: appCss }] : []),
