@@ -58,22 +58,29 @@ for (const path of routes) {
   const slug = path === '/' ? 'home' : path.slice(1).replaceAll('/', '-')
   const perRun: Array<Record<Category, number>> = []
   for (let run = 1; run <= RUNS; run++) {
-    const proc = Bun.spawnSync(
-      [
-        'bun',
-        'x',
-        'lighthouse',
-        `${BASE}${path}`,
-        '--output=json',
-        '--output=html',
-        `--output-path=${OUT_DIR}/${slug}-${run}`,
-        `--throttling.cpuSlowdownMultiplier=${CPU}`,
-        `--chrome-flags=${process.env.CHROME_FLAGS ?? '--headless=new'}`,
-        '--quiet',
-      ],
-      { stdout: 'inherit', stderr: 'inherit' },
-    )
-    if (proc.exitCode !== 0) throw new Error(`lighthouse failed for ${path}`)
+    // Retry Chrome transport failures (NO_NAVSTART and friends) without
+    // weakening any threshold, like scripts/audit.sh does.
+    let proc: ReturnType<typeof Bun.spawnSync> | undefined
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      proc = Bun.spawnSync(
+        [
+          'bun',
+          'x',
+          'lighthouse',
+          `${BASE}${path}`,
+          '--output=json',
+          '--output=html',
+          `--output-path=${OUT_DIR}/${slug}-${run}`,
+          `--throttling.cpuSlowdownMultiplier=${CPU}`,
+          `--chrome-flags=${process.env.CHROME_FLAGS ?? '--headless=new'}`,
+          '--quiet',
+        ],
+        { stdout: 'inherit', stderr: 'inherit' },
+      )
+      if (proc.exitCode === 0) break
+      console.error(`lighthouse attempt ${attempt} failed for ${path}`)
+    }
+    if (proc?.exitCode !== 0) throw new Error(`lighthouse failed for ${path}`)
     // Lighthouse writes <path>.report.json / .report.html for multi-output.
     const result = JSON.parse(
       readFileSync(`${OUT_DIR}/${slug}-${run}.report.json`, 'utf8'),
