@@ -44,18 +44,6 @@ stay disabled. A daily cron job at 03:17 UTC deletes live analytics data after
 after 7 days. The separate IP-masked Caddy operational log retains data for
 30 days.
 
-Until Wix has an `analytics.hagvall-labs.com` A record pointing to
-`[removed]`, open the dashboard at:
-
-`[removed]`
-
-[removed]
-printing the other secrets:
-
-```bash
-[removed]
-```
-
 Useful production commands:
 
 ```bash
