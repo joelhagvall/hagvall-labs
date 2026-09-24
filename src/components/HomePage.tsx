@@ -293,6 +293,7 @@ const buildIcons = [IconWorkflow, IconBolt, IconGem]
 
 const copy = {
   sv: {
+    heroKicker: 'integritetssäker AI-mjukvara från Stockholm',
     heroAccent: 'Bygg med AI.',
     heroTitleB: ' Behåll er data.',
     heroBody:
@@ -362,6 +363,7 @@ const copy = {
     aboutCta: 'Hör av dig',
   },
   en: {
+    heroKicker: 'Privacy-First AI Software From Stockholm',
     heroAccent: 'Build With AI.',
     heroTitleB: ' Keep Your Data.',
     heroBody:
@@ -444,6 +446,11 @@ export function HomePage({ lang }: { lang: Lang }) {
         <HeroGlows />
         <div className="mx-auto grid w-full max-w-5xl items-center gap-8 px-6 pb-12 pt-16 md:grid-cols-[1fr_auto] md:gap-12 md:pb-24 md:pt-24">
           <div>
+            {/* Names the company and what it makes before the headline, so
+                the first words on the page match the title. */}
+            <p className={`mb-4 ${kicker}`}>
+              <span translate="no">Hägvall Labs</span> · {t.heroKicker}
+            </p>
             <h1 className={`${heroTitle} sm:text-6xl`}>
               <span className="text-cobalt">{t.heroAccent}</span>
               {t.heroTitleB}

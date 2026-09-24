@@ -75,6 +75,34 @@ function useSecondaryRoutePreload(lang: Lang) {
    mounts the new matches, before paint. Only forward navigations are
    handled here: back/forward keep the router's cached-position restore, and
    resetScroll={false} links (the language switcher) keep their position. */
+/* Links the web app manifest (makes the site installable) once the page is
+   idle after load. A <link rel="manifest"> in the head makes Chrome fetch
+   the manifest and then its icon at high priority while the page is still
+   painting, and Lighthouse's simulation counts both as render-blocking.
+   Chrome picks up a manifest link added later, and "Add to Home Screen"
+   reads it long after load. */
+function useManifestLink() {
+  useEffect(() => {
+    const add = () => {
+      if (document.querySelector('link[rel="manifest"]')) return
+      const link = document.createElement('link')
+      link.rel = 'manifest'
+      link.href = '/manifest.webmanifest'
+      document.head.append(link)
+    }
+    const schedule = () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(add, { timeout: 3000 })
+      } else {
+        window.setTimeout(add, 1000)
+      }
+    }
+    if (document.readyState === 'complete') schedule()
+    else window.addEventListener('load', schedule, { once: true })
+    return () => window.removeEventListener('load', schedule)
+  }, [])
+}
+
 function useEarlyScrollReset() {
   const router = useRouter()
 
@@ -162,12 +190,8 @@ export const Route = createRootRoute({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: 'theme-color', content: '#ffffff' },
-      { title: 'Hägvall Labs | Integritetssäker mjukvara för AI-eran' },
-      {
-        name: 'description',
-        content:
-          'Hägvall Labs bygger integritetssäker mjukvara som körs i er egen IT-miljö. Maskera maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg.',
-      },
+      // No title or description here: every route sets its own through
+      // pageHead(), and the 404 renders its own in its language (NotFound).
       { property: 'og:site_name', content: 'Hägvall Labs' },
       { property: 'og:type', content: 'website' },
     ],
@@ -181,6 +205,7 @@ export const Route = createRootRoute({
         sizes: '180x180',
         href: '/apple-touch-icon.png',
       },
+      // The web app manifest is linked after load instead (useManifestLink).
     ],
     scripts: [
       {
@@ -197,7 +222,7 @@ export const Route = createRootRoute({
             propertyID: 'Swedish organisation number',
             value: '559598-0110',
           },
-          url: site,
+          url: site + '/',
           logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
             'Hägvall Labs develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
@@ -372,6 +397,7 @@ function RootLayout() {
   const t = chrome[lang]
   useSecondaryRoutePreload(lang)
   useEarlyScrollReset()
+  useManifestLink()
   useEffect(() => {
     document.documentElement.lang = lang
   }, [lang])
@@ -506,6 +532,7 @@ function RootLayout() {
 const notFoundCopy = {
   sv: {
     title: 'Sidan finns inte.',
+    metaTitle: 'Sidan finns inte | Hägvall Labs',
     body: 'Adressen du försökte nå finns inte. Den kan ha flyttats eller aldrig ha funnits.',
     cta: 'Till startsidan',
     next: 'Leta vidare här:',
@@ -519,6 +546,7 @@ const notFoundCopy = {
   },
   en: {
     title: 'Page Not Found.',
+    metaTitle: 'Page Not Found | Hägvall Labs',
     body: 'The address you tried to reach doesn’t exist. It may have moved or never existed.',
     cta: 'Back to Home',
     next: 'Where to look next:',
@@ -542,6 +570,10 @@ function NotFound() {
   const pages = Object.keys(t.pages) as Array<keyof typeof t.pages>
   return (
     <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
+      {/* No route head matches a 404, so its title and description are
+          rendered here; React hoists them into <head>. */}
+      <title>{t.metaTitle}</title>
+      <meta name="description" content={t.body} />
       <p className={`mb-4 ${kicker}`}>404</p>
       <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
       <p className={heroBody}>{t.body}</p>

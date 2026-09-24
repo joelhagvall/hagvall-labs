@@ -333,6 +333,40 @@ const copy = {
         body: 'Mata analys- och BI-verktyg med text som är fri från personuppgifter.',
       },
     ],
+    detectTitle: 'Vad Maskera hittar',
+    detectBody:
+      'Varje uppgift byts mot en platshållare som [NAMN_1] eller [PERSONNUMMER_1]. Nyckeln för att återställa dem stannar hos er, så svaret från AI-modellen kan fyllas i med de riktiga värdena igen, lokalt.',
+    detectGroups: [
+      {
+        title: 'Fri text',
+        body: 'Min egen svenska AI-modell på 43 MB hittar det som regler aldrig kan: namn, platser, organisationer och gatuadresser, även i gemener, versaler och genitiv, så som folk faktiskt skriver.',
+        items: [
+          ['NAMN', 'Namn'],
+          ['PLATS', 'Platser'],
+          ['ORGANISATION', 'Organisationer'],
+          ['ADRESS', 'Gatuadresser'],
+        ],
+      },
+      {
+        title: 'Strukturerade uppgifter',
+        body: 'Regler med formatkontroller och checksummor, så att något som 2019-2024 aldrig tas för ett bankgironummer. Egna format, som ärende- eller kundnummer, läggs till som egna regler.',
+        items: [
+          ['PERSONNUMMER', 'Personnummer'],
+          ['SAMORDNINGSNUMMER', 'Samordningsnummer'],
+          ['ORGANISATIONSNUMMER', 'Organisationsnummer'],
+          ['TELEFON', 'Telefonnummer'],
+          ['EPOST', 'E-post'],
+          ['POSTNUMMER', 'Postnummer'],
+          ['LAGENHETSNUMMER', 'Lägenhetsnummer'],
+          ['BANKGIRO', 'Bankgiro'],
+          ['PLUSGIRO', 'Plusgiro'],
+          ['IBAN', 'IBAN'],
+          ['KORTNUMMER', 'Kortnummer'],
+          ['IP_ADRESS', 'IP-adresser'],
+          ['URL', 'Länkar'],
+        ],
+      },
+    ],
     builtTitle: 'Så är den byggd',
     principles: [
       {
@@ -383,6 +417,40 @@ const copy = {
       {
         title: 'Analytics',
         body: 'Feed analytics and BI tools with text that is free of personal data.',
+      },
+    ],
+    detectTitle: 'What Maskera Detects',
+    detectBody:
+      'Each item is swapped for a placeholder like [NAMN_1] or [PERSONNUMMER_1]. The key to restore them stays on your side, so the AI model’s answer can be filled back in with the real values, locally.',
+    detectGroups: [
+      {
+        title: 'Free Text',
+        body: 'My own 43 MB Swedish AI model catches what rules never can: names, places, organizations and street addresses, even in lowercase, all caps and genitive forms, the way people actually type.',
+        items: [
+          ['NAMN', 'Names'],
+          ['PLATS', 'Places'],
+          ['ORGANISATION', 'Organizations'],
+          ['ADRESS', 'Street addresses'],
+        ],
+      },
+      {
+        title: 'Structured Data',
+        body: 'Rules with format checks and checksums, so something like 2019-2024 is never mistaken for a bankgiro number. Your own formats, like case or customer numbers, join as rules of their own.',
+        items: [
+          ['PERSONNUMMER', 'Personal identity numbers'],
+          ['SAMORDNINGSNUMMER', 'Coordination numbers'],
+          ['ORGANISATIONSNUMMER', 'Organization numbers'],
+          ['TELEFON', 'Phone numbers'],
+          ['EPOST', 'Email'],
+          ['POSTNUMMER', 'Postal codes'],
+          ['LAGENHETSNUMMER', 'Apartment numbers'],
+          ['BANKGIRO', 'Bankgiro'],
+          ['PLUSGIRO', 'Plusgiro'],
+          ['IBAN', 'IBAN'],
+          ['KORTNUMMER', 'Card numbers'],
+          ['IP_ADRESS', 'IP addresses'],
+          ['URL', 'Links'],
+        ],
       },
     ],
     builtTitle: 'How It’s Built',
@@ -473,15 +541,48 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
         </div>
       </section>
 
+      {/* The detected types, grouped by the layer that finds them, each in
+          its preview hue. Real text, not an image: this is the page's most
+          quotable fact for search and AI answers. */}
       <section className={container}>
-        <h2 className={`reveal ${sectionTitleSm}`}>
-          {t.builtTitle}
-        </h2>
-        <Cards
-          items={t.principles}
-          icons={principleIcons}
-          className="mt-8 sm:grid-cols-3"
-        />
+        <h2 className={`reveal ${sectionTitleSm}`}>{t.detectTitle}</h2>
+        <p className="reveal mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+          {t.detectBody}
+        </p>
+        <div className="mt-10 grid gap-10 md:grid-cols-2">
+          {t.detectGroups.map((group) => (
+            <div key={group.title} className="reveal">
+              <h3 className="font-semibold">{group.title}</h3>
+              <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
+                {group.body}
+              </p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {group.items.map(([label, name]) => (
+                  <li
+                    key={label}
+                    style={pillVars(label)}
+                    className={`rounded-md border px-2.5 py-0.5 text-sm ${PILL_COLOURS}`}
+                  >
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-neutral-200">
+        <div className={container}>
+          <h2 className={`reveal ${sectionTitleSm}`}>
+            {t.builtTitle}
+          </h2>
+          <Cards
+            items={t.principles}
+            icons={principleIcons}
+            className="mt-8 sm:grid-cols-3"
+          />
+        </div>
       </section>
 
       {/* Open source: the trust argument is that the code, package and model

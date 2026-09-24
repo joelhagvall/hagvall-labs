@@ -1,4 +1,7 @@
 User-agent: *
+# Content Signals (contentsignals.org): search indexing, AI answers that
+# quote and link the site, and AI training are all welcome here.
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 Sitemap: https://hagvall-labs.com/sitemap.xml

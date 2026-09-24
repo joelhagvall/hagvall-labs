@@ -71,3 +71,14 @@ jobs:
               git checkout --detach '$RELEASE_SHA'
               bash scripts/deploy-release.sh '$RELEASE_SHA'
             "
+
+      # Search engines hear about the new release right away instead of on
+      # their next crawl. Never fails the deploy: the release is already live.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+          persist-credentials: false
+
+      - name: Notify IndexNow
+        continue-on-error: true
+        run: bash scripts/indexnow.sh https://hagvall-labs.com

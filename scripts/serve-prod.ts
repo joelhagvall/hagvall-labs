@@ -198,6 +198,18 @@ const aliases: Record<string, string> = {
 }
 
 
+// Every page is server-rendered, so the hydration JavaScript is not needed
+// for the first paint. The framework preloads and loads it at high
+// priority, which lets a fast connection run it before the first frame and
+// makes Lighthouse's simulation count every chunk as render-blocking (about
+// 150 ms of simulated FCP). Low priority tells the browser, and Lighthouse,
+// that the document and the paint come first.
+function lowerHydrationPriority(html: string): string {
+  return html
+    .replaceAll('<link rel="modulepreload"', '<link rel="modulepreload" fetchpriority="low"')
+    .replaceAll('<script type="module" async=""', '<script type="module" async="" fetchpriority="low"')
+}
+
 // Resolves a request path to a file inside dist/client, or null when the path
 // is malformed or escapes the directory (encoded ../ traversal).
 function staticFilePath(pathname: string): string | null {
@@ -227,6 +239,18 @@ Bun.serve({
       )
     }
 
+    // Trailing-slash variants are permanent moves to the canonical URL (the
+    // router would answer with a temporary 307).
+    if (pathname !== url.pathname) {
+      return respond(
+        new Response(null, {
+          status: 301,
+          headers: { location: pathname + url.search },
+        }),
+        req,
+      )
+    }
+
     if (req.method !== 'GET' && req.method !== 'HEAD') {
       const res = typeof handler === 'function' ? await handler(req) : await handler.fetch(req)
       return respond(res, req)
@@ -238,8 +262,11 @@ Bun.serve({
     if (representation === 'markdown') return respond(await markdownResponse(req), req)
 
     const res = await renderPage(req)
-    const page = new Response(res.body, { status: res.status, headers: res.headers })
-    if ((res.headers.get('content-type') ?? '').includes('text/html')) {
+    const isHtml = (res.headers.get('content-type') ?? '').includes('text/html')
+    const body = isHtml ? lowerHydrationPriority(await res.text()) : res.body
+    const page = new Response(body, { status: res.status, headers: res.headers })
+    if (isHtml) {
+      page.headers.delete('content-length')
       addVary(page.headers, 'Accept')
       // Advertise the Markdown representation of the same URL so agents
       // find the content negotiation without guessing (RFC 8288).

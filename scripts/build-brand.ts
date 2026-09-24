@@ -284,6 +284,12 @@ for (const side of [16, 32, 48]) {
 }
 execFileSync('magick', [...ico, join(PUB, 'favicon.ico')])
 png(symbolTile(180, 'color', WHITE, 0.66), 180, 180, join(PUB, 'apple-touch-icon.png'))
+// Web app manifest icons (public/manifest.webmanifest). The maskable one
+// keeps the symbol inside the 80% safe zone that launchers crop to.
+for (const side of [192, 512]) {
+  png(symbolTile(side, 'color', WHITE, 0.66), side, side, join(PUB, `icon-${side}.png`))
+}
+png(symbolTile(512, 'color', WHITE, 0.5), 512, 512, join(PUB, 'icon-maskable-512.png'))
 png(ogSv, 1200, 630, join(PUB, 'brand/og-image-sv.png'))
 png(ogEn, 1200, 630, join(PUB, 'brand/og-image-en.png'))
 writeFileSync(join(PUB, 'brand/hagvall-labs-symbol.svg'), symbolTile(640, 'color') + '\n')

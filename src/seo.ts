@@ -85,6 +85,8 @@ export function pageHead(opts: {
       { property: 'og:image:height', content: '630' },
       { property: 'og:image:alt', content: ogImageAlt[opts.lang] },
       { name: 'twitter:card', content: 'summary_large_image' },
+      { name: 'twitter:title', content: opts.ogTitle },
+      { name: 'twitter:description', content: opts.ogDescription },
     ],
     links: [
       { rel: 'canonical', href: site + paths[opts.lang] },
@@ -137,6 +139,7 @@ export function homeJsonLd() {
         '@id': site + '/#founder',
         name: 'Joel Hägvall',
         url: founderLinks.site,
+        image: site + '/joel-hagvall.webp',
         jobTitle: 'Founder',
         worksFor: { '@id': site + '/#organization' },
         sameAs: [

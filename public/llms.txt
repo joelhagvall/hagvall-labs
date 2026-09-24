@@ -6,7 +6,7 @@ Key facts:
 
 - Company: Hägvall Labs AB (Swedish org. no. 559598-0110, Stockholm, Sweden), founded and run by Joel Hägvall
 - Focus: information security, privacy, artificial intelligence
-- First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools; built for Swedish text and Swedish personal data formats
+- First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools; built for Swedish text and Swedish personal data formats. Detects free-text names, places, organizations and street addresses with its own 43 MB Swedish NER model, and structured data with checksum-aware rules: personnummer, samordningsnummer, organisationsnummer, phone numbers, email, postal codes, apartment numbers, bankgiro, plusgiro, IBAN, card numbers, IP addresses and links. Each item becomes a placeholder such as [NAMN_1] that can be restored locally
 - Open artifacts: Maskera source on GitHub (https://github.com/joelhagvall/maskera), package on npm (https://www.npmjs.com/package/maskera), Swedish NER model on Hugging Face (https://huggingface.co/joelhagvall/maskera-sv-ner)
 - Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
 - Offering: software development, APIs and integrations, AI SDK implementation and automation, information security and privacy consulting; Maskera pilot projects, software licenses, installation and support
@@ -24,7 +24,7 @@ The site is bilingual: Swedish (default) and English (under /en).
 
 - [Home (Swedish)](https://hagvall-labs.com/): Company overview, services and contact
 - [Home (English)](https://hagvall-labs.com/en): Same content in English
-- [Maskera (Swedish)](https://hagvall-labs.com/maskera): Product page with use cases (AI systems, logs, analytics), deployment model and pilot projects
+- [Maskera (Swedish)](https://hagvall-labs.com/maskera): Product page with the detected data types, use cases (AI systems, logs, analytics), deployment model and pilot projects
 - [Maskera (English)](https://hagvall-labs.com/en/maskera): Same content in English
 - [Contact (Swedish)](https://hagvall-labs.com/kontakt): Direct contact with Joel Hägvall, email and how a pilot starts
 - [Contact (English)](https://hagvall-labs.com/en/contact): Same content in English
