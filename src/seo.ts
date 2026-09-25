@@ -6,6 +6,11 @@ export const contactEmail = 'work@joelhagvall.com'
 
 // Public profiles and open Maskera artifacts. Referenced by the pages,
 // the footer and the JSON-LD so the URLs live in exactly one place.
+// The public Lighthouse check (.github/workflows/lighthouse.yml) runs against
+// the live site, keeps src/lighthouse-scores.json current and publishes the
+// HTML reports here. Linked from the footer and the home page's score panel.
+export const lighthouseReportsUrl = 'https://joelhagvall.github.io/hagvall-labs/'
+
 export const founderLinks = {
   site: 'https://joelhagvall.com',
   linkedin: 'https://www.linkedin.com/in/joel-h%C3%A4gvall-810601147/',
@@ -52,8 +57,8 @@ export function pageFromPath(pathname: string): PageKey {
     set and optional JSON-LD. Canonicals must come from here (route heads),
     never from __root.tsx, where they would merge into duplicates. */
 const ogImageAlt: Record<Lang, string> = {
-  sv: 'Hägvall Labs, integritetssäker mjukvara för AI-eran',
-  en: 'Hägvall Labs, privacy-first software for the AI era',
+  sv: 'Hägvall Labs: mjukvara, AI och automation från Stockholm',
+  en: 'Hägvall Labs: software, AI and automation from Stockholm',
 }
 
 export function pageHead(opts: {
@@ -129,7 +134,7 @@ export function homeJsonLd() {
         '@type': 'WebSite',
         '@id': site + '/#website',
         name: 'Hägvall Labs',
-        alternateName: ['Hägvall Labs AB', 'hagvall-labs.com'],
+        alternateName: ['Hägvall Labs AB'],
         url: site + '/',
         inLanguage: ['sv', 'en'],
         publisher: { '@id': site + '/#organization' },

@@ -5,6 +5,7 @@
 @theme {
   --color-cobalt: #1748d4;
   --color-cobalt-deep: #1239a8;
+  --color-cobalt-tint: #c3d2ff;
   --color-ink: #20272d;
 }
 
@@ -22,6 +23,19 @@ body {
   margin: 0;
 }
 
+/* Overscroll colors: cobalt above the page (the band), white below it (the
+   footer). The canvas color alone paints both ends the same, so a fixed
+   layer split at the middle sits behind everything: rubber-band scrolling
+   moves the page but not fixed elements, so the gap at each end shows that
+   end's half. Every page paints its own surfaces over it edge to edge. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(var(--color-cobalt) 50%, #fff 50%);
+}
+
 a,
 button,
 input,
@@ -32,48 +46,26 @@ textarea {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-cobalt);
+  outline: 2px solid var(--focus-ring, var(--color-cobalt));
   outline-offset: 2px;
 }
 
-/* Animation system. Compositor-only properties (transform, opacity), and
-   every animated class is gated behind prefers-reduced-motion: no-preference.
-   .reveal entrances are observer-driven (RevealObserver in ui.tsx,
-   rendered by each page so it never races the lazy page chunk's hydration):
-   elements below the first viewport get .reveal-pending and rise in with
-   .reveal-in when scrolled into view. SSR/no-JS renders statically. */
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* Focus rings follow the nearest surface: white on cobalt (hero bands, the
+   header over them), cobalt again on a white card or panel inside one. The
+   custom property inherits, so the innermost surface wins. */
+.on-cobalt {
+  --focus-ring: #fff;
+}
+.on-white {
+  --focus-ring: var(--color-cobalt);
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes brand-in {
-  from {
-    opacity: 0;
-    transform: translateY(26px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
+/* Motion. One orchestrated moment per page, the masking preview's pills
+   settling in (it demonstrates the product), plus motion that answers an
+   action (the products menu). Compositor-only properties (transform,
+   opacity), every animated class gated behind
+   prefers-reduced-motion: no-preference. No section entrances, no idle
+   loops. */
 
 @keyframes menu-in {
   from {
@@ -128,34 +120,31 @@ textarea {
   backdrop-filter: blur(8px);
 }
 
-/* Hero glows: radial gradients, not blur() filters. A large blurred element
-   costs real paint time in the first frame and drags FCP below target. */
-.glow-cobalt {
-  background: radial-gradient(closest-side, rgb(23 72 212 / 0.22), transparent);
+/* The sheet's rounded top corners (rounded-t-[2.5rem]) docked in the sticky
+   header: a cobalt square with a transparent quarter circle cut out, one per
+   corner, painted over the frosted bar. The half-pixel ramp antialiases the
+   curve. Opacity only, so the handover is compositor-safe. */
+.header-corner {
+  position: absolute;
+  top: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 100% 100%,
+    transparent calc(2.5rem - 0.5px),
+    var(--color-cobalt) 2.5rem
+  );
 }
-
-.glow-cobalt-soft {
-  background: radial-gradient(closest-side, rgb(23 72 212 / 0.09), transparent);
+.header-corner-r {
+  background: radial-gradient(
+    circle at 0 100%,
+    transparent calc(2.5rem - 0.5px),
+    var(--color-cobalt) 2.5rem
+  );
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .animate-float {
-    animation: float 7s ease-in-out infinite;
-  }
-
-  .brand-path {
-    opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-    animation: brand-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-  .brand-path:nth-child(2) {
-    animation-delay: 0.12s;
-  }
-  .brand-path:nth-child(3) {
-    animation-delay: 0.24s;
-  }
-
   .mask-in {
     animation: mask-in 0.35s ease-out both;
   }
@@ -163,26 +152,5 @@ textarea {
   .animate-menu {
     transform-origin: top right;
     animation: menu-in 0.16s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .glow {
-    animation: fade-up 1.2s ease-out backwards;
-  }
-  .glow-delay {
-    animation-delay: 0.25s;
-  }
-
-  /* A scroll-driven view() timeline would fade whatever happens to sit at
-     the fold on load, and axe then measures half-transparent text (where the
-     fold lands depends on platform font metrics: CI on Linux failed where
-     macOS passed). The observer instead only ever hides elements strictly
-     below the first viewport, so the initial paint is always fully opaque.
-     Both classes live inside this media block: with reduced motion neither
-     applies, so nothing is hidden even if the JS were to run. */
-  .reveal-pending {
-    opacity: 0;
-  }
-  .reveal-in {
-    animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 }

@@ -1,23 +1,27 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { founderLinks, pagePaths } from '../seo'
+import { founderLinks, lighthouseReportsUrl, pagePaths } from '../seo'
 import type { Lang } from '../seo'
+import lighthouse from '../lighthouse-scores.json'
 import { BrandSymbol } from './BrandSymbol'
 import {
-  Cards,
-  HeroGlows,
-  RevealObserver,
+  brandOnCobalt,
   btnArrow,
   btnPrimary,
-  btnSecondary,
+  btnPrimaryOnCobalt,
+  btnSecondaryOnCobalt,
   container,
   externalLinkProps,
-  heroBody,
+  heroBand,
+  heroBodyOnCobalt,
   heroTitle,
-  kicker,
+  itemBody,
+  itemTitle,
+  kickerOnCobalt,
   linkCobalt,
   linkInk,
   sectionTitle,
+  sheet,
 } from './ui'
 
 /* The masking preview, ported one-to-one from maskera-cloud
@@ -60,7 +64,9 @@ const FALLBACK_LIGHT = '#334155'
 
 /** Tinted pill: the hue drives text, background and border together. */
 function pillVars(label: string): React.CSSProperties {
-  return { '--pill': LABELS[label]?.light ?? FALLBACK_LIGHT } as React.CSSProperties
+  return {
+    '--pill': LABELS[label]?.light ?? FALLBACK_LIGHT,
+  } as React.CSSProperties
 }
 
 const PILL_COLOURS = 'text-(--pill) border-(--pill)/45 bg-(--pill)/10'
@@ -72,8 +78,7 @@ const tokenClass = `rounded-sm border px-[5px] font-mono text-[0.92em] whitespac
 
 // The same hue in the source text: a 16% fill plus a 2px underline drawn
 // with an inset shadow, which adds no width.
-const highlightClass =
-  'rounded-xs bg-(--pill)/16 pill-underline'
+const highlightClass = 'rounded-xs bg-(--pill)/16 pill-underline'
 
 // The preview sentence, one segment per run of text. Labelled segments
 // render highlighted in the before-row and as placeholder pills in the
@@ -132,7 +137,13 @@ function MaskPreview({
     state === 'inView' ? 'mask-in' : state === 'pending' ? 'opacity-0' : ''
 
   return (
-    <div ref={ref} className="rounded-xl border border-neutral-200 bg-white p-5">
+    /* text-ink: the card can sit on the cobalt band, where the inherited
+       color is white; uncolored runs in the preview text must stay ink on
+       the white card. */
+    <div
+      ref={ref}
+      className="rounded-xl border border-neutral-200 bg-white p-5 text-ink"
+    >
       <p className="flex items-baseline justify-between gap-3 text-xs font-medium text-neutral-500">
         <span>{before}</span>
         {note ? (
@@ -250,7 +261,10 @@ function IconChip({ className }: { className?: string }) {
 function IconShield({ className }: { className?: string }) {
   return (
     <Svg className={className}>
-      <path fillOpacity="0.45" d="M4.5 5.5 12 2.5 12 21.5C7 19 4.5 15.1 4.5 10Z" />
+      <path
+        fillOpacity="0.45"
+        d="M4.5 5.5 12 2.5 12 21.5C7 19 4.5 15.1 4.5 10Z"
+      />
       <path d="M12 2.5 19.5 5.5V10C19.5 15.1 17 19 12 21.5Z" />
     </Svg>
   )
@@ -277,33 +291,27 @@ function IconBolt({ className }: { className?: string }) {
   )
 }
 
-// Precision: cut gem, three facets
-function IconGem({ className }: { className?: string }) {
-  return (
-    <Svg className={className}>
-      <path fillOpacity="0.35" d="M6.5 4.5 17.5 4.5 20.5 10 3.5 10Z" />
-      <path fillOpacity="0.65" d="M3.5 10 12 10 12 21Z" />
-      <path d="M12 10 20.5 10 12 21Z" />
-    </Svg>
-  )
-}
-
 const serviceIcons = [IconBuild, IconChip, IconShield]
-const buildIcons = [IconWorkflow, IconBolt, IconGem]
+const buildIcons = [IconWorkflow, IconBolt]
+
+const scoreKeys = [
+  'performance',
+  'accessibility',
+  'best-practices',
+  'seo',
+] as const
 
 const copy = {
   sv: {
-    heroKicker: 'integritetssäker AI-mjukvara från Stockholm',
-    heroAccent: 'Bygg med AI.',
-    heroTitleB: ' Behåll er data.',
+    heroKicker: 'Mjukvara, AI och automation från Stockholm',
+    heroTitleA: 'Bygg med AI.',
+    heroTitleB: 'Behåll er data.',
     heroBody:
       'Jag bygger mjukvara med AI i verktygskedjan varje dag. Det är därför jag vet exakt var data läcker, och därför allt jag bygger utgår från samma princip: er data stannar hos er.',
-    ctaPrimary: 'Upptäck Maskera',
-    ctaSecondary: 'Boka en demo',
-    teaserKicker: 'Det jag säljer',
+    ctaPrimary: 'Läs om Maskera',
+    ctaSecondary: 'Hör av dig',
     teaserBody:
-      'Maskera hittar och maskerar personuppgifter i text innan den når AI-system, loggar eller analysverktyg. Byggd för att ni ska kunna använda AI utan att bjuda på era kunders data.',
-    teaserMore: 'Läs mer om Maskera →',
+      'Maskera är det jag säljer. Den hittar och maskerar personuppgifter i text innan den når AI-system, loggar eller analysverktyg, så att ni kan använda AI utan att bjuda på era kunders data.',
     previewBefore: 'Er text',
     previewAfter: 'Det AI-modellen ser',
     previewNote: '',
@@ -348,11 +356,14 @@ const copy = {
         title: 'Snabba releaser, hårda grindar',
         body: 'Små releaser och CI/CD på allt. Varje ändring går genom kvalitetsgrindar som stoppar bygget om något inte håller måttet. Ni väntar inte ett kvartal på en fix.',
       },
-      {
-        title: 'Löjligt hög ribba',
-        body: 'Sajten du läser på just nu får toppbetyg i Lighthouse på varje sida, med full pott på tillgänglighet och SEO. Ingen bad om det. Siffrorna mäts dagligen, se sidfoten. Samma precision hamnar i det jag bygger åt er.',
-      },
     ],
+    proofTitle: 'Löjligt hög ribba',
+    proofBody:
+      'Sajten du läser på just nu får toppbetyg i Lighthouse på varje sida, med full pott på tillgänglighet och SEO. Ingen bad om det. Samma precision hamnar i det jag bygger åt er.',
+    scoreLabels: ['Prestanda', 'Tillgänglighet', 'Best practices', 'SEO'],
+    scoresNote:
+      'Lägsta resultatet över alla sidor, mätt dagligen mot den publicerade sajten.',
+    scoresReports: 'Se rapporterna',
     aboutTitle: 'Att jobba med mig',
     aboutP1:
       'Hägvall Labs är jag. Det är jag som bygger produkterna, säljer dem och står för det som levereras. Inga mellanled.',
@@ -363,17 +374,15 @@ const copy = {
     aboutCta: 'Hör av dig',
   },
   en: {
-    heroKicker: 'Privacy-First AI Software From Stockholm',
-    heroAccent: 'Build With AI.',
-    heroTitleB: ' Keep Your Data.',
+    heroKicker: 'Software, AI and Automation From Stockholm',
+    heroTitleA: 'Build With AI.',
+    heroTitleB: 'Keep Your Data.',
     heroBody:
       'I build software with AI in the toolchain every day. That’s why I know exactly where data leaks, and why everything I build starts from the same principle: your data stays on your side.',
-    ctaPrimary: 'Discover Maskera',
-    ctaSecondary: 'Book a Demo',
-    teaserKicker: 'What I Sell',
+    ctaPrimary: 'Read About Maskera',
+    ctaSecondary: 'Get in Touch',
     teaserBody:
-      'Maskera finds and masks personal data in text before it reaches AI systems, logs or analytics tools. Built so you can use AI without giving away your customers’ data.',
-    teaserMore: 'Learn More About Maskera →',
+      'Maskera is what I sell. It finds and masks personal data in text before it reaches AI systems, logs or analytics tools, so you can use AI without giving away your customers’ data.',
     previewBefore: 'Your text',
     previewAfter: 'What the AI model sees',
     previewNote: 'Example in Swedish',
@@ -418,11 +427,14 @@ const copy = {
         title: 'Fast Releases, Hard Gates',
         body: 'Small releases and CI/CD on everything. Every change passes quality gates that fail the build if anything slips. You won’t wait a quarter for a fix.',
       },
-      {
-        title: 'A Ridiculously High Bar',
-        body: 'The site you’re reading scores top marks in Lighthouse on every page, with a perfect score for accessibility and SEO. Nobody asked for that. The scores are measured daily, see the footer. The same precision goes into everything I build for you.',
-      },
     ],
+    proofTitle: 'A Ridiculously High Bar',
+    proofBody:
+      'The site you’re reading scores top marks in Lighthouse on every page, with a perfect score for accessibility and SEO. Nobody asked for that. The same precision goes into everything I build for you.',
+    scoreLabels: ['Performance', 'Accessibility', 'Best Practices', 'SEO'],
+    scoresNote:
+      'The lowest score across all pages, measured daily against the live site.',
+    scoresReports: 'See the Reports',
     aboutTitle: 'Working With Me',
     aboutP1:
       'Hägvall Labs is me. I build the products, I sell them and I stand behind what ships. No layers in between.',
@@ -434,203 +446,333 @@ const copy = {
   },
 }
 
+/** The hero symbol. SSR and first paint show the static SVG; once the page
+    has loaded and the browser is idle, the three.js scene (BrandScene.tsx,
+    its own lazily imported chunk) mounts over it and crossfades in. Only on
+    lg screens; small screens, Save-Data, reduced motion and browsers
+    without WebGL keep the SVG. The box has a
+    fixed aspect ratio, so the swap never shifts layout, and a canvas is
+    never an LCP candidate. */
+function BrandHero() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    const host = ref.current
+    // Only where the symbol is large (lg, the two-column hero): on a phone it
+    // is 128px, not worth 143 KB of three.js and a GPU context. Save-Data
+    // and reduced motion keep the SVG too.
+    const connection = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection
+    if (
+      !host ||
+      !window.matchMedia('(min-width: 1024px)').matches ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+      connection?.saveData
+    ) {
+      return
+    }
+    let cancelled = false
+    let dispose: (() => void) | undefined
+    let cancelIdle = () => {}
+    const mount = () => {
+      import('./BrandScene')
+        .then(({ mountBrandScene }) => {
+          if (!cancelled) dispose = mountBrandScene(host, () => setReady(true))
+        })
+        .catch(() => {
+          // Chunk failed to load: the SVG stays, nothing else to do.
+        })
+    }
+    const whenIdle = () => {
+      if (typeof window.requestIdleCallback === 'function') {
+        const id = window.requestIdleCallback(mount, { timeout: 3000 })
+        cancelIdle = () => window.cancelIdleCallback(id)
+      } else {
+        const id = window.setTimeout(mount, 1500)
+        cancelIdle = () => window.clearTimeout(id)
+      }
+    }
+    if (document.readyState === 'complete') whenIdle()
+    else window.addEventListener('load', whenIdle, { once: true })
+    return () => {
+      cancelled = true
+      window.removeEventListener('load', whenIdle)
+      cancelIdle()
+      dispose?.()
+    }
+  }, [])
+
+  return (
+    <div ref={ref} className="relative aspect-square w-32 sm:w-44 lg:w-full">
+      {/* p-[5%]: the SVG's viewBox gives the symbol 89% of the box, the 3D
+          camera 80%, so the two match through the crossfade. */}
+      <div
+        className={`absolute inset-0 p-[5%] transition-opacity duration-500 motion-reduce:transition-none ${brandOnCobalt} ${ready ? 'opacity-0' : ''}`}
+      >
+        <BrandSymbol size={352} className="size-full" />
+      </div>
+    </div>
+  )
+}
+
+/** A titled list with an icon per item: the services and working habits.
+    Plain rows instead of cards, the icons in cobalt without a chip. */
+function ItemList({
+  items,
+  icons,
+}: {
+  items: ReadonlyArray<{ title: string; body: string }>
+  icons: ReadonlyArray<(props: { className?: string }) => React.ReactNode>
+}) {
+  return (
+    <ul className="grid content-start gap-10">
+      {items.map((item, i) => {
+        const Icon = icons[i]
+        return (
+          <li
+            key={item.title}
+            className="grid grid-cols-[2rem_minmax(0,1fr)] gap-x-4"
+          >
+            <Icon className="mt-0.5 size-8 text-cobalt" />
+            <div>
+              <h3 className={itemTitle}>{item.title}</h3>
+              <p className={itemBody}>{item.body}</p>
+            </div>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 export function HomePage({ lang }: { lang: Lang }) {
   const t = copy[lang]
 
   return (
     <>
-      <RevealObserver />
-      {/* Hero. Decorative glows and the symbol animate; the headline and body
-          stay static so nothing delays the LCP paint. */}
-      <section className="relative isolate overflow-hidden">
-        <HeroGlows />
-        <div className="mx-auto grid w-full max-w-5xl items-center gap-8 px-6 pb-12 pt-16 md:grid-cols-[1fr_auto] md:gap-12 md:pb-24 md:pt-24">
+      {/* Hero on the cobalt band: the promise on the left, the symbol on
+          the right, in 3D once the page is idle (BrandHero). The headline
+          and body stay static so nothing delays the LCP paint. The bottom
+          padding leaves room for the sheet's rounded overlap. */}
+      <section className={heroBand}>
+        <div className="mx-auto grid w-full max-w-5xl gap-8 px-6 pb-24 pt-12 md:pb-28 md:pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)] lg:items-center lg:gap-12">
           <div>
-            {/* Names the company and what it makes before the headline, so
-                the first words on the page match the title. */}
-            <p className={`mb-4 ${kicker}`}>
-              <span translate="no">Hägvall Labs</span> · {t.heroKicker}
-            </p>
+            {/* What and where, before the headline. The company name is
+                already the header's wordmark right above. */}
+            <p className={`mb-4 ${kickerOnCobalt}`}>{t.heroKicker}</p>
+            {/* One sentence per line: the pair is the whole pitch, set large
+                rather than colored apart. */}
             <h1 className={`${heroTitle} sm:text-6xl`}>
-              <span className="text-cobalt">{t.heroAccent}</span>
-              {t.heroTitleB}
+              <span className="block">{t.heroTitleA}</span>{' '}
+              <span className="block">{t.heroTitleB}</span>
             </h1>
-            <p className={heroBody}>{t.heroBody}</p>
+            <p className={heroBodyOnCobalt}>{t.heroBody}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link to={pagePaths.maskera[lang]} className={btnPrimary}>
+              <Link to={pagePaths.maskera[lang]} className={btnPrimaryOnCobalt}>
                 {t.ctaPrimary}
-                <span aria-hidden="true" className={btnArrow}>
-                  →
-                </span>
               </Link>
-              <Link to={pagePaths.contact[lang]} className={btnSecondary}>
+              <Link
+                to={pagePaths.contact[lang]}
+                className={btnSecondaryOnCobalt}
+              >
                 {t.ctaSecondary}
               </Link>
             </div>
           </div>
-          {/* Visually first on mobile (CSS order, DOM order unchanged), so
+          {/* Visually first below lg (CSS order, DOM order unchanged), so
               the headline stays the first element and the LCP paint. */}
-          <div className="animate-float order-first md:order-0">
-            <BrandSymbol
-              size={230}
-              animated
-              className="size-20 md:size-57.5"
-            />
+          <div className="order-first lg:order-0">
+            <BrandHero />
           </div>
         </div>
       </section>
 
-      {/* Maskera teaser */}
-      <section className="border-y border-neutral-200 bg-cobalt/3">
-        <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 py-20 md:grid-cols-2 md:items-center">
-          <div className="reveal">
-            <p className={`mb-3 ${kicker}`}>{t.teaserKicker}</p>
+      {/* The white sheet: everything below the band rolls over it with
+          rounded top corners. Sections are separated by space, not rules. */}
+      <div className={sheet}>
+        {/* Maskera: what it is in one sentence, next to the preview that
+            shows it working. */}
+        <section
+          className={`${container} grid gap-10 md:grid-cols-2 md:items-center`}
+        >
+          <div>
             <h2 className={sectionTitle} translate="no">
               Maskera
             </h2>
-            <p className="mt-4 text-pretty leading-relaxed text-neutral-600">
+            <p className="mt-5 text-pretty text-lg leading-snug tracking-tight text-ink sm:text-xl">
               {t.teaserBody}
             </p>
-            <div className="mt-6 flex flex-wrap gap-6 text-sm font-medium">
-              <Link to={pagePaths.maskera[lang]} className={linkCobalt}>
-                {t.teaserMore}
-              </Link>
+            {/* The product page is the hero's primary button; here only the
+                product site. */}
+            <p className="mt-8 text-sm font-medium">
               <a
                 href="https://maskera.dev"
                 {...externalLinkProps}
-                className={linkCobalt}
+                className={`group inline-flex items-center gap-1 ${linkCobalt}`}
                 translate="no"
                 data-umami-event="outbound-link-click"
                 data-umami-event-destination="maskera.dev"
                 data-umami-event-placement="home-product"
               >
-                maskera.dev →
+                maskera.dev
+                <span aria-hidden="true" className={btnArrow}>
+                  ↗
+                </span>
               </a>
-            </div>
+            </p>
           </div>
-          <div className="reveal">
-            <MaskPreview
-              before={t.previewBefore}
-              after={t.previewAfter}
-              note={t.previewNote}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Services */}
-      <section id="services" className={`${container} scroll-mt-20`}>
-        <h2 className={`reveal ${sectionTitle}`}>
-          {t.servicesTitle}
-        </h2>
-        <p className="reveal mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-          {t.servicesIntro}
-        </p>
-        <Cards
-          items={t.services}
-          icons={serviceIcons}
-          className="mt-10 sm:grid-cols-3"
-        />
-        <dl className="reveal mt-8 grid gap-5 border-t border-neutral-200 pt-6 sm:grid-cols-3 sm:gap-6">
-          {t.technologies.map((group) => (
-            <div key={group.title}>
-              <dt className="text-xs font-medium tracking-wide text-neutral-500">
-                {group.title}
-              </dt>
-              <dd
-                translate="no"
-                className="mt-1 text-pretty text-sm leading-relaxed text-ink"
-              >
-                {group.items.join(', ')}
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      {/* How I build */}
-      <section className="border-t border-neutral-200">
-        <div className={container}>
-          <h2 className={`reveal ${sectionTitle}`}>
-            {t.buildTitle}
-          </h2>
-          <Cards
-            items={t.build}
-            icons={buildIcons}
-            className="mt-10 sm:grid-cols-3"
+          <MaskPreview
+            before={t.previewBefore}
+            after={t.previewAfter}
+            note={t.previewNote}
           />
-        </div>
-      </section>
+        </section>
 
-      {/* About / contact. The portrait is a real photo of Joel: below the
-          fold and lazy, so it never touches the LCP. */}
-      <section className="border-t border-neutral-200">
-        <div className={`reveal ${container}`}>
-          <h2 className={sectionTitle}>
-            {t.aboutTitle}
-          </h2>
-          <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
-            <img
-              src="/joel-hagvall.webp"
-              alt="Joel Hägvall"
-              width={112}
-              height={112}
-              loading="lazy"
-              decoding="async"
-              className="h-28 w-28 shrink-0 rounded-2xl object-cover"
-            />
-            <div>
-              <p className="font-medium">
+        {/* Services: heading and intro on the left, the services as a plain
+            list on the right, the stack underneath. */}
+        <section
+          id="services"
+          className={`${container} grid scroll-mt-20 gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16`}
+        >
+          <div>
+            <h2 className={sectionTitle}>{t.servicesTitle}</h2>
+            <p className="mt-4 text-pretty leading-relaxed text-neutral-600">
+              {t.servicesIntro}
+            </p>
+          </div>
+          <div>
+            <ItemList items={t.services} icons={serviceIcons} />
+            <dl className="mt-12 grid gap-5 sm:grid-cols-3 sm:gap-6">
+              {t.technologies.map((group) => (
+                <div key={group.title}>
+                  <dt className="text-sm font-medium text-neutral-500">
+                    {group.title}
+                  </dt>
+                  <dd
+                    translate="no"
+                    className="mt-1 text-pretty text-sm leading-relaxed text-ink"
+                  >
+                    {group.items.join(', ')}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* How I build: two working habits, and the proof of the third as
+            the real numbers from the daily public Lighthouse run
+            (src/lighthouse-scores.json, never edited by hand). */}
+        <section className={container}>
+          <h2 className={sectionTitle}>{t.buildTitle}</h2>
+          <div className="mt-10 grid gap-12 md:grid-cols-2 md:gap-16">
+            <ItemList items={t.build} icons={buildIcons} />
+            <div className="rounded-3xl bg-neutral-50 p-6 sm:p-8">
+              <h3 className={itemTitle}>{t.proofTitle}</h3>
+              <p className={itemBody}>{t.proofBody}</p>
+              <dl className="mt-8 grid grid-cols-2 gap-6">
+                {scoreKeys.map((key, i) => (
+                  <div key={key}>
+                    <dt className="text-sm text-neutral-600">
+                      {t.scoreLabels[i]}
+                    </dt>
+                    <dd className="mt-1 text-5xl font-semibold tracking-[-0.03em] text-cobalt tabular-nums">
+                      {lighthouse.scores[key]}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-8 text-pretty text-sm leading-relaxed text-neutral-600">
+                {t.scoresNote}{' '}
                 <a
-                  href={founderLinks.site}
+                  href={lighthouseReportsUrl}
                   {...externalLinkProps}
                   className={linkInk}
                   data-umami-event="outbound-link-click"
-                  data-umami-event-destination="joelhagvall.com"
-                  data-umami-event-placement="home-founder"
+                  data-umami-event-destination="github.io"
+                  data-umami-event-placement="home-lighthouse"
                 >
-                  Joel Hägvall
-                </a>
-              </p>
-              <p className="text-sm text-neutral-600">{t.aboutRole}</p>
-              <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-                {t.aboutP1}
-              </p>
-              <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-                {t.aboutP2}
-              </p>
-              <p className="mt-4 text-sm text-neutral-600">
-                {t.aboutLinks}{' '}
-                <a
-                  href={founderLinks.linkedin}
-                  {...externalLinkProps}
-                  className={linkInk}
-                  data-umami-event="outbound-link-click"
-                  data-umami-event-destination="linkedin.com"
-                  data-umami-event-placement="home-founder"
-                >
-                  LinkedIn
-                </a>
-                {' / '}
-                <a
-                  href={founderLinks.github}
-                  {...externalLinkProps}
-                  className={linkInk}
-                  data-umami-event="outbound-link-click"
-                  data-umami-event-destination="github.com"
-                  data-umami-event-placement="home-founder"
-                >
-                  GitHub
+                  {t.scoresReports}
                 </a>
                 .
               </p>
-              <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
-                {t.aboutCta}
-              </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* About / contact. The portrait is a real photo of Joel: below the
+            fold and lazy, so it never touches the LCP. */}
+        <section>
+          <div className={container}>
+            <h2 className={sectionTitle}>{t.aboutTitle}</h2>
+            <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
+              <img
+                src="/joel-hagvall.webp"
+                alt="Joel Hägvall"
+                width={112}
+                height={112}
+                loading="lazy"
+                decoding="async"
+                className="h-28 w-28 shrink-0 rounded-2xl object-cover"
+              />
+              <div>
+                <p className="font-medium">
+                  <a
+                    href={founderLinks.site}
+                    {...externalLinkProps}
+                    className={linkInk}
+                    data-umami-event="outbound-link-click"
+                    data-umami-event-destination="joelhagvall.com"
+                    data-umami-event-placement="home-founder"
+                  >
+                    Joel Hägvall
+                  </a>
+                </p>
+                <p className="text-sm text-neutral-600">{t.aboutRole}</p>
+                <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+                  {t.aboutP1}
+                </p>
+                <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+                  {t.aboutP2}
+                </p>
+                <p className="mt-4 text-sm text-neutral-600">
+                  {t.aboutLinks}{' '}
+                  <a
+                    href={founderLinks.linkedin}
+                    {...externalLinkProps}
+                    className={linkInk}
+                    data-umami-event="outbound-link-click"
+                    data-umami-event-destination="linkedin.com"
+                    data-umami-event-placement="home-founder"
+                  >
+                    LinkedIn
+                  </a>
+                  {' / '}
+                  <a
+                    href={founderLinks.github}
+                    {...externalLinkProps}
+                    className={linkInk}
+                    data-umami-event="outbound-link-click"
+                    data-umami-event-destination="github.com"
+                    data-umami-event-placement="home-founder"
+                  >
+                    GitHub
+                  </a>
+                  .
+                </p>
+                <Link
+                  to={pagePaths.contact[lang]}
+                  className={`mt-8 ${btnPrimary}`}
+                >
+                  {t.aboutCta}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   )
 }

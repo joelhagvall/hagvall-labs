@@ -3,20 +3,21 @@ import { Link } from '@tanstack/react-router'
 import { maskeraLinks, pagePaths } from '../seo'
 import type { Lang } from '../seo'
 import {
-  Cards,
-  HeroGlows,
-  RevealObserver,
   btnArrow,
   btnPrimary,
+  btnPrimaryOnCobalt,
   btnSecondary,
+  btnSecondaryOnCobalt,
   container,
   externalLinkProps,
-  heroBody,
+  heroBand,
+  heroBodyOnCobalt,
   heroTitle,
-  kicker,
+  itemBody,
+  itemTitle,
   linkInk,
   sectionTitle,
-  sectionTitleSm,
+  sheet,
 } from './ui'
 
 /* The masking preview, ported one-to-one from maskera-cloud
@@ -131,7 +132,10 @@ function MaskPreview({
     state === 'inView' ? 'mask-in' : state === 'pending' ? 'opacity-0' : ''
 
   return (
-    <div ref={ref} className="rounded-xl border border-neutral-200 bg-white p-5">
+    /* text-ink: the card can sit on the cobalt band (Maskera hero), where
+       the inherited color is white; uncolored runs in the preview text must
+       stay ink on the white card. */
+    <div ref={ref} className="rounded-xl border border-neutral-200 bg-white p-5 text-ink">
       <p className="flex items-baseline justify-between gap-3 text-xs font-medium text-neutral-500">
         <span>{before}</span>
         {note ? (
@@ -314,7 +318,7 @@ const copy = {
     heroBody:
       'Maskera hittar och maskerar namn, personnummer, adresser och telefonnummer i text, innan den används i AI-system, loggar eller analysverktyg. Byggd för svensk text och svenska personuppgifter.',
     ctaVisit: 'Besök maskera.dev',
-    ctaDemo: 'Boka en demo',
+    ctaDemo: 'Hör av dig',
     previewBefore: 'Er text',
     previewAfter: 'Det AI-modellen ser',
     previewNote: '',
@@ -393,14 +397,14 @@ const copy = {
     bottomTitle: 'Se Maskera i praktiken.',
     bottomBodyA:
       'Hur träffsäker är den? Det får piloten svara på, inte ett säljblad. Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
-    bottomCta: 'Starta ett pilotprojekt',
+    bottomCta: 'Hör av dig',
   },
   en: {
     heroTitle: 'Mask Personal Data Before It Reaches Your AI.',
     heroBody:
       'Maskera finds and masks names, personal identity numbers, addresses and phone numbers in text, before it is used in AI systems, logs or analytics tools. Built for Swedish text and Swedish personal data.',
     ctaVisit: 'Visit maskera.dev',
-    ctaDemo: 'Book a Demo',
+    ctaDemo: 'Get in Touch',
     previewBefore: 'Your text',
     previewAfter: 'What the AI model sees',
     previewNote: 'Example in Swedish',
@@ -479,8 +483,26 @@ const copy = {
     bottomTitle: 'See Maskera in Practice.',
     bottomBodyA:
       'How accurate is it? That’s for the pilot to answer, not a sales deck. I run pilot projects with companies and organizations in Sweden. Get in touch and I’ll show you what it looks like, or read more at ',
-    bottomCta: 'Start a Pilot',
+    bottomCta: 'Get in Touch',
   },
+}
+
+/** The small arrow in the flow diagram: down while it stacks, right beside. */
+function FlowArrow() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-5 shrink-0 rotate-90 text-neutral-400 md:rotate-0"
+    >
+      <path d="M4 12h16m0 0-5-5m5 5-5 5" />
+    </svg>
+  )
 }
 
 export function MaskeraPage({ lang }: { lang: Lang }) {
@@ -488,23 +510,19 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
 
   return (
     <>
-      <RevealObserver />
-      {/* Hero with the masking preview. The headline stays static so nothing
-          delays the LCP paint. */}
-      <section className="relative isolate overflow-hidden">
-        <HeroGlows />
-        <div className="mx-auto grid w-full max-w-5xl items-center gap-12 px-6 pb-20 pt-24 md:grid-cols-2">
+      {/* Hero with the masking preview on the cobalt band. The headline
+          stays static so nothing delays the LCP paint; the white preview
+          card pops straight off the band. */}
+      <section className={heroBand}>
+        <div className="mx-auto grid w-full max-w-5xl items-center gap-12 px-6 pb-28 pt-24 md:grid-cols-2">
           <div>
-            <p className={`mb-4 ${kicker}`} translate="no">
-              Maskera
-            </p>
             <h1 className={`${heroTitle} sm:text-5xl`}>{t.heroTitle}</h1>
-            <p className={heroBody}>{t.heroBody}</p>
+            <p className={heroBodyOnCobalt}>{t.heroBody}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
                 href="https://maskera.dev"
                 {...externalLinkProps}
-                className={btnPrimary}
+                className={btnPrimaryOnCobalt}
                 translate="no"
                 data-umami-event="outbound-link-click"
                 data-umami-event-destination="maskera.dev"
@@ -515,7 +533,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
                   ↗
                 </span>
               </a>
-              <Link to={pagePaths.contact[lang]} className={btnSecondary}>
+              <Link to={pagePaths.contact[lang]} className={btnSecondaryOnCobalt}>
                 {t.ctaDemo}
               </Link>
             </div>
@@ -528,120 +546,165 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
         </div>
       </section>
 
-      <section className="border-y border-neutral-200">
-        <div className={container}>
-          <h2 className={`reveal ${sectionTitleSm}`}>
-            {t.fitTitle}
-          </h2>
-          <Cards
-            items={t.useCases}
-            icons={useCaseIcons}
-            className="mt-8 sm:grid-cols-3"
-          />
-        </div>
-      </section>
-
-      {/* The detected types, grouped by the layer that finds them, each in
-          its preview hue. Real text, not an image: this is the page's most
-          quotable fact for search and AI answers. */}
-      <section className={container}>
-        <h2 className={`reveal ${sectionTitleSm}`}>{t.detectTitle}</h2>
-        <p className="reveal mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-          {t.detectBody}
-        </p>
-        <div className="mt-10 grid gap-10 md:grid-cols-2">
-          {t.detectGroups.map((group) => (
-            <div key={group.title} className="reveal">
-              <h3 className="font-semibold">{group.title}</h3>
-              <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
-                {group.body}
+      {/* The white sheet rolls over the band. Sections are separated by
+          space, not rules. */}
+      <div className={sheet}>
+        {/* Where it fits, drawn as the flow it is: text with personal data
+            goes in, Maskera sits in the stream, masked text fans out to
+            the three kinds of destination. */}
+        <section className={container}>
+          <h2 className={sectionTitle}>{t.fitTitle}</h2>
+          <div className="mt-10 grid gap-6 md:grid-cols-[minmax(0,16rem)_auto_minmax(0,1fr)] md:items-center md:gap-8">
+            <div className="rounded-xl border border-neutral-200 p-5">
+              <p className="text-xs font-medium text-neutral-500">
+                {t.previewBefore}
               </p>
-              <ul className="mt-4 flex flex-wrap gap-2">
-                {group.items.map(([label, name]) => (
-                  <li
-                    key={label}
-                    style={pillVars(label)}
-                    className={`rounded-md border px-2.5 py-0.5 text-sm ${PILL_COLOURS}`}
-                  >
-                    {name}
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-2 text-sm leading-7 whitespace-nowrap">
+                <span style={pillVars('NAMN')} className={highlightClass}>
+                  Anna Lindqvist
+                </span>
+                ,{' '}
+                <span style={pillVars('PERSONNUMMER')} className={highlightClass}>
+                  900101-0000
+                </span>
+              </p>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="border-t border-neutral-200">
-        <div className={container}>
-          <h2 className={`reveal ${sectionTitleSm}`}>
-            {t.builtTitle}
-          </h2>
-          <Cards
-            items={t.principles}
-            icons={principleIcons}
-            className="mt-8 sm:grid-cols-3"
-          />
-        </div>
-      </section>
-
-      {/* Open source: the trust argument is that the code, package and model
-          are public, so the links are the content of this section. */}
-      <section className="border-t border-neutral-200">
-        <div className={`reveal ${container} md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-12`}>
-          <div>
-            <h2 className={sectionTitleSm}>{t.openTitle}</h2>
-            <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
-              {t.openBody}
-            </p>
+            <div className="flex flex-col items-start gap-3 pl-5 md:flex-row md:items-center md:pl-0">
+              <FlowArrow />
+              <span
+                translate="no"
+                className="rounded-full bg-cobalt px-4 py-2 text-sm font-medium text-white"
+              >
+                Maskera
+              </span>
+              <FlowArrow />
+            </div>
+            <ul className="grid gap-6 border-l-2 border-cobalt/25 pl-6">
+              {t.useCases.map((item, i) => {
+                const Icon = useCaseIcons[i]
+                return (
+                  <li
+                    key={item.title}
+                    className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-x-3"
+                  >
+                    <Icon className="mt-0.5 size-6 text-cobalt" />
+                    <div>
+                      <h3 className={itemTitle}>{item.title}</h3>
+                      <p className="mt-1 text-pretty text-sm leading-relaxed text-neutral-600">
+                        {item.body}
+                      </p>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
           </div>
-          <ul className="mt-8 flex flex-col gap-3 md:mt-0">
-            {t.openLinks.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  {...externalLinkProps}
-                  className={`${btnSecondary} group w-full justify-between md:w-64`}
-                  data-umami-event="outbound-link-click"
-                  data-umami-event-destination={link.destination}
-                  data-umami-event-placement="maskera-open"
-                >
-                  {link.label}
-                  <span aria-hidden="true" className={btnArrow}>
-                    ↗
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </section>
 
-      <section className="border-t border-neutral-200">
-        <div className={`reveal ${container} text-center`}>
-          <h2 className={sectionTitle}>
-            {t.bottomTitle}
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-neutral-600">
-            {t.bottomBodyA}
-            <a
-              href="https://maskera.dev"
-              {...externalLinkProps}
-              className={linkInk}
-              translate="no"
-              data-umami-event="outbound-link-click"
-              data-umami-event-destination="maskera.dev"
-              data-umami-event-placement="maskera-bottom"
-            >
-              maskera.dev
-            </a>
-            .
+        {/* The detected types, grouped by the layer that finds them, each in
+            its preview hue. Real text, not an image: this is the page's most
+            quotable fact for search and AI answers. */}
+        <section className={container}>
+          <h2 className={sectionTitle}>{t.detectTitle}</h2>
+          <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+            {t.detectBody}
           </p>
-          <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
-            {t.bottomCta}
-          </Link>
-        </div>
-      </section>
+          <div className="mt-10 grid gap-10 md:grid-cols-2">
+            {t.detectGroups.map((group) => (
+              <div key={group.title}>
+                <h3 className={itemTitle}>{group.title}</h3>
+                <p className="mt-2 text-pretty text-sm leading-relaxed text-neutral-600">
+                  {group.body}
+                </p>
+                <ul className="mt-4 flex flex-wrap gap-2">
+                  {group.items.map(([label, name]) => (
+                    <li
+                      key={label}
+                      style={pillVars(label)}
+                      className={`rounded-md border px-2.5 py-0.5 text-sm ${PILL_COLOURS}`}
+                    >
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className={container}>
+          <h2 className={sectionTitle}>{t.builtTitle}</h2>
+          <ul className="mt-10 grid gap-10 sm:grid-cols-3 sm:gap-8">
+            {t.principles.map((item, i) => {
+              const Icon = principleIcons[i]
+              return (
+                <li key={item.title}>
+                  <Icon className="size-8 text-cobalt" />
+                  <h3 className={`mt-4 ${itemTitle}`}>{item.title}</h3>
+                  <p className={itemBody}>{item.body}</p>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+
+        {/* Open source: the trust argument is that the code, package and model
+            are public, so the links are the content of this section. The
+            page's one tinted surface. */}
+        <section className="mx-auto w-full max-w-5xl px-6">
+          <div className="rounded-3xl bg-neutral-50 p-6 sm:p-10 md:grid md:grid-cols-[1fr_auto] md:items-center md:gap-12">
+            <div>
+              <h2 className={sectionTitle}>{t.openTitle}</h2>
+              <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
+                {t.openBody}
+              </p>
+            </div>
+            <ul className="mt-8 flex flex-col gap-3 md:mt-0">
+              {t.openLinks.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    {...externalLinkProps}
+                    className={`${btnSecondary} group w-full justify-between bg-white md:w-64`}
+                    data-umami-event="outbound-link-click"
+                    data-umami-event-destination={link.destination}
+                    data-umami-event-placement="maskera-open"
+                  >
+                    {link.label}
+                    <span aria-hidden="true" className={btnArrow}>
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section>
+          <div className={`${container} text-center`}>
+            <h2 className={sectionTitle}>{t.bottomTitle}</h2>
+            <p className="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-neutral-600">
+              {t.bottomBodyA}
+              <a
+                href="https://maskera.dev"
+                {...externalLinkProps}
+                className={linkInk}
+                translate="no"
+                data-umami-event="outbound-link-click"
+                data-umami-event-destination="maskera.dev"
+                data-umami-event-placement="maskera-bottom"
+              >
+                maskera.dev
+              </a>
+              .
+            </p>
+            <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
+              {t.bottomCta}
+            </Link>
+          </div>
+        </section>
+      </div>
     </>
   )
 }

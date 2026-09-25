@@ -2,11 +2,13 @@ import { contactEmail } from '../seo'
 import type { Lang } from '../seo'
 import {
   externalLinkProps,
-  heroBody,
+  heroBand,
+  heroBodyOnCobalt,
   heroTitle,
-  kicker,
+  kickerOnCobalt,
   linkInk,
   sectionTitleSm,
+  sheet,
 } from './ui'
 
 const updatedAt = new Date('2026-08-19T12:00:00Z')
@@ -163,51 +165,54 @@ export function PrivacyPage({ lang }: { lang: Lang }) {
 
   return (
     <>
-      <section className="border-b border-neutral-200">
-        <div className="mx-auto w-full max-w-5xl px-6 pb-20 pt-24">
-          <p className={`mb-4 ${kicker}`}>{t.kicker}</p>
+      <section className={heroBand}>
+        <div className="mx-auto w-full max-w-5xl px-6 pb-28 pt-24">
+          <p className={`mb-4 ${kickerOnCobalt}`}>{t.kicker}</p>
           <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
-          <p className={heroBody}>{t.intro}</p>
-          <p className="mt-6 text-sm text-neutral-500">
+          <p className={heroBodyOnCobalt}>{t.intro}</p>
+          <p className="mt-6 text-sm text-white/75">
             {t.updatedLabel}:{' '}
             <time dateTime="2026-08-19">{updated}</time>
           </p>
         </div>
       </section>
 
-      <article className="mx-auto w-full max-w-3xl px-6 py-20">
-        {sections.map((section, index) => (
-          <section
-            key={section.title}
-            className={index === 0 ? '' : 'mt-14 border-t border-neutral-200 pt-14'}
-          >
-            <h2 className={sectionTitleSm}>{section.title}</h2>
-            <div className="mt-5 space-y-4 text-pretty leading-relaxed text-neutral-600">
-              {section.paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-              {'items' in section && (
-                <ul className="list-disc space-y-2 pl-5">
-                  {section.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              )}
-              {'after' in section && <p>{section.after}</p>}
-              {section === t.controller && (
-                <a href={`mailto:${contactEmail}`} className={linkInk}>
-                  {contactEmail}
-                </a>
-              )}
-              {'authorityLabel' in section && (
-                <a href={authorityUrl} {...externalLinkProps} className={linkInk}>
-                  {section.authorityLabel}
-                </a>
-              )}
-            </div>
-          </section>
-        ))}
-      </article>
+      {/* The white sheet rolls over the band. */}
+      <div className={sheet}>
+        <article className="mx-auto w-full max-w-3xl px-6 py-20">
+          {sections.map((section, index) => (
+            <section
+              key={section.title}
+              className={index === 0 ? '' : 'mt-14 border-t border-neutral-200 pt-14'}
+            >
+              <h2 className={sectionTitleSm}>{section.title}</h2>
+              <div className="mt-5 space-y-4 text-pretty leading-relaxed text-neutral-600">
+                {section.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+                {'items' in section && (
+                  <ul className="list-disc space-y-2 pl-5">
+                    {section.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+                {'after' in section && <p>{section.after}</p>}
+                {section === t.controller && (
+                  <a href={`mailto:${contactEmail}`} className={linkInk}>
+                    {contactEmail}
+                  </a>
+                )}
+                {'authorityLabel' in section && (
+                  <a href={authorityUrl} {...externalLinkProps} className={linkInk}>
+                    {section.authorityLabel}
+                  </a>
+                )}
+              </div>
+            </section>
+          ))}
+        </article>
+      </div>
     </>
   )
 }

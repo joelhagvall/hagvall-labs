@@ -19,22 +19,26 @@ import {
   BrandSymbol,
 } from '../components/BrandSymbol'
 import {
-  btnPrimary,
+  brandOnCobalt,
+  btnPrimaryOnCobalt,
   btnSmall,
+  btnSmallOnCobalt,
   externalLinkProps,
-  heroBody,
+  heroBand,
+  heroBodyOnCobalt,
   heroTitle,
-  kicker,
+  kickerOnCobalt,
   linkInk,
+  sheet,
 } from '../components/ui'
 import {
   contactEmail,
   founderLinks,
+  lighthouseReportsUrl,
   pageFromPath,
   pagePaths,
   site,
 } from '../seo'
-import lighthouse from '../lighthouse-scores.json'
 import type { Lang } from '../seo'
 
 function useLang(): Lang {
@@ -66,15 +70,6 @@ function useSecondaryRoutePreload(lang: Lang) {
   }, [lang, router])
 }
 
-/* Scroll to the top before the new page is painted. The router's own
-   scroll reset runs on onRendered, which waits for the React transition to
-   settle: that is often a frame after the new matches were committed, so the
-   next page was painted once at the old scroll position (the footer links
-   sit at the bottom of a tall page) and then jumped to the top, a visible
-   flash. onBeforeRouteMount fires in the layout effect of the commit that
-   mounts the new matches, before paint. Only forward navigations are
-   handled here: back/forward keep the router's cached-position restore, and
-   resetScroll={false} links (the language switcher) keep their position. */
 /* Links the web app manifest (makes the site installable) once the page is
    idle after load. A <link rel="manifest"> in the head makes Chrome fetch
    the manifest and then its icon at high priority while the page is still
@@ -103,6 +98,15 @@ function useManifestLink() {
   }, [])
 }
 
+/* Scroll to the top before the new page is painted. The router's own
+   scroll reset runs on onRendered, which waits for the React transition to
+   settle: that is often a frame after the new matches were committed, so the
+   next page was painted once at the old scroll position (the footer links
+   sit at the bottom of a tall page) and then jumped to the top, a visible
+   flash. onBeforeRouteMount fires in the layout effect of the commit that
+   mounts the new matches, before paint. Only forward navigations are
+   handled here: back/forward keep the router's cached-position restore, and
+   resetScroll={false} links (the language switcher) keep their position. */
 function useEarlyScrollReset() {
   const router = useRouter()
 
@@ -124,6 +128,77 @@ function useEarlyScrollReset() {
     }
   }, [router])
 }
+
+/* Where the white sheet is relative to the sticky header (h-14, 56px).
+   overSheet: the sheet has scrolled up under the header's midline, so the
+   header recolors for it (headerTone). docked: the sheet's top edge has
+   reached the top of the viewport, the moment its rounded corners would
+   scroll away, so the header takes them over (the cobalt corner masks).
+   SSR renders the band state, which is what every page shows unscrolled;
+   onRendered re-checks after a navigation swaps the page underneath. */
+function useHeaderOverSheet() {
+  const router = useRouter()
+  const [state, setState] = useState({ overSheet: false, docked: false })
+
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const sheet = document.querySelector('main .sheet')
+      const top = sheet ? sheet.getBoundingClientRect().top : Infinity
+      setState((prev) => {
+        const next = { overSheet: top <= 28, docked: top <= 0 }
+        return prev.overSheet === next.overSheet && prev.docked === next.docked
+          ? prev
+          : next
+      })
+    }
+    const schedule = () => {
+      if (!frame) frame = window.requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule, { passive: true })
+    const unsub = router.subscribe('onRendered', schedule)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+      unsub()
+    }
+  }, [router])
+
+  return state
+}
+
+/* Header colors for the surface underneath: white over the cobalt band
+   (where the translucent cobalt reads as fully transparent), ink over the
+   frosted white sheet. */
+const headerTone = {
+  band: {
+    bar: 'on-cobalt border-transparent bg-cobalt/85',
+    nav: 'text-white/80',
+    hover: 'hover:text-white',
+    strong: 'text-white',
+    muted: 'text-white/75 hover:text-white',
+    faint: 'text-white/40',
+    accent: 'text-cobalt-tint',
+    symbol: brandOnCobalt,
+    pill: btnSmallOnCobalt,
+  },
+  sheet: {
+    bar: 'border-neutral-200 bg-white/85',
+    nav: 'text-neutral-600',
+    hover: 'hover:text-ink',
+    strong: 'text-ink',
+    muted: 'text-neutral-500 hover:text-ink',
+    faint: 'text-neutral-300',
+    accent: 'text-cobalt',
+    symbol: '',
+    pill: btnSmall,
+  },
+}
+type HeaderTone = (typeof headerTone)['band']
 
 // Data URI so the favicon costs no request; a fetched favicon landing near
 // the LCP paint flips Lighthouse's simulated LCP a full RTT later. Built
@@ -147,11 +222,9 @@ const chrome = {
     orgNr: 'org.nr',
     runBy: 'Drivs av',
     noCookies: 'Inga cookies.',
-    lh: 'Lighthouse',
-    lhCats: ['Prestanda', 'Tillgänglighet', 'Best practices', 'SEO'],
-    lhChecked: 'kontrolleras dagligen mot den här sajten, se',
+    lhChecked: 'Lighthouse mäts dagligen mot den här sajten: se',
     lhReports: 'rapporterna',
-    lhVerify: 'Kolla själv i',
+    lhVerify: 'eller kolla själv i',
     skip: 'Hoppa till innehållet',
     homeAria: 'Hägvall Labs, startsida',
   },
@@ -165,21 +238,17 @@ const chrome = {
     orgNr: 'org. no.',
     runBy: 'Founded and run by',
     noCookies: 'No cookies.',
-    lh: 'Lighthouse',
-    lhCats: ['Performance', 'Accessibility', 'Best practices', 'SEO'],
-    lhChecked: 'checked daily against this site, see',
+    lhChecked: 'Lighthouse is measured daily against this site: see',
     lhReports: 'the reports',
-    lhVerify: 'Verify it yourself in',
+    lhVerify: 'or verify it yourself in',
     skip: 'Skip to Content',
     homeAria: 'Hägvall Labs, Home',
   },
 }
 
-// The public Lighthouse check (.github/workflows/lighthouse.yml) runs against
-// the live site, keeps src/lighthouse-scores.json current and publishes the
-// HTML reports to GitHub Pages; the footer links there and to Google's own
-// PageSpeed Insights so anyone can read or re-run the numbers.
-const lighthouseReportsUrl = 'https://joelhagvall.github.io/hagvall-labs/'
+// The footer links to the published Lighthouse reports (lighthouseReportsUrl
+// in seo.ts) and to Google's own PageSpeed Insights, so anyone can read or
+// re-run the numbers.
 const pageSpeedUrl = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(site + '/')}`
 
 const umamiWebsiteId = '4f1d3158-8b29-4380-9852-e6ba8069c881'
@@ -189,7 +258,7 @@ export const Route = createRootRoute({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { name: 'theme-color', content: '#ffffff' },
+      { name: 'theme-color', content: '#1748d4' },
       // No title or description here: every route sets its own through
       // pageHead(), and the 404 renders its own in its language (NotFound).
       { property: 'og:site_name', content: 'Hägvall Labs' },
@@ -256,11 +325,11 @@ export const Route = createRootRoute({
 })
 
 // Switches language while staying on the current page.
-function LangSwitch({ lang }: { lang: Lang }) {
+function LangSwitch({ lang, tone }: { lang: Lang; tone: HeaderTone }) {
   const pathname = useLocation({ select: (l) => l.pathname })
   const paths = pagePaths[pageFromPath(pathname)]
-  const active = 'text-ink'
-  const inactive = 'text-neutral-400 transition-colors hover:text-ink'
+  const active = `transition-colors ${tone.strong}`
+  const inactive = `transition-colors ${tone.muted}`
   return (
     <span className="flex items-center gap-1.5 text-xs font-semibold tracking-wide">
       <Link
@@ -271,7 +340,7 @@ function LangSwitch({ lang }: { lang: Lang }) {
       >
         SV
       </Link>
-      <span aria-hidden="true" className="text-neutral-300">
+      <span aria-hidden="true" className={`transition-colors ${tone.faint}`}>
         /
       </span>
       <Link
@@ -286,7 +355,7 @@ function LangSwitch({ lang }: { lang: Lang }) {
   )
 }
 
-function ProductsMenu({ lang }: { lang: Lang }) {
+function ProductsMenu({ lang, tone }: { lang: Lang; tone: HeaderTone }) {
   const t = chrome[lang]
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -318,7 +387,7 @@ function ProductsMenu({ lang }: { lang: Lang }) {
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1 transition-colors hover:text-ink"
+        className={`flex items-center gap-1 transition-colors ${tone.hover}`}
       >
         {/* Below sm the dropdown is the whole nav (Tjänster and the Kontakt
             pill are hidden there), so it announces itself as the menu. */}
@@ -342,7 +411,10 @@ function ProductsMenu({ lang }: { lang: Lang }) {
         </svg>
       </button>
       {open && (
-        <div className="animate-menu absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 shadow-flat-lg">
+        /* text-ink and on-white: over the band the panel inherits the
+           header's white nav color and focus ring; the sm-only links have
+           no color of their own. */
+        <div className="on-white animate-menu absolute right-0 top-full z-20 mt-3 w-64 rounded-xl border border-neutral-200 bg-white p-2 text-ink shadow-flat-lg">
           <Link
             to={pagePaths.maskera[lang]}
             onClick={close}
@@ -378,15 +450,21 @@ function ProductsMenu({ lang }: { lang: Lang }) {
   )
 }
 
-function Brand() {
+function Brand({ tone }: { tone: HeaderTone }) {
   return (
     <span className="flex items-center gap-2.5">
-      <BrandSymbol size={26} />
+      {/* Over the band the geometry is recolored by CSS (brandOnCobalt): the
+          brand fills would disappear on cobalt, white with a tint ribbon
+          keeps the two-tone fold. Over the sheet it keeps its own fills. */}
+      <span className={`[&_path]:transition-colors ${tone.symbol}`}>
+        <BrandSymbol size={26} />
+      </span>
       <span
         translate="no"
-        className="text-[11.5px] font-medium uppercase tracking-[0.12em] text-ink"
+        className={`text-[11.5px] font-medium uppercase tracking-[0.12em] transition-colors ${tone.strong}`}
       >
-        Hägvall&nbsp;<span className="text-cobalt">Labs</span>
+        Hägvall&nbsp;
+        <span className={`transition-colors ${tone.accent}`}>Labs</span>
       </span>
     </span>
   )
@@ -395,6 +473,8 @@ function Brand() {
 function RootLayout() {
   const lang = useLang()
   const t = chrome[lang]
+  const { overSheet, docked } = useHeaderOverSheet()
+  const tone = overSheet ? headerTone.sheet : headerTone.band
   useSecondaryRoutePreload(lang)
   useEarlyScrollReset()
   useManifestLink()
@@ -405,28 +485,46 @@ function RootLayout() {
     <div className="flex min-h-screen flex-col">
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-cobalt focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:text-cobalt"
       >
         {t.skip}
       </a>
-      <header className="header-blur sticky top-0 z-10 border-b border-neutral-200 bg-white/80">
+      {/* Transparent over the cobalt band, frosted white once the sheet
+          scrolls under it, with the sheet's rounded corners once it docks
+          (useHeaderOverSheet). z-20 so the sheet's z-10
+          never paints over it. */}
+      <header
+        className={`header-blur sticky top-0 z-20 border-b transition-[background-color,border-color] duration-300 motion-reduce:transition-none ${tone.bar}`}
+      >
+        {/* The sheet's rounded top corners, kept by the header once the
+            sheet docks under it, so the fold never flattens out. */}
+        <span
+          aria-hidden="true"
+          className={`header-corner left-0 ${docked ? '' : 'opacity-0'}`}
+        />
+        <span
+          aria-hidden="true"
+          className={`header-corner header-corner-r right-0 ${docked ? '' : 'opacity-0'}`}
+        />
         <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
           <Link to={pagePaths.home[lang]} aria-label={t.homeAria}>
-            <Brand />
+            <Brand tone={tone} />
           </Link>
-          <nav className="flex items-center gap-6 text-sm text-neutral-600">
-            <ProductsMenu lang={lang} />
+          <nav
+            className={`flex items-center gap-6 text-sm transition-colors ${tone.nav}`}
+          >
+            <ProductsMenu lang={lang} tone={tone} />
             <Link
               to={pagePaths.home[lang]}
               hash="services"
-              className="hidden transition-colors hover:text-ink sm:block"
+              className={`hidden transition-colors sm:block ${tone.hover}`}
             >
               {t.services}
             </Link>
-            <LangSwitch lang={lang} />
+            <LangSwitch lang={lang} tone={tone} />
             <Link
               to={pagePaths.contact[lang]}
-              className={`${btnSmall} max-sm:hidden`}
+              className={`${tone.pill} max-sm:hidden`}
             >
               {t.contact}
             </Link>
@@ -434,17 +532,18 @@ function RootLayout() {
         </div>
       </header>
 
-      <main id="main" className="flex-1">
+      <main id="main" className="flex flex-1 flex-col">
         <Outlet />
       </main>
 
-      <footer className="border-t border-neutral-200">
+      {/* White like the sheet above it (the body is cobalt). */}
+      <footer className="border-t border-neutral-200 bg-white">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-6 py-10 text-sm text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-col gap-2">
             <p>
               © {new Date().getFullYear()}{' '}
-              <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span> · {t.orgNr}{' '}
-              <span translate="no">559598-0110</span> · Stockholm. {t.runBy}{' '}
+              <span translate="no">Hägvall&nbsp;Labs&nbsp;AB</span>, {t.orgNr}{' '}
+              <span translate="no">559598-0110</span>, Stockholm. {t.runBy}{' '}
               <a
                 href="https://joelhagvall.com"
                 {...externalLinkProps}
@@ -457,23 +556,10 @@ function RootLayout() {
               </a>
               . {t.noCookies}
             </p>
+            {/* The scores themselves are on the home page (its Lighthouse
+                panel); the footer only points at the third-party proof. */}
             <p>
-              {t.lh}{' '}
-              {(
-                [
-                  'performance',
-                  'accessibility',
-                  'best-practices',
-                  'seo',
-                ] as const
-              ).map((c, i) => (
-                <span key={c}>
-                  {i > 0 && ' · '}
-                  {t.lhCats[i]}{' '}
-                  <span className="text-ink">{lighthouse.scores[c]}</span>
-                </span>
-              ))}
-              , {t.lhChecked}{' '}
+              {t.lhChecked}{' '}
               <a
                 href={lighthouseReportsUrl}
                 {...externalLinkProps}
@@ -484,7 +570,8 @@ function RootLayout() {
               >
                 {t.lhReports}
               </a>
-              . {t.lhVerify}{' '}
+{' '}
+              {t.lhVerify}{' '}
               <a
                 href={pageSpeedUrl}
                 {...externalLinkProps}
@@ -543,6 +630,7 @@ const notFoundCopy = {
       privacy: 'Integritet',
     },
     agents: 'För sökmotorer och agenter:',
+    and: 'och',
   },
   en: {
     title: 'Page Not Found.',
@@ -557,6 +645,7 @@ const notFoundCopy = {
       privacy: 'Privacy',
     },
     agents: 'For crawlers and agents:',
+    and: 'and',
   },
 }
 
@@ -569,38 +658,46 @@ function NotFound() {
   const t = notFoundCopy[lang]
   const pages = Object.keys(t.pages) as Array<keyof typeof t.pages>
   return (
-    <section className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
-      {/* No route head matches a 404, so its title and description are
-          rendered here; React hoists them into <head>. */}
-      <title>{t.metaTitle}</title>
-      <meta name="description" content={t.body} />
-      <p className={`mb-4 ${kicker}`}>404</p>
-      <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
-      <p className={heroBody}>{t.body}</p>
-      <Link to={pagePaths.home[lang]} className={`mt-10 ${btnPrimary}`}>
-        {t.cta}
-      </Link>
-      <h2 className="mt-14 text-sm font-medium text-neutral-500">{t.next}</h2>
-      <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        {pages.map((page) => (
-          <li key={page}>
-            <Link to={pagePaths[page][lang]} className={linkInk}>
-              {t.pages[page]}
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <p className="mt-6 text-xs text-neutral-500">
-        {t.agents}{' '}
-        <a href="/sitemap.xml" className={linkInk}>
-          sitemap.xml
-        </a>
-        {' · '}
-        <a href="/llms.txt" className={linkInk}>
-          llms.txt
-        </a>
-      </p>
-    </section>
+    <>
+      <section className={heroBand}>
+        <div className="mx-auto w-full max-w-5xl px-6 pb-24 pt-28">
+          {/* No route head matches a 404, so its title and description are
+              rendered here; React hoists them into <head>. */}
+          <title>{t.metaTitle}</title>
+          <meta name="description" content={t.body} />
+          <p className={`mb-4 ${kickerOnCobalt}`}>404</p>
+          <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
+          <p className={heroBodyOnCobalt}>{t.body}</p>
+          <Link to={pagePaths.home[lang]} className={`mt-10 ${btnPrimaryOnCobalt}`}>
+            {t.cta}
+          </Link>
+        </div>
+      </section>
+      <div className={sheet}>
+        <div className="mx-auto w-full max-w-5xl px-6 py-16">
+          <h2 className="text-sm font-medium text-neutral-500">{t.next}</h2>
+          <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+            {pages.map((page) => (
+              <li key={page}>
+                <Link to={pagePaths[page][lang]} className={linkInk}>
+                  {t.pages[page]}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-6 text-xs text-neutral-500">
+            {t.agents}{' '}
+            <a href="/sitemap.xml" className={linkInk}>
+              sitemap.xml
+            </a>
+            {` ${t.and} `}
+            <a href="/llms.txt" className={linkInk}>
+              llms.txt
+            </a>
+          </p>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -627,7 +724,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             />
           )}
       </head>
-      <body className="bg-white text-ink antialiased">
+      {/* Cobalt body is only the canvas fallback: every page paints band,
+          sheet and footer edge to edge, and the overscroll colors come from
+          the split body::before layer in styles.css. */}
+      <body className="bg-cobalt text-ink antialiased">
         {children}
         {import.meta.env.DEV && (
           <TanStackDevtools

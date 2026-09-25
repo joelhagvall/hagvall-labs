@@ -15,19 +15,13 @@ export const BRAND_PATHS = [
   { fill: '#1748D4', d: 'M480 165 710 254 710 560 630 529 630 334 480 278Z' },
 ] as const
 
-// `animated` adds a staggered path entrance (CSS classes in styles.css,
-// gated behind prefers-reduced-motion). Used in the hero only: the SVG is
-// aria-hidden and never an LCP candidate, so the animation is free.
 export function BrandSymbol({
   size,
   className,
-  animated = false,
 }: {
   size: number
   className?: string
-  animated?: boolean
 }) {
-  const pathClass = animated ? 'brand-path' : undefined
   return (
     <svg
       aria-hidden="true"
@@ -37,7 +31,7 @@ export function BrandSymbol({
       className={className}
     >
       {BRAND_PATHS.map((p) => (
-        <path key={p.d} className={pathClass} fill={p.fill} d={p.d} />
+        <path key={p.d} fill={p.fill} d={p.d} />
       ))}
     </svg>
   )

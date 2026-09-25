@@ -2,21 +2,20 @@ import { useEffect, useRef, useState } from 'react'
 import { contactEmail } from '../seo'
 import type { Lang } from '../seo'
 import {
-  Cards,
-  HeroGlows,
-  RevealObserver,
   btnPrimary,
   btnSecondary,
   container,
-  heroBody,
+  heroBand,
+  heroBodyOnCobalt,
   heroTitle,
-  kicker,
-  sectionTitleSm,
+  itemBody,
+  itemTitle,
+  sectionTitle,
+  sheet,
 } from './ui'
 
 const copy = {
   sv: {
-    kicker: 'Kontakt',
     title: 'Hör av dig.',
     body: 'Du skriver direkt till mig, Joel. Ingen säljkö, inget ”vi återkommer inom fem arbetsdagar”. Jag läser allt själv och svarar oftast samma dag.',
     emailLabel: 'Mejla mig på',
@@ -40,7 +39,6 @@ const copy = {
     ],
   },
   en: {
-    kicker: 'Contact',
     title: 'Get in Touch.',
     body: 'You write directly to me, Joel. No sales queue, no “we’ll get back to you within five business days”. I read everything myself and usually reply the same day.',
     emailLabel: 'Email me at',
@@ -100,17 +98,20 @@ export function ContactPage({ lang }: { lang: Lang }) {
 
   return (
     <>
-      <RevealObserver />
-      {/* Hero. Same static headline rule as the other pages: nothing may
-          delay the LCP paint. */}
-      <section className="relative isolate overflow-hidden">
-        <HeroGlows />
-        <div className="mx-auto w-full max-w-5xl px-6 pb-20 pt-24">
-          <p className={`mb-4 ${kicker}`}>{t.kicker}</p>
-          <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
-          <p className={heroBody}>{t.body}</p>
+      {/* Hero on the cobalt band: the invitation on the left, the address
+          itself on the right. Same static headline rule as the other pages:
+          nothing may delay the LCP paint. */}
+      <section className={heroBand}>
+        <div className="mx-auto grid w-full max-w-5xl gap-10 px-6 pb-28 pt-24 md:grid-cols-2 md:items-center md:gap-12">
+          <div>
+            <h1 className={`${heroTitle} sm:text-5xl`}>{t.title}</h1>
+            <p className={heroBodyOnCobalt}>{t.body}</p>
+          </div>
 
-          <div className="mt-10 max-w-2xl rounded-2xl border border-neutral-200 bg-white p-6 sm:p-8">
+          {/* text-ink and on-white: the card sits on the cobalt band, so the
+              inherited text color and focus ring are white; uncolored text
+              (the copy button) and the rings must stay visible on white. */}
+          <div className="on-white rounded-2xl bg-white p-6 text-ink sm:p-8">
             <p className="text-sm font-medium text-neutral-500">
               {t.emailLabel}
             </p>
@@ -139,15 +140,32 @@ export function ContactPage({ lang }: { lang: Lang }) {
         </div>
       </section>
 
-      {/* What happens next */}
-      <section className="border-t border-neutral-200">
-        <div className={container}>
-          <h2 className={`reveal ${sectionTitleSm}`}>
-            {t.stepsTitle}
-          </h2>
-          <Cards items={t.steps} className="mt-8 sm:grid-cols-3" />
-        </div>
-      </section>
+      {/* The white sheet rolls over the band. What happens next is a real
+          sequence, so it is an ordered list drawn as a timeline: the numbers
+          and the rule between them carry the order (decorative, the <ol>
+          carries it for assistive tech and the Markdown rendering). */}
+      <div className={sheet}>
+        <section className={container}>
+          <h2 className={sectionTitle}>{t.stepsTitle}</h2>
+          {/* role="list": Safari drops list semantics under list-style: none. */}
+          <ol role="list" className="mt-10 grid gap-10 sm:grid-cols-3 sm:gap-8">
+            {t.steps.map((step, i) => (
+              <li key={step.title}>
+                <div aria-hidden="true" className="flex items-center gap-4">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full border-2 border-cobalt text-sm font-semibold text-cobalt tabular-nums">
+                    {i + 1}
+                  </span>
+                  {i < t.steps.length - 1 ? (
+                    <span className="hidden h-0.5 flex-1 bg-cobalt/20 sm:block" />
+                  ) : null}
+                </div>
+                <h3 className={`mt-5 ${itemTitle}`}>{step.title}</h3>
+                <p className={itemBody}>{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </div>
     </>
   )
 }
