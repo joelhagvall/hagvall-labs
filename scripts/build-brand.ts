@@ -265,8 +265,8 @@ for (const v of variants) {
 }
 
 // Social
-const ogSv = socialCard('Integritetssäker mjukvara för AI-eran')
-const ogEn = socialCard('Privacy-first software for the AI era')
+const ogSv = socialCard('Mjukvara, AI och automation från Stockholm')
+const ogEn = socialCard('Software, AI and automation from Stockholm')
 png(ogSv, 1200, 630, join(OUT, 'social/og-image-sv.png'))
 png(ogEn, 1200, 630, join(OUT, 'social/og-image-en.png'))
 png(symbolTile(1024, 'color', WHITE, 0.6), 1024, 1024, join(OUT, 'social/avatar-white-1024.png'))

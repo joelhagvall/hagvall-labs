@@ -221,8 +221,12 @@ function staticFilePath(pathname: string): string | null {
   }
 }
 
+// Default 4173, overridable with PORT when something else already owns it
+// (audit.sh and agent-checks.sh take the matching BASE env).
+const port = Number(process.env.PORT ?? 4173)
+
 Bun.serve({
-  port: 4173,
+  port,
   async fetch(req) {
     const url = new URL(req.url)
     const filePath = url.pathname === '/' ? null : staticFilePath(url.pathname)
@@ -279,4 +283,4 @@ Bun.serve({
   },
 })
 
-console.log('prod server (gzip) on http://localhost:4173')
+console.log(`prod server (gzip) on http://localhost:${port}`)

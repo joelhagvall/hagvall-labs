@@ -7,12 +7,12 @@ export const Route = createFileRoute('/en/')({
     pageHead({
       lang: 'en',
       page: 'home',
-      title: 'Privacy-First AI Software | Hägvall Labs',
+      title: 'Hägvall Labs | Software, AI and Automation',
       description:
-        'Hägvall Labs is Joel Hägvall’s company in Stockholm. Self-hosted tools that protect personal data before text reaches AI systems, logs or analytics.',
-      ogTitle: 'Hägvall Labs | Privacy-First AI Software',
+        'Joel Hägvall’s company in Stockholm. I build software, APIs and AI automation for businesses, and Maskera, which removes personal data before text reaches AI.',
+      ogTitle: 'Hägvall Labs | Software, AI and Automation',
       ogDescription:
-        'Privacy-first software for the AI era. Self-hosted, built in Sweden.',
+        'Software, APIs and AI automation with privacy at the core. Built in Stockholm.',
       jsonLd: homeJsonLd(),
     }),
   component: () => <HomePage lang="en" />,
