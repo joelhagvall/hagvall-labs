@@ -26,7 +26,7 @@ The site is bilingual: Swedish (default) and English (under /en).
 - [Home (English)](https://hagvall-labs.com/en): Same content in English
 - [Maskera (Swedish)](https://hagvall-labs.com/maskera): Product page with the detected data types, use cases (AI systems, logs, analytics), deployment model and pilot projects
 - [Maskera (English)](https://hagvall-labs.com/en/maskera): Same content in English
-- [About (Swedish)](https://hagvall-labs.com/om): Why Joel started Hägvall Labs: automating away manual glue work, why Maskera exists, and a link to his post "Automate Everything Possible" (https://joelhagvall.com/blog/automate-everything)
+- [About (Swedish)](https://hagvall-labs.com/om): Why Joel started Hägvall Labs: automating away manual glue work, why Maskera exists, a link to his post "Automate Everything Possible" (https://joelhagvall.com/blog/automate-everything), and two side projects: J.A.R.V.I.S (https://github.com/joelhagvall/jarvis-chat), a private macOS assistant with local AI over MCP, and Data Wipe Mailer (https://data-wipe-mailer.vercel.app/, source https://github.com/joelhagvall/data-wipe-mailer), which helps people send GDPR deletion requests
 - [About (English)](https://hagvall-labs.com/en/about): Same content in English
 - [Contact (Swedish)](https://hagvall-labs.com/kontakt): Direct contact with Joel Hägvall, email and how a pilot starts
 - [Contact (English)](https://hagvall-labs.com/en/contact): Same content in English

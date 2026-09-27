@@ -9,10 +9,31 @@ import {
   heroBodyOnCobalt,
   heroTitle,
   linkInk,
+  sectionTitleSm,
   sheet,
 } from './ui'
 
 const automatePostUrl = 'https://joelhagvall.com/blog/automate-everything'
+
+// Side projects that show the same thing the company sells (local AI,
+// automation, privacy). The full write-ups live on joelhagvall.com/projects.
+// The name links to a live demo where one exists, else to the source; a
+// project with a demo also gets a quieter source link.
+const projects = [
+  {
+    key: 'jarvis',
+    name: 'J.A.R.V.I.S',
+    url: 'https://github.com/joelhagvall/jarvis-chat',
+    destination: 'github.com',
+  },
+  {
+    key: 'dataWipe',
+    name: 'Data Wipe Mailer',
+    url: 'https://data-wipe-mailer.vercel.app/',
+    destination: 'vercel.app',
+    source: 'https://github.com/joelhagvall/data-wipe-mailer',
+  },
+] as const
 
 const copy = {
   sv: {
@@ -28,6 +49,14 @@ const copy = {
     solo: 'Det är bara jag i bolaget. Jag pratar med er, bygger det, släpper det och fixar det när något går sönder.',
     postBefore: 'Jag har skrivit mer om hur jag tänker i ',
     postAfter: ' (på engelska).',
+    projectsTitle: 'Annat jag byggt',
+    projects: {
+      jarvis:
+        'Min egen assistent på Macen. Lokal AI som kommer åt mina anteckningar och verktyg via MCP, utan att något lämnar datorn.',
+      dataWipe:
+        'En webbapp som hjälper dig begära att företag raderar dina uppgifter enligt GDPR.',
+    },
+    source: 'Källkoden på GitHub',
     closing: 'Om du har något som tar för lång tid vill jag höra om det.',
     cta: 'Hör av dig',
   },
@@ -44,6 +73,14 @@ const copy = {
     solo: 'It’s just me. I talk to you, build it, ship it and fix it when something breaks.',
     postBefore: 'I wrote more about how I think about this in ',
     postAfter: '.',
+    projectsTitle: 'Other Things I’ve Built',
+    projects: {
+      jarvis:
+        'My own assistant on the Mac. Local AI that reaches my notes and tools over MCP, without anything leaving the machine.',
+      dataWipe:
+        'A web app that helps you ask companies to delete your data under GDPR.',
+    },
+    source: 'Source on GitHub',
     closing: 'If something takes too long, I want to hear about it.',
     cta: 'Get in Touch',
   },
@@ -96,9 +133,53 @@ export function AboutPage({ lang }: { lang: Lang }) {
               </a>
               {t.postAfter}
             </p>
-            <p>{t.closing}</p>
           </div>
-          <Link to={pagePaths.contact[lang]} className={`mt-10 ${btnPrimary}`}>
+
+          <h2 className={`mt-16 ${sectionTitleSm}`}>{t.projectsTitle}</h2>
+          {/* role="list": Safari drops list semantics under list-style: none. */}
+          <ul role="list" className="mt-6 space-y-6">
+            {projects.map((project) => (
+              <li key={project.key}>
+                <a
+                  href={project.url}
+                  {...externalLinkProps}
+                  translate="no"
+                  className={`group text-lg font-semibold tracking-tight ${linkInk}`}
+                  data-umami-event="outbound-link-click"
+                  data-umami-event-destination={project.destination}
+                  data-umami-event-placement="about-projects"
+                >
+                  {project.name}
+                  <span aria-hidden="true" className={`ml-1 inline-block ${btnArrow}`}>
+                    ↗
+                  </span>
+                </a>
+                <p className="mt-1 text-pretty leading-relaxed text-neutral-600">
+                  {t.projects[project.key]}
+                </p>
+                {'source' in project && (
+                  <a
+                    href={project.source}
+                    {...externalLinkProps}
+                    className={`group mt-2 inline-block text-sm text-neutral-600 ${linkInk}`}
+                    data-umami-event="outbound-link-click"
+                    data-umami-event-destination="github.com"
+                    data-umami-event-placement="about-projects"
+                  >
+                    {t.source}
+                    <span aria-hidden="true" className={`ml-1 inline-block ${btnArrow}`}>
+                      ↗
+                    </span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-16 text-pretty text-lg leading-relaxed text-neutral-700">
+            {t.closing}
+          </p>
+          <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
             {t.cta}
           </Link>
         </article>
