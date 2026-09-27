@@ -219,6 +219,7 @@ const chrome = {
     services: 'Tjänster',
     contact: 'Kontakt',
     privacy: 'Integritet',
+    about: 'Om',
     orgNr: 'org.nr',
     runBy: 'Drivs av',
     noCookies: 'Inga cookies.',
@@ -235,6 +236,7 @@ const chrome = {
     services: 'Services',
     contact: 'Contact',
     privacy: 'Privacy',
+    about: 'About',
     orgNr: 'org. no.',
     runBy: 'Founded and run by',
     noCookies: 'No cookies.',
@@ -587,6 +589,13 @@ function RootLayout() {
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
+              to={pagePaths.about[lang]}
+              preload="viewport"
+              className="transition-colors hover:text-ink"
+            >
+              {t.about}
+            </Link>
+            <Link
               to={pagePaths.privacy[lang]}
               preload="viewport"
               className="transition-colors hover:text-ink"
@@ -626,6 +635,7 @@ const notFoundCopy = {
     pages: {
       home: 'Startsidan',
       maskera: 'Maskera',
+      about: 'Om',
       contact: 'Kontakt',
       privacy: 'Integritet',
     },
@@ -641,6 +651,7 @@ const notFoundCopy = {
     pages: {
       home: 'Home',
       maskera: 'Maskera',
+      about: 'About',
       contact: 'Contact',
       privacy: 'Privacy',
     },

@@ -369,6 +369,7 @@ const copy = {
       'Hägvall Labs är jag. Det är jag som bygger produkterna, säljer dem och står för det som levereras. Inga mellanled.',
     aboutP2:
       'Jag jobbar direkt med företag och organisationer, främst i Sverige. Vi träffas digitalt, går igenom ert case och du får se vad jag bygger i praktiken. Sedan avgör du.',
+    aboutMore: 'Därför startade jag Hägvall Labs',
     aboutRole: 'Grundare och utvecklare',
     aboutLinks: 'Kolla upp mig på',
     aboutCta: 'Hör av dig',
@@ -440,6 +441,7 @@ const copy = {
       'Hägvall Labs is me. I build the products, I sell them and I stand behind what ships. No layers in between.',
     aboutP2:
       'I work directly with companies and organizations, primarily in Sweden. We meet online, walk through your case and you see what I build in practice. Then you decide.',
+    aboutMore: 'Why I Started Hägvall Labs',
     aboutRole: 'Founder and Developer',
     aboutLinks: 'Look me up on',
     aboutCta: 'Get in Touch',
@@ -601,7 +603,7 @@ export function HomePage({ lang }: { lang: Lang }) {
             <h2 className={sectionTitle} translate="no">
               Maskera
             </h2>
-            <p className="mt-5 text-pretty text-lg leading-snug tracking-tight text-ink sm:text-xl">
+            <p className="mt-5 text-pretty text-lg leading-relaxed text-ink sm:text-xl">
               {t.teaserBody}
             </p>
             {/* The product page is the hero's primary button; here only the
@@ -736,6 +738,11 @@ export function HomePage({ lang }: { lang: Lang }) {
                 </p>
                 <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-neutral-600">
                   {t.aboutP2}
+                </p>
+                <p className="mt-4 max-w-2xl leading-relaxed">
+                  <Link to={pagePaths.about[lang]} className={linkCobalt}>
+                    {t.aboutMore}
+                  </Link>
                 </p>
                 <p className="mt-4 text-sm text-neutral-600">
                   {t.aboutLinks}{' '}

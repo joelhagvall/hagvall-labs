@@ -38,6 +38,7 @@ export const pagePaths = {
   maskera: { sv: '/maskera', en: '/en/maskera' },
   contact: { sv: '/kontakt', en: '/en/contact' },
   privacy: { sv: '/integritet', en: '/en/privacy' },
+  about: { sv: '/om', en: '/en/about' },
 } as const
 
 export type PageKey = keyof typeof pagePaths
@@ -50,6 +51,7 @@ export function pageFromPath(pathname: string): PageKey {
   if (pathname.endsWith('/integritet') || pathname.endsWith('/privacy')) {
     return 'privacy'
   }
+  if (pathname.endsWith('/om') || pathname.endsWith('/about')) return 'about'
   return 'home'
 }
 
@@ -201,5 +203,19 @@ export function contactJsonLd(name: string, lang: Lang) {
     name,
     url: site + pagePaths.contact[lang],
     about: { '@id': site + '/#organization' },
+  }
+}
+
+/** AboutPage for the origin story. mainEntity points at the founder node
+    (Organization JSON-LD in __root.tsx), the person the text is by. */
+export function aboutJsonLd(name: string, lang: Lang) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    name,
+    url: site + pagePaths.about[lang],
+    inLanguage: lang,
+    about: { '@id': site + '/#organization' },
+    mainEntity: { '@id': site + '/#founder' },
   }
 }

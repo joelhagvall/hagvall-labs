@@ -191,7 +191,7 @@ function notAcceptable(accept: string): Response {
 // Swedish URLs by default, see pagePaths in src/seo.ts). /security.txt is
 // the RFC 9116 legacy location for the real file under /.well-known/.
 const aliases: Record<string, string> = {
-  '/about': '/en',
+  '/about': '/en/about',
   '/contact': '/en/contact',
   '/privacy': '/en/privacy',
   '/security.txt': '/.well-known/security.txt',

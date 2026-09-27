@@ -20,7 +20,7 @@ header_of() {
   curl -s -D - -o /dev/null "$@" | tr -d '\r' | awk -v n="$name" 'tolower($1)==tolower(n)":" {sub(/^[^:]*: */, ""); print}'
 }
 
-for path in / /en /maskera /kontakt /integritet /en/privacy; do
+for path in / /en /maskera /kontakt /integritet /om /en/privacy /en/about; do
   echo "== $path"
   ct=$(header_of content-type "$BASE$path" -H 'Accept: text/markdown')
   vary=$(header_of vary "$BASE$path" -H 'Accept: text/markdown')
@@ -65,7 +65,7 @@ for path in /this-path-does-not-exist /en/this-path-does-not-exist; do
 done
 
 echo "== trust-anchor aliases"
-for entry in "/about:/en" "/contact:/en/contact" "/privacy:/en/privacy" "/security.txt:/.well-known/security.txt"; do
+for entry in "/about:/en/about" "/contact:/en/contact" "/privacy:/en/privacy" "/security.txt:/.well-known/security.txt"; do
   path="${entry%%:*}"; target="${entry#*:}"
   code=$(status_of "$BASE$path")
   loc=$(header_of location "$BASE$path")

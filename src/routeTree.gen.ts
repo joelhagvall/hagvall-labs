@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as IntegritetRouteImport } from './routes/integritet'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as MaskeraRouteImport } from './routes/maskera'
+import { Route as OmRouteImport } from './routes/om'
 import { Route as EnIndexRouteImport } from './routes/en/index'
+import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as EnContactRouteImport } from './routes/en/contact'
 import { Route as EnMaskeraRouteImport } from './routes/en/maskera'
 import { Route as EnPrivacyRouteImport } from './routes/en/privacy'
@@ -38,9 +40,19 @@ const MaskeraRoute = MaskeraRouteImport.update({
   path: '/maskera',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OmRoute = OmRouteImport.update({
+  id: '/om',
+  path: '/om',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EnIndexRoute = EnIndexRouteImport.update({
   id: '/en/',
   path: '/en/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnAboutRoute = EnAboutRouteImport.update({
+  id: '/en/about',
+  path: '/en/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnContactRoute = EnContactRouteImport.update({
@@ -64,6 +76,8 @@ export interface FileRoutesByFullPath {
   '/integritet': typeof IntegritetRoute
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
+  '/om': typeof OmRoute
+  '/en/about': typeof EnAboutRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/privacy': typeof EnPrivacyRoute
@@ -74,6 +88,8 @@ export interface FileRoutesByTo {
   '/integritet': typeof IntegritetRoute
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
+  '/om': typeof OmRoute
+  '/en/about': typeof EnAboutRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/privacy': typeof EnPrivacyRoute
@@ -85,6 +101,8 @@ export interface FileRoutesById {
   '/integritet': typeof IntegritetRoute
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
+  '/om': typeof OmRoute
+  '/en/about': typeof EnAboutRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/privacy': typeof EnPrivacyRoute
@@ -97,6 +115,8 @@ export interface FileRouteTypes {
     | '/integritet'
     | '/kontakt'
     | '/maskera'
+    | '/om'
+    | '/en/about'
     | '/en/contact'
     | '/en/maskera'
     | '/en/privacy'
@@ -107,6 +127,8 @@ export interface FileRouteTypes {
     | '/integritet'
     | '/kontakt'
     | '/maskera'
+    | '/om'
+    | '/en/about'
     | '/en/contact'
     | '/en/maskera'
     | '/en/privacy'
@@ -117,6 +139,8 @@ export interface FileRouteTypes {
     | '/integritet'
     | '/kontakt'
     | '/maskera'
+    | '/om'
+    | '/en/about'
     | '/en/contact'
     | '/en/maskera'
     | '/en/privacy'
@@ -128,6 +152,8 @@ export interface RootRouteChildren {
   IntegritetRoute: typeof IntegritetRoute
   KontaktRoute: typeof KontaktRoute
   MaskeraRoute: typeof MaskeraRoute
+  OmRoute: typeof OmRoute
+  EnAboutRoute: typeof EnAboutRoute
   EnContactRoute: typeof EnContactRoute
   EnMaskeraRoute: typeof EnMaskeraRoute
   EnPrivacyRoute: typeof EnPrivacyRoute
@@ -164,11 +190,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MaskeraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/om': {
+      id: '/om'
+      path: '/om'
+      fullPath: '/om'
+      preLoaderRoute: typeof OmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/': {
       id: '/en/'
       path: '/en'
       fullPath: '/en/'
       preLoaderRoute: typeof EnIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/en/about': {
+      id: '/en/about'
+      path: '/en/about'
+      fullPath: '/en/about'
+      preLoaderRoute: typeof EnAboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/en/contact': {
@@ -200,6 +240,8 @@ const rootRouteChildren: RootRouteChildren = {
   IntegritetRoute: IntegritetRoute,
   KontaktRoute: KontaktRoute,
   MaskeraRoute: MaskeraRoute,
+  OmRoute: OmRoute,
+  EnAboutRoute: EnAboutRoute,
   EnContactRoute: EnContactRoute,
   EnMaskeraRoute: EnMaskeraRoute,
   EnPrivacyRoute: EnPrivacyRoute,
