@@ -1,11 +1,11 @@
 {
   "scores": {
     "performance": 100,
-    "accessibility": 96,
+    "accessibility": 100,
     "best-practices": 100,
     "seo": 100
   },
   "checkedAt": "2026-10-06",
-  "runUrl": "https://github.com/joelhagvall/hagvall-labs/actions/runs/37457710782",
+  "runUrl": "https://github.com/joelhagvall/hagvall-labs/actions/runs/37460892940",
   "base": "https://hagvall-labs.com"
 }
