@@ -139,7 +139,7 @@ function MaskPreview({
       <p className="flex items-baseline justify-between gap-3 text-xs font-medium text-neutral-500">
         <span>{before}</span>
         {note ? (
-          <span className="font-normal text-neutral-400">{note}</span>
+          <span className="font-normal text-neutral-600">{note}</span>
         ) : null}
       </p>
       <p className="mt-2 text-sm leading-7">
