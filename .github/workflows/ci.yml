@@ -9,6 +9,15 @@ on:
   push:
     branches: [master]
   pull_request:
+  # The Lighthouse workflow dispatches this after committing new scores: a
+  # push made with GITHUB_TOKEN never triggers CI, so without it that commit
+  # would have no image and could not be deployed.
+  workflow_dispatch:
+    inputs:
+      deploy_sha:
+        description: Deploy this commit once its image is published (only if it is the commit CI ran on)
+        required: false
+        type: string
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -139,3 +148,20 @@ jobs:
 
       - name: Publish commit-tagged image
         run: docker push "$IMAGE:$GITHUB_SHA"
+
+  # Only for the score commit from the Lighthouse workflow, which has already
+  # checked that the scores file is its whole difference to the live release.
+  deploy:
+    name: Deploy the score commit
+    needs: docker
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy_sha == github.sha
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Dispatch Deploy for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run deploy.yml --repo "$GITHUB_REPOSITORY" --ref master \
+            -f release_sha="$GITHUB_SHA"

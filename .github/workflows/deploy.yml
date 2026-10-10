@@ -1,7 +1,12 @@
 name: Deploy
+# The Lighthouse workflow reads the release SHA from this title to know what
+# is live (workflow_run.display_title): keep the format.
+run-name: Deploy ${{ inputs.release_sha || github.sha }}
 
 # Manual production deploy. CI publishes an immutable image under the source
 # commit SHA only after typecheck, build, Lighthouse, pa11y and image scanning.
+# The one automatic deploy: CI dispatches this for a Lighthouse score commit
+# whose only difference to the live release is src/lighthouse-scores.json.
 # Required repository secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_KEY and
 # DEPLOY_KNOWN_HOSTS.
 on:
