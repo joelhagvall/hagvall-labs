@@ -106,7 +106,9 @@ function useManifestLink() {
    flash. onBeforeRouteMount fires in the layout effect of the commit that
    mounts the new matches, before paint. Only forward navigations are
    handled here: back/forward keep the router's cached-position restore, and
-   resetScroll={false} links (the language switcher) keep their position. */
+   resetScroll={false} links (the language switcher) keep their position.
+   router._scroll.n is the router's internal resetScroll flag for the
+   pending navigation (it was .next in router-core 1.171.15). */
 function useEarlyScrollReset() {
   const router = useRouter()
 
@@ -117,7 +119,7 @@ function useEarlyScrollReset() {
     })
     const unsubRouter = router.subscribe('onBeforeRouteMount', (event) => {
       if (action !== 'PUSH' && action !== 'REPLACE') return
-      if (!event.pathChanged || event.toLocation.hash || !router._scroll.next) {
+      if (!event.pathChanged || event.toLocation.hash || !router._scroll.n) {
         return
       }
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
