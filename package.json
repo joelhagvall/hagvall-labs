@@ -8,9 +8,10 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "generate-routes": "tsr generate",
-    "build": "vite build",
+    "build": "vite build && bun scripts/build-static.ts",
     "preview": "vite preview",
-    "serve:prod": "bun scripts/serve-prod.ts",
+    "serve:prod": "wrangler dev --port 4173",
+    "deploy": "wrangler deploy",
     "build:brand": "bun scripts/build-brand.ts"
   },
   "dependencies": {
@@ -36,7 +37,8 @@
     "@vitejs/plugin-react": "^6.0.1",
     "fontkit": "^2.0.4",
     "typescript": "^6.0.2",
-    "vite": "^8.3.5"
+    "vite": "^8.3.5",
+    "wrangler": "4.151.3"
   },
   "overrides": {
     "seroval": "1.6.8",

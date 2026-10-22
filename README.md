@@ -30,29 +30,15 @@ Bilingual: Swedish (default, `/` and `/maskera`) and English (`/en`, `/en/masker
 - `src/components/`: shared page components with sv/en copy dicts
 - `src/routes/*`: thin per-language route wrappers with meta, canonical/hreflang and JSON-LD
 - `public/llms.txt`: company summary for LLM crawlers
-- `scripts/serve-prod.ts` + `scripts/html-to-markdown.ts`: the production server; every page also serves Markdown for `Accept: text/markdown` (acceptmarkdown.com)
+- `worker/index.ts` + `wrangler.jsonc`: the production server on Cloudflare Workers; `scripts/build-static.ts` prerenders every page as HTML and as Markdown for `Accept: text/markdown` (acceptmarkdown.com, via `scripts/html-to-markdown.ts`)
 - `public/robots.txt`, `public/sitemap.xml`: crawler config (sitemap includes hreflang alternates)
 
-## Analytics
+## Hosting and analytics
 
-Production runs self-hosted Umami 3.2.0 with a private PostgreSQL database.
-The tracker is served same-origin from `/analytics/script.js`, so collection
-does not depend on the dashboard hostname. Query strings and URL hashes are
-excluded, Do Not Track is respected, and replay, heatmaps and identified users
-stay disabled. A daily cron job at 03:17 UTC deletes live analytics data after
-90 days, creates an access-controlled PostgreSQL backup and removes backups
-after 7 days. The separate IP-masked Caddy operational log retains data for
-30 days.
-
-Useful production commands:
-
-```bash
-docker compose ps umami umami-db
-docker compose --profile bootstrap run --rm --no-deps umami-bootstrap
-bash scripts/umami-backup.sh
-bash scripts/umami-maintenance.sh
-crontab -l
-bash scripts/analytics.sh  # low-level masked access-log stats
-```
+Production runs on Cloudflare Workers with every page prerendered at build
+time; the manual Deploy workflow ships a commit once its CI run has passed.
+Visitor analytics is Cloudflare Web Analytics: no cookies or browser storage,
+no query strings, unsampled data for 7 days and an aggregated sample for 6
+months.
 
 See `AGENTS.md` for conventions and the mandatory Lighthouse/pa11y quality gates.

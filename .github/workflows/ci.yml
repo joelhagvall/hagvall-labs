@@ -1,8 +1,9 @@
 # CI for hagvall-labs.com: typecheck + build, then the quality gates from
 # AGENTS.md (Lighthouse Performance >= 95, SEO/Accessibility 100 and pa11y
-# 0 errors on every route),
-# sharded one route per job against the gzip prod server.
-# The route matrix below must match the route list in scripts/audit.sh.
+# 0 errors on every route), sharded one route per job against the production
+# Worker running locally in workerd (`bun run serve:prod`), and a dependency
+# audit. The route matrix below must match the route list in scripts/audit.sh.
+# The Deploy workflow only deploys a commit whose CI run passed.
 name: CI
 
 on:
@@ -11,11 +12,11 @@ on:
   pull_request:
   # The Lighthouse workflow dispatches this after committing new scores: a
   # push made with GITHUB_TOKEN never triggers CI, so without it that commit
-  # would have no image and could not be deployed.
+  # would have no green CI run and could not be deployed.
   workflow_dispatch:
     inputs:
       deploy_sha:
-        description: Deploy this commit once its image is published (only if it is the commit CI ran on)
+        description: Deploy this commit once CI has passed (only if it is the commit CI ran on)
         required: false
         type: string
 
@@ -25,6 +26,9 @@ concurrency:
 
 permissions:
   contents: read
+
+env:
+  WRANGLER_SEND_METRICS: 'false'
 
 jobs:
   build:
@@ -51,7 +55,7 @@ jobs:
       - name: Agent-readiness checks (markdown negotiation, 404s, aliases)
         run: |
           bun run serve:prod &
-          for _ in $(seq 1 30); do
+          for _ in $(seq 1 60); do
             curl -sf http://localhost:4173/ >/dev/null && break
             sleep 1
           done
@@ -93,10 +97,10 @@ jobs:
           name: dist
           path: dist
 
-      - name: Start prod server (gzip)
+      - name: Start the production Worker locally
         run: |
           bun run serve:prod &
-          for _ in $(seq 1 30); do
+          for _ in $(seq 1 60); do
             curl -sf http://localhost:4173/ >/dev/null && exit 0
             sleep 1
           done
@@ -106,54 +110,23 @@ jobs:
       - name: Lighthouse + pa11y
         run: bash scripts/audit.sh ${{ matrix.route }}
 
-  docker:
-    name: Build, scan and publish image
-    needs: [build, audit]
-    if: github.ref == 'refs/heads/master'
+  dependencies:
+    name: Dependency audit
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    env:
-      IMAGE: ghcr.io/joelhagvall/hagvall-labs
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
-      - name: Build immutable production image
-        run: |
-          docker build \
-            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
-            --label "org.opencontainers.image.source=https://github.com/joelhagvall/hagvall-labs" \
-            -t "$IMAGE:$GITHUB_SHA" \
-            .
+      - uses: ./.github/actions/setup
 
-      - name: Scan image for high and critical vulnerabilities
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: ghcr.io/joelhagvall/hagvall-labs:${{ github.sha }}
-          format: table
-          exit-code: "1"
-          ignore-unfixed: false
-          trivyignores: .trivyignore
-          vuln-type: os,library
-          severity: HIGH,CRITICAL
-          version: v0.70.0
-
-      - name: Log in to GHCR
-        uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c # v4.5.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish commit-tagged image
-        run: docker push "$IMAGE:$GITHUB_SHA"
+      # Fails on any high or critical advisory in the lockfile, shipped or not.
+      - name: bun audit
+        run: bun audit --audit-level=high
 
   # Only for the score commit from the Lighthouse workflow, which has already
   # checked that the scores file is its whole difference to the live release.
   deploy:
     name: Deploy the score commit
-    needs: docker
+    needs: [build, audit, dependencies]
     if: github.event_name == 'workflow_dispatch' && inputs.deploy_sha == github.sha
     runs-on: ubuntu-latest
     permissions:

@@ -1,9 +1,0 @@
-.git
-.github
-.vscode
-.env
-.env.*
-dist
-node_modules
-reports
-*.log

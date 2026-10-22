@@ -614,9 +614,6 @@ export function HomePage({ lang }: { lang: Lang }) {
                 {...externalLinkProps}
                 className={`group inline-flex items-center gap-1 ${linkCobalt}`}
                 translate="no"
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="maskera.dev"
-                data-umami-event-placement="home-product"
               >
                 maskera.dev
                 <span aria-hidden="true" className={btnArrow}>
@@ -692,9 +689,6 @@ export function HomePage({ lang }: { lang: Lang }) {
                   href={lighthouseReportsUrl}
                   {...externalLinkProps}
                   className={linkInk}
-                  data-umami-event="outbound-link-click"
-                  data-umami-event-destination="github.io"
-                  data-umami-event-placement="home-lighthouse"
                 >
                   {t.scoresReports}
                 </a>
@@ -725,9 +719,6 @@ export function HomePage({ lang }: { lang: Lang }) {
                     href={founderLinks.site}
                     {...externalLinkProps}
                     className={linkInk}
-                    data-umami-event="outbound-link-click"
-                    data-umami-event-destination="joelhagvall.com"
-                    data-umami-event-placement="home-founder"
                   >
                     Joel Hägvall
                   </a>
@@ -750,9 +741,6 @@ export function HomePage({ lang }: { lang: Lang }) {
                     href={founderLinks.linkedin}
                     {...externalLinkProps}
                     className={linkInk}
-                    data-umami-event="outbound-link-click"
-                    data-umami-event-destination="linkedin.com"
-                    data-umami-event-placement="home-founder"
                   >
                     LinkedIn
                   </a>
@@ -761,9 +749,6 @@ export function HomePage({ lang }: { lang: Lang }) {
                     href={founderLinks.github}
                     {...externalLinkProps}
                     className={linkInk}
-                    data-umami-event="outbound-link-click"
-                    data-umami-event-destination="github.com"
-                    data-umami-event-placement="home-founder"
                   >
                     GitHub
                   </a>

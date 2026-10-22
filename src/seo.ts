@@ -101,7 +101,7 @@ export function pageHead(opts: {
       { rel: 'alternate', hrefLang: 'en', href: site + paths.en },
       { rel: 'alternate', hrefLang: 'x-default', href: site + paths.sv },
       // The same URL also serves Markdown via content negotiation
-      // (Accept: text/markdown, handled in scripts/serve-prod.ts).
+      // (Accept: text/markdown, handled in worker/index.ts).
       {
         rel: 'alternate',
         type: 'text/markdown',

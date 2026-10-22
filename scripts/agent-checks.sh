@@ -1,5 +1,5 @@
 #!/bin/bash
-# Agent-readiness gate for the production server (scripts/serve-prod.ts):
+# Agent-readiness gate for the production server (worker/index.ts):
 # Markdown content negotiation per acceptmarkdown.com (Accept: text/markdown
 # gets text/markdown with Vary: Accept, q=0 is honored, unsatisfiable Accept
 # gets 406), real 404s with a recoverable body, the English trust-anchor

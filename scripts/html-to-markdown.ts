@@ -3,8 +3,8 @@
 // a small tree parser is enough: no dependency, nothing extra in the runtime
 // image. Only <main> and <footer> are converted; the header/nav is chrome.
 //
-// Used by scripts/serve-prod.ts. Copied into the production image alongside
-// it (see Dockerfile).
+// Used by scripts/build-static.ts, which writes the Markdown next to each
+// prerendered page for the Worker to serve.
 
 type Element = {
   type: 'element'

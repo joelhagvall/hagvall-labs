@@ -118,9 +118,6 @@ export function ContactPage({ lang }: { lang: Lang }) {
             <a
               href={`mailto:${contactEmail}`}
               className="mt-2 block break-all text-2xl font-semibold tracking-tight text-ink underline-offset-4 transition-colors hover:text-cobalt sm:text-3xl"
-              data-umami-event="outbound-link-click"
-              data-umami-event-destination="email"
-              data-umami-event-placement="contact-address"
             >
               {contactEmail}
             </a>
@@ -129,9 +126,6 @@ export function ContactPage({ lang }: { lang: Lang }) {
               <a
                 href={`mailto:${contactEmail}`}
                 className={btnPrimary}
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="email"
-                data-umami-event-placement="contact-button"
               >
                 {t.openBtn}
               </a>

@@ -1,0 +1,26 @@
+// Cloudflare Worker for hagvall-labs.com, see worker/index.ts. Deployed by the
+// Deploy workflow after `bun run build`, which prerenders the pages into
+// dist/client/_pages. `bun run serve:prod` runs it locally (wrangler dev).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "hagvall-labs",
+  "account_id": "74d5ea33d7bc2ea3d567c984ea54152b",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  // The Worker answers both hostnames; www redirects to the apex in code.
+  "routes": [
+    { "pattern": "hagvall-labs.com", "custom_domain": true },
+    { "pattern": "www.hagvall-labs.com", "custom_domain": true }
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "dist/client",
+    "binding": "ASSETS",
+    // The Worker picks the file itself: no implicit index.html or redirects.
+    "html_handling": "none",
+    "not_found_handling": "none",
+    // Hashed bundles skip the Worker and get their headers from _headers.
+    "run_worker_first": ["/*", "!/assets/*"]
+  }
+}

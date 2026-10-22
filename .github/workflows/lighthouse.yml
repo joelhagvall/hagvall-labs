@@ -3,7 +3,7 @@
 # real deployment, not by a local run. Runs daily and after every Deploy.
 # Every run uploads the full HTML reports as an artifact; when the lowest
 # score per category changes, src/lighthouse-scores.json is committed and CI
-# is dispatched for that commit (it builds the image). The number is baked in
+# is dispatched for that commit (Deploy needs its green CI run). The number is baked in
 # at build time, so it only changes on the live site with a deploy: after a
 # Deploy a person started, CI deploys the score commit itself when the scores
 # file is the only difference to that release; otherwise the number follows
@@ -128,6 +128,6 @@ jobs:
           fi
           echo "live release: ${live:-unknown}, deploy after CI: ${deploy_sha:-no}"
 
-          # A GITHUB_TOKEN push does not trigger CI, so ask for it: the new
-          # scores only reach the site through an image built for this commit.
+          # A GITHUB_TOKEN push does not trigger CI, so ask for it: Deploy
+          # only ships a commit whose CI run passed.
           gh workflow run ci.yml --ref master -f deploy_sha="$deploy_sha"

@@ -524,9 +524,6 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
                 {...externalLinkProps}
                 className={btnPrimaryOnCobalt}
                 translate="no"
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="maskera.dev"
-                data-umami-event-placement="maskera-hero"
               >
                 {t.ctaVisit}
                 <span aria-hidden="true" className={btnArrow}>
@@ -666,9 +663,6 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
                     href={link.href}
                     {...externalLinkProps}
                     className={`${btnSecondary} group w-full justify-between bg-white md:w-64`}
-                    data-umami-event="outbound-link-click"
-                    data-umami-event-destination={link.destination}
-                    data-umami-event-placement="maskera-open"
                   >
                     {link.label}
                     <span aria-hidden="true" className={btnArrow}>
@@ -691,9 +685,6 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
                 {...externalLinkProps}
                 className={linkInk}
                 translate="no"
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="maskera.dev"
-                data-umami-event-placement="maskera-bottom"
               >
                 maskera.dev
               </a>

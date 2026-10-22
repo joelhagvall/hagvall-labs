@@ -9,10 +9,10 @@ export const Route = createFileRoute('/en/privacy')({
       page: 'privacy',
       title: 'Privacy and Personal Data | Hägvall Labs',
       description:
-        'Learn how Hägvall Labs handles visitor analytics, operational logs, contact details, retention periods and your data protection rights.',
+        'Learn how Hägvall Labs handles visitor analytics, hosting, contact details, retention periods and your data protection rights.',
       ogTitle: 'Privacy and Personal Data | Hägvall Labs',
       ogDescription:
-        'Clear information about visitor analytics, operational logs, retention periods and your rights.',
+        'Clear information about visitor analytics, hosting, retention periods and your rights.',
     }),
   component: () => <PrivacyPage lang="en" />,
 })

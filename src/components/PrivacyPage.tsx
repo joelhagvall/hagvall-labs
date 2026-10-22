@@ -11,7 +11,7 @@ import {
   sheet,
 } from './ui'
 
-const updatedAt = new Date('2026-08-19T12:00:00Z')
+const updatedAt = new Date('2026-10-22T12:00:00Z')
 
 const copy = {
   sv: {
@@ -30,31 +30,31 @@ const copy = {
     analytics: {
       title: 'Besöksstatistik',
       paragraphs: [
-        'Jag använder en egenhostad installation av Umami för att förstå vilka sidor och länkar som är användbara. Statistiken används inte för annonsering, försäljning av data eller spårning mellan webbplatser.',
-        'Umami använder inga cookies. Session replay, heatmaps och identifierade användarprofiler är avstängda. Inställningen Do Not Track respekteras.',
+        'Jag använder Cloudflare Web Analytics för att förstå vilka sidor som är användbara och hur snabbt de laddar. Statistiken används inte för annonsering, försäljning av data eller spårning mellan webbplatser.',
+        'Cloudflare Web Analytics använder inga cookies och sparar inget annat i din webbläsare. Enligt Cloudflare identifieras besökare inte med hjälp av IP-adress, user-agent eller andra uppgifter.',
       ],
       items: [
-        'Besökt sida och sidtitel. URL-parametrar och hashvärden tas bort.',
-        'Hänvisande domän och sida, tidpunkt samt särskilt markerade länkklick.',
-        'Webbläsare, operativsystem, enhetstyp, skärmstorlek och språk.',
-        'Ungefärligt land, region och stad som härleds från IP-adressen.',
-        'Ett månatligt sessions-ID som räknas fram från IP-adress, user-agent, webbplats-ID och ett hemligt salt.',
+        'Besökt sida. URL-parametrar sparas inte.',
+        'Hänvisande sida och tidpunkt.',
+        'Webbläsare, operativsystem och enhetstyp.',
+        'Ungefärligt land.',
+        'Laddningstider och andra prestandamått för sidan.',
       ],
       after:
-        'IP-adressen används tillfälligt för geolokalisering och sessionsberäkning men sparas inte i Umami. Rå user-agent sparas inte heller. Den rättsliga grunden enligt GDPR är mitt berättigade intresse av att förbättra och driva webbplatsen med en så begränsad och egenkontrollerad mätning som möjligt.',
+        'Den rättsliga grunden enligt GDPR är mitt berättigade intresse av att förbättra och driva webbplatsen med en så begränsad mätning som möjligt.',
     },
     retention: {
       title: 'Hur länge sparas uppgifterna?',
       paragraphs: [
-        'Rå besöksdata i Umami raderas automatiskt efter 90 dagar. Åtkomstskyddade återställningskopior roteras efter 7 dagar, vilket innebär att en post kan finnas där i högst cirka 97 dagar.',
-        'Den separata driftloggen hos webbservern sparas i högst 30 dagar. Den används för säkerhet, felsökning och kapacitetsplanering.',
+        'Cloudflare sparar den detaljerade besöksstatistiken i 7 dagar. Därefter finns bara ett sammanställt urval kvar, i högst 6 månader.',
+        'Jag sparar inga egna åtkomstloggar för webbplatsen. Statistiken från min tidigare egenhostade installation av Umami är raderad.',
       ],
     },
     operations: {
-      title: 'Driftloggar',
+      title: 'Drift och säkerhet',
       paragraphs: [
-        'Webbservern Caddy loggar tidpunkt, begärd adress, metod, svarskod, user-agent och en maskerad nätverksadress. IPv4-adresser maskeras till /24 och IPv6-adresser till /48 innan de skrivs till disk. Cookie- och Authorization-header sparas inte.',
-        'Loggarna används inte för marknadsföring eller för att skapa besökarprofiler. Den rättsliga grunden är mitt berättigade intresse av att skydda och driva tjänsten.',
+        'Webbplatsen körs på Cloudflares nätverk. För att kunna leverera sidorna och skydda dem mot attacker behandlar Cloudflare din IP-adress och tekniska uppgifter om förfrågan, som begärd adress, webbläsare och tidpunkt.',
+        'Uppgifterna används inte för marknadsföring eller för att skapa besökarprofiler. Den rättsliga grunden är mitt berättigade intresse av att skydda och driva tjänsten.',
       ],
     },
     contact: {
@@ -66,13 +66,13 @@ const copy = {
     sharing: {
       title: 'Leverantörer och överföringar',
       paragraphs: [
-        'Webbplatsen och Umami körs på min server hos Hetzner inom EU/EES. Nödvändiga leverantörer kan behandla uppgifter för drift och e-post, men jag säljer inte uppgifter och lämnar dem inte till annonsnätverk. Ingen automatiserad profilering eller beslutsfattande används.',
+        'Cloudflare levererar webbplatsen och besöksstatistiken. Cloudflare är ett amerikanskt bolag, och överföringen till USA stöds av ramverket för dataskydd mellan EU och USA (Data Privacy Framework) och av EU:s standardavtalsklausuler i Cloudflares personuppgiftsbiträdesavtal. Min e-postleverantör behandlar det du mejlar mig. Jag säljer inte uppgifter och lämnar dem inte till annonsnätverk. Ingen automatiserad profilering eller beslutsfattande används.',
       ],
     },
     rights: {
       title: 'Dina rättigheter',
       paragraphs: [
-        'Du kan begära tillgång, rättelse, radering eller begränsning och invända mot behandling som bygger på berättigat intresse. Eftersom Umami inte sparar namn eller IP-adress kan jag ibland sakna möjlighet att koppla en enskild statistikpost till dig.',
+        'Du kan begära tillgång, rättelse, radering eller begränsning och invända mot behandling som bygger på berättigat intresse. Besöksstatistiken innehåller varken namn eller IP-adress, så jag kan oftast inte koppla en enskild statistikpost till dig.',
         'Du kan också lämna klagomål till Integritetsskyddsmyndigheten. Kontakta gärna mig först så försöker jag lösa frågan direkt.',
       ],
       authorityLabel: 'Läs om dina rättigheter hos IMY',
@@ -94,31 +94,31 @@ const copy = {
     analytics: {
       title: 'Visitor Analytics',
       paragraphs: [
-        'I use a self-hosted installation of Umami to understand which pages and links are useful. The statistics are not used for advertising, selling data or tracking people across websites.',
-        'Umami uses no cookies. Session replay, heatmaps and identified user profiles are disabled. Do Not Track is respected.',
+        'I use Cloudflare Web Analytics to understand which pages are useful and how fast they load. The statistics are not used for advertising, selling data or tracking people across websites.',
+        'Cloudflare Web Analytics uses no cookies and stores nothing else in your browser. According to Cloudflare, visitors are not identified by their IP address, user-agent or any other data.',
       ],
       items: [
-        'Visited page and page title. URL parameters and hash values are removed.',
-        'Referring domain and page, timestamp and specifically marked link clicks.',
-        'Browser, operating system, device type, screen size and language.',
-        'Approximate country, region and city derived from the IP address.',
-        'A monthly session ID calculated from the IP address, user-agent, website ID and a secret salt.',
+        'Visited page. URL parameters are not stored.',
+        'Referring page and timestamp.',
+        'Browser, operating system and device type.',
+        'Approximate country.',
+        'Load times and other performance metrics for the page.',
       ],
       after:
-        'The IP address is used temporarily for geolocation and session calculation but is not stored in Umami. The raw user-agent is not stored either. The GDPR legal basis is my legitimate interest in improving and operating the website with measurement that is as limited and self-controlled as possible.',
+        'The GDPR legal basis is my legitimate interest in improving and operating the website with measurement that is as limited as possible.',
     },
     retention: {
       title: 'How Long Is Data Kept?',
       paragraphs: [
-        'Raw visitor data in Umami is deleted automatically after 90 days. Access-controlled recovery copies are rotated after 7 days, which means a record may remain there for at most about 97 days.',
-        'The web server’s separate operational log is kept for no more than 30 days. It is used for security, troubleshooting and capacity planning.',
+        'Cloudflare keeps the detailed visitor statistics for 7 days. After that only an aggregated sample remains, for no more than 6 months.',
+        'I keep no access logs of my own for the website. The statistics from my former self-hosted Umami installation have been deleted.',
       ],
     },
     operations: {
-      title: 'Operational Logs',
+      title: 'Hosting & Security',
       paragraphs: [
-        'The Caddy web server logs the timestamp, requested address, method, response status, user-agent and a masked network address. IPv4 addresses are masked to /24 and IPv6 addresses to /48 before being written to disk. Cookie and Authorization headers are not stored.',
-        'The logs are not used for marketing or visitor profiles. The legal basis is my legitimate interest in protecting and operating the service.',
+        'The website runs on Cloudflare’s network. To deliver the pages and protect them from attacks, Cloudflare processes your IP address and technical details of the request, such as the requested address, browser and time.',
+        'This data is not used for marketing or visitor profiles. The legal basis is my legitimate interest in protecting and operating the service.',
       ],
     },
     contact: {
@@ -130,13 +130,13 @@ const copy = {
     sharing: {
       title: 'Providers & Transfers',
       paragraphs: [
-        'The website and Umami run on my server at Hetzner within the EU/EEA. Necessary providers may process data for hosting and email, but I do not sell data or share it with advertising networks. No automated profiling or decision-making is used.',
+        'Cloudflare delivers the website and the visitor analytics. Cloudflare is a US company, and the transfer to the US is covered by the EU-U.S. Data Privacy Framework and by the EU Standard Contractual Clauses in Cloudflare’s data processing agreement. My email provider processes what you email me. I do not sell data or share it with advertising networks. No automated profiling or decision-making is used.',
       ],
     },
     rights: {
       title: 'Your Rights',
       paragraphs: [
-        'You may request access, correction, deletion or restriction and object to processing based on legitimate interests. Because Umami stores neither names nor IP addresses, I may sometimes be unable to connect an individual analytics record to you.',
+        'You may request access, correction, deletion or restriction and object to processing based on legitimate interests. The visitor analytics hold neither names nor IP addresses, so I usually cannot connect an individual analytics record to you.',
         'You may also lodge a complaint with the Swedish Authority for Privacy Protection. Feel free to contact me first and I will try to resolve the matter directly.',
       ],
       authorityLabel: 'Read About Your Rights at IMY',
@@ -172,7 +172,7 @@ export function PrivacyPage({ lang }: { lang: Lang }) {
           <p className={heroBodyOnCobalt}>{t.intro}</p>
           <p className="mt-6 text-sm text-white/75">
             {t.updatedLabel}:{' '}
-            <time dateTime="2026-08-19">{updated}</time>
+            <time dateTime="2026-10-22">{updated}</time>
           </p>
         </div>
       </section>

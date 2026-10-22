@@ -3,12 +3,14 @@ name: Deploy
 # is live (workflow_run.display_title): keep the format.
 run-name: Deploy ${{ inputs.release_sha || github.sha }}
 
-# Manual production deploy. CI publishes an immutable image under the source
-# commit SHA only after typecheck, build, Lighthouse, pa11y and image scanning.
+# Manual production deploy to Cloudflare Workers (wrangler.jsonc). It only
+# deploys a master commit whose CI run passed (typecheck, build, Lighthouse,
+# pa11y, agent checks and the dependency audit), built the same way CI built
+# it plus the Cloudflare Web Analytics token.
 # The one automatic deploy: CI dispatches this for a Lighthouse score commit
 # whose only difference to the live release is src/lighthouse-scores.json.
-# Required repository secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_KEY and
-# DEPLOY_KNOWN_HOSTS.
+# Requires the CLOUDFLARE_API_TOKEN secret ("Edit Cloudflare Workers") and
+# the CF_BEACON_TOKEN repository variable.
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +21,7 @@ on:
 
 permissions:
   contents: read
-  packages: read
+  actions: read
 
 concurrency:
   group: hagvall-labs-production-deploy
@@ -43,47 +45,47 @@ jobs:
           fi
           echo "sha=$release_sha" >> "$GITHUB_OUTPUT"
 
-      - uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
-        with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
-
-      - name: Pin the production SSH host key
-        env:
-          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
-        run: |
-          test -n "$DEPLOY_KNOWN_HOSTS"
-          install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Pull and activate the release
-        env:
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHCR_USER: ${{ github.actor }}
-          RELEASE_SHA: ${{ steps.release.outputs.sha }}
-        run: |
-          set -euo pipefail
-          printf '%s' "$GHCR_TOKEN" |
-            ssh -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" "
-              set -eu
-              docker login ghcr.io --username '$GHCR_USER' --password-stdin
-              trap 'docker logout ghcr.io >/dev/null 2>&1 || true' 0
-              cd ~/hagvall-labs
-              git fetch origin master
-              git merge-base --is-ancestor '$RELEASE_SHA' origin/master
-              git checkout --detach '$RELEASE_SHA'
-              bash scripts/deploy-release.sh '$RELEASE_SHA'
-            "
-
-      # Search engines hear about the new release right away instead of on
-      # their next crawl. Never fails the deploy: the release is already live.
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           ref: ${{ steps.release.outputs.sha }}
+          fetch-depth: 0
           persist-credentials: false
 
+      # A score commit's Deploy is dispatched by the last job of its own CI
+      # run, so give that run a moment to finish before giving up.
+      - name: Require a master commit with a passed CI run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        run: |
+          git merge-base --is-ancestor "$RELEASE_SHA" origin/master
+          for _ in $(seq 1 30); do
+            passed=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml \
+              --commit "$RELEASE_SHA" --status success --json databaseId --jq length)
+            [ "$passed" -gt 0 ] && exit 0
+            sleep 10
+          done
+          echo "CI has not passed for $RELEASE_SHA" >&2
+          exit 1
+
+      - uses: ./.github/actions/setup
+
+      - name: Build
+        env:
+          VITE_CF_BEACON_TOKEN: ${{ vars.CF_BEACON_TOKEN }}
+        run: |
+          test -n "$VITE_CF_BEACON_TOKEN"
+          bun run build
+
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+          WRANGLER_SEND_METRICS: 'false'
+        run: bun x wrangler deploy --message "Deploy $RELEASE_SHA"
+
+      # Search engines hear about the new release right away instead of on
+      # their next crawl. Never fails the deploy: the release is already live.
       - name: Notify IndexNow
         continue-on-error: true
         run: bash scripts/indexnow.sh https://hagvall-labs.com

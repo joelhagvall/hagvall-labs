@@ -255,7 +255,9 @@ const chrome = {
 // re-run the numbers.
 const pageSpeedUrl = `https://pagespeed.web.dev/analysis?url=${encodeURIComponent(site + '/')}`
 
-const umamiWebsiteId = '4f1d3158-8b29-4380-9852-e6ba8069c881'
+// Cloudflare Web Analytics site token (public by design). Only the Deploy
+// workflow sets it, so local and CI builds never report visits.
+const cloudflareBeaconToken: string | undefined = import.meta.env.VITE_CF_BEACON_TOKEN
 
 export const Route = createRootRoute({
   head: () => ({
@@ -552,9 +554,6 @@ function RootLayout() {
                 href="https://joelhagvall.com"
                 {...externalLinkProps}
                 className={linkInk}
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="joelhagvall.com"
-                data-umami-event-placement="footer-founder"
               >
                 Joel Hägvall
               </a>
@@ -568,9 +567,6 @@ function RootLayout() {
                 href={lighthouseReportsUrl}
                 {...externalLinkProps}
                 className={linkInk}
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="github.io"
-                data-umami-event-placement="footer-lighthouse"
               >
                 {t.lhReports}
               </a>
@@ -580,9 +576,6 @@ function RootLayout() {
                 href={pageSpeedUrl}
                 {...externalLinkProps}
                 className={linkInk}
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="pagespeed.web.dev"
-                data-umami-event-placement="footer-lighthouse"
               >
                 PageSpeed Insights
               </a>
@@ -614,9 +607,6 @@ function RootLayout() {
             <a
               href={`mailto:${contactEmail}`}
               className="transition-colors hover:text-ink"
-              data-umami-event="outbound-link-click"
-              data-umami-event-destination="email"
-              data-umami-event-placement="footer-contact"
             >
               {contactEmail}
             </a>
@@ -665,7 +655,7 @@ const notFoundCopy = {
 // The 404 keeps its real status (the router sets it) and points at the pages
 // that do exist, plus the sitemap and llms.txt, so a visitor or an agent can
 // recover instead of guessing. The Markdown representation (see
-// scripts/serve-prod.ts) is derived from this same markup.
+// scripts/build-static.ts) is derived from this same markup.
 function NotFound() {
   const lang = useLang()
   const t = notFoundCopy[lang]
@@ -723,19 +713,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <style dangerouslySetInnerHTML={{ __html: appCssInline }} />
         )}
         <HeadContent />
-        {import.meta.env.PROD &&
-          import.meta.env.VITE_UMAMI_ENABLED === 'true' && (
-            <script
-              defer
-              src="/analytics/script.js"
-              data-website-id={umamiWebsiteId}
-              data-host-url="https://hagvall-labs.com/analytics"
-              data-domains="hagvall-labs.com,www.hagvall-labs.com"
-              data-exclude-search="true"
-              data-exclude-hash="true"
-              data-do-not-track="true"
-            />
-          )}
+        {import.meta.env.PROD && cloudflareBeaconToken && (
+          <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: cloudflareBeaconToken })}
+          />
+        )}
       </head>
       {/* Cobalt body is only the canvas fallback: every page paints band,
           sheet and footer edge to edge, and the overscroll colors come from

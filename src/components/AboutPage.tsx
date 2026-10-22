@@ -122,9 +122,6 @@ export function AboutPage({ lang }: { lang: Lang }) {
                 {...externalLinkProps}
                 lang="en"
                 className={`group ${linkInk}`}
-                data-umami-event="outbound-link-click"
-                data-umami-event-destination="joelhagvall.com"
-                data-umami-event-placement="about-post"
               >
                 Automate Everything Possible
                 <span aria-hidden="true" className={`inline-block ${btnArrow}`}>
@@ -145,9 +142,6 @@ export function AboutPage({ lang }: { lang: Lang }) {
                   {...externalLinkProps}
                   translate="no"
                   className={`group text-lg font-semibold tracking-tight ${linkInk}`}
-                  data-umami-event="outbound-link-click"
-                  data-umami-event-destination={project.destination}
-                  data-umami-event-placement="about-projects"
                 >
                   {project.name}
                   <span aria-hidden="true" className={`ml-1 inline-block ${btnArrow}`}>
@@ -162,9 +156,6 @@ export function AboutPage({ lang }: { lang: Lang }) {
                     href={project.source}
                     {...externalLinkProps}
                     className={`group mt-2 inline-block text-sm text-neutral-600 ${linkInk}`}
-                    data-umami-event="outbound-link-click"
-                    data-umami-event-destination="github.com"
-                    data-umami-event-placement="about-projects"
                   >
                     {t.source}
                     <span aria-hidden="true" className={`ml-1 inline-block ${btnArrow}`}>
