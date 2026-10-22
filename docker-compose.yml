@@ -1,6 +1,8 @@
 name: hagvall-labs
 
-x-umami-image: &umami-image ghcr.io/umami-software/umami:3.2.0@sha256:8edfe4beaef13f9d1300619fa264ef250a3688df9cc54d24ca830ca31cb475ec
+# Umami 3.2.0 with a patched Node, built from Dockerfile.umami by the Umami
+# image workflow. Pin the digest that workflow prints.
+x-umami-image: &umami-image ghcr.io/joelhagvall/hagvall-labs-umami:a18c617b24dc29451991257dbeeae4373d514d36@sha256:6e87f49a7ac8af498a3c329896fa03ed4e36121d1ad8818fd020c2b119605243
 
 services:
   web:
