@@ -1,0 +1,66 @@
+# Builds the Umami image from Dockerfile.umami (the pinned Umami release with
+# a patched Node and upgraded Alpine packages) and publishes it under the
+# source commit SHA. docker-compose.yml pins the digest this run prints, so a
+# new image only reaches production through a commit and a normal Deploy.
+name: Umami image
+
+on:
+  push:
+    branches: [master]
+    paths: [Dockerfile.umami, .github/workflows/umami-image.yml]
+  workflow_dispatch:
+
+concurrency:
+  group: umami-image
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    name: Build, scan and publish the Umami image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/joelhagvall/hagvall-labs-umami
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - name: Build the Umami image
+        run: |
+          docker build \
+            --file Dockerfile.umami \
+            --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+            --label "org.opencontainers.image.source=https://github.com/joelhagvall/hagvall-labs" \
+            -t "$IMAGE:$GITHUB_SHA" \
+            .
+
+      # Report only: what is left are Umami's own npm dependencies (Next.js
+      # among them), which only a newer Umami release can fix. Read the table
+      # before pinning a new digest.
+      - name: Scan the image for high and critical vulnerabilities
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ghcr.io/joelhagvall/hagvall-labs-umami:${{ github.sha }}
+          format: table
+          exit-code: "0"
+          ignore-unfixed: false
+          vuln-type: os,library
+          severity: HIGH,CRITICAL
+          version: v0.70.0
+
+      - name: Log in to GHCR
+        uses: docker/login-action@06fb636fac595d6fb4b28a5dfcb21a6f5091859c # v4.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish the commit-tagged image
+        run: |
+          docker push "$IMAGE:$GITHUB_SHA"
+          digest="$(docker image inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$IMAGE:$GITHUB_SHA" | grep -m 1 "^$IMAGE@sha256:")"
+          echo "Pin in docker-compose.yml: \`$IMAGE:$GITHUB_SHA@${digest#*@}\`" >> "$GITHUB_STEP_SUMMARY"
