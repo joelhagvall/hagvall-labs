@@ -1,0 +1,166 @@
+{
+  "about": {
+    "title": "Därför startade jag Hägvall Labs",
+    "intro": "Jag är utvecklare, och det som stör mig mest är sällan koden. Det är allt runt den: folk som kopierar data mellan system för hand, väntar på en fil från någon annan och dubbelkollar saker som ett skript hade kunnat kolla.",
+    "paragraphs": [
+      "Ofta sitter informationen i ett äldre affärssystem eller en sluten webbportal. Systemet gör sitt jobb, men kopplingen till nästa steg saknas. Då blir det en människa som får flytta uppgifterna.",
+      "Därför jobbar jag med automation av äldre och slutna system. Jag börjar med att undersöka vad som faktiskt går att koppla ihop."
+    ],
+    "maskeraAfter": " kom till för att jag själv behövde det. Så fort man kopplar AI mot riktig data hamnar namn och personnummer i promptar och loggar, och jag hittade inget som funkade bra på svenska.",
+    "solo": "Det är bara jag i bolaget. Jag pratar med er, undersöker systemen och bygger lösningen.",
+    "postBefore": "Jag har skrivit mer om hur jag tänker i ",
+    "postAfter": " (på engelska).",
+    "projectsTitle": "Utvalda projekt",
+    "projectsIntro": "Egna projekt som visar hur jag bygger integrationer och förenklar manuella steg.",
+    "projectsMore": "Se fler projekt på min portfolio",
+    "projects": {
+      "jarvisPanel": {
+        "name": "Jarvis Panel",
+        "body": "Min hemmapanel kopplar ihop tvättbokning, kalender och musik. Jag har byggt egna integrationer även där öppna API:er saknas."
+      },
+      "dataWipe": {
+        "name": "Data Wipe Mailer",
+        "body": "Jag byggde en webbapp som förbereder mejl med begäran om radering av personuppgifter. Du granskar, kompletterar och skickar dem i ditt mejlprogram."
+      }
+    },
+    "source": "Källkoden på GitHub",
+    "closing": "Berätta vilka system ni använder och vad ni fortfarande behöver göra för hand.",
+    "cta": "Berätta om era system",
+    "methodItems": [
+      {
+        "title": "Egna integrationer",
+        "body": "Jag kopplar ihop system via de gränssnitt och dataexporter som finns. När en färdig koppling saknas bygger jag den del som behövs för ert arbetsflöde."
+      },
+      {
+        "title": "Reverse engineering",
+        "body": "När dokumentationen inte räcker analyserar jag systemens gränssnitt och kommunikation. Det sker inom överenskommen och tillåten åtkomst. Resultatet kan bli en egen adapter eller automation av webbgränssnittet."
+      },
+      {
+        "title": "AI där tolkning behövs",
+        "body": "AI kan tolka mejl, PDF:er och fri text. Tydliga regler styr kontroller och uppdateringar. Osäkra uppgifter lämnas till en människa."
+      }
+    ],
+    "methodTitle": "Integration och reverse engineering",
+    "deliveryTitle": "När lösningen ska tas i drift",
+    "deliveryBody": "Jag kommer överens med er om behörigheter, datahantering och godkännanden. Loggar och kontroller hjälper till att upptäcka fel och ändrade gränssnitt. Jag dokumenterar integrationer och beroenden så att någon annan kan ta över. Support och ändringar har en avtalad omfattning."
+  },
+  "contact": {
+    "title": "Vilka system vill ni koppla ihop?",
+    "body": "Beskriv vilka system ni använder, vad ni gör för hand och hur ofta arbetet återkommer. Några rader räcker. Du skriver direkt till mig, Joel.",
+    "emailLabel": "Mejla mig på",
+    "copyBtn": "Kopiera adressen",
+    "copiedBtn": "Kopierat!",
+    "openBtn": "Öppna i mejlprogram",
+    "stepsTitle": "Från första mejl till beslut",
+    "steps": [
+      {
+        "title": "Ett första samtal",
+        "body": "Jag går igenom arbetsflödet med er och ser om uppdraget passar. Samtalet är kostnadsfritt. Produktfrågor om Maskera är också välkomna."
+      },
+      {
+        "title": "En betald förstudie",
+        "body": "Ni godkänner omfattning och pris innan jag börjar. Ni får min bedömning av åtkomst, genomförbarhet och hur mycket underhåll en lösning skulle kräva."
+      },
+      {
+        "title": "Ni väljer nästa steg",
+        "body": "Om förstudien visar en rimlig väg framåt får ni en separat offert för en pilot. Ni kan också stanna vid bedömningen. Tidplan och pris sätts utifrån vad förstudien visar."
+      }
+    ]
+  },
+  "navigation": {
+    "menu": "Meny",
+    "products": "Produkter",
+    "maskeraDesc": "Maskera personuppgifter i text",
+    "services": "Så jobbar jag",
+    "contact": "Kontakt",
+    "privacy": "Integritet",
+    "about": "Om",
+    "orgNr": "org.nr",
+    "runBy": "Drivs av",
+    "noCookies": "Inga cookies.",
+    "lhChecked": "Lighthouse mäts dagligen mot den här sajten: se",
+    "lhReports": "rapporterna",
+    "lhVerify": "eller kolla själv i",
+    "skip": "Hoppa till innehållet",
+    "homeAria": "Hägvall Labs, startsida"
+  },
+  "home": {
+    "heroKicker": "Egna integrationer och reverse engineering",
+    "heroTitle": "Automation där färdiga integrationer saknas.",
+    "heroBody": "Jag kopplar ihop äldre verksamhetssystem, slutna kundportaler och moderna verktyg och automatiserar steg som i dag görs för hand. AI använder jag där mejl och dokument behöver tolkas.",
+    "ctaPrimary": "Berätta om era system",
+    "ctaSecondary": "Se ett exempelflöde",
+    "exampleTitle": "Från kundportal till affärssystem.",
+    "exampleBody": "Leveransstatus i en portal. Underlaget i en PDF. Samma uppgifter ska in i affärssystemet.",
+    "exampleLabel": "Illustrativt exempelflöde",
+    "exampleSteps": [
+      {
+        "title": "Hämta",
+        "body": "Läs status och dokument från kundportalen."
+      },
+      {
+        "title": "Kontrollera",
+        "body": "Tolka underlaget och kontrollera uppgifterna."
+      },
+      {
+        "title": "Godkänn",
+        "body": "Låt en medarbetare granska avvikelser."
+      },
+      {
+        "title": "Uppdatera",
+        "body": "För över godkända uppgifter och logga ändringen."
+      }
+    ],
+    "exampleNote": "Förstudien avgör vad som går att göra med era system.",
+    "pilotTitle": "Börja med en teknisk förstudie.",
+    "pilotIntro": "Ett första samtal är kostnadsfritt. Därefter väljer ni om ni vill beställa en betald teknisk förstudie.",
+    "pilotSteps": [
+      {
+        "title": "Undersök",
+        "body": "Jag kartlägger åtkomst, genomförbarhet och underhållsbehov."
+      },
+      {
+        "title": "Testa",
+        "body": "När ni godkänt en separat offert bygger och testar jag en avgränsad pilot med tydlig omfattning, pris och mätbara mål."
+      },
+      {
+        "title": "Drift",
+        "body": "När piloten är utvärderad bestämmer ni om lösningen ska tas i drift med avtalad förvaltning."
+      }
+    ],
+    "productBody": "Jag bygger också Maskera, som maskerar personuppgifter före AI-anrop.",
+    "productLink": "Läs om Maskera",
+    "aboutTitle": "Du arbetar direkt med mig.",
+    "aboutP1": "Jag heter Joel Hägvall. Jag tar första samtalet, gör förstudien och bygger integrationen.",
+    "aboutMore": "Mer om mig och arbetssättet",
+    "aboutRole": "Grundare och utvecklare",
+    "aboutCta": "Berätta om era system",
+    "methodTitle": "Reverse engineering när det behövs.",
+    "methodBody": "När dokumentationen inte räcker analyserar jag systemens gränssnitt och kommunikation och bygger egna kopplingar. Allt sker inom överenskommen och tillåten åtkomst."
+  },
+  "meta": {
+    "home": {
+      "title": "Automation av äldre och slutna system | Hägvall Labs",
+      "description": "Egna integrationer, reverse engineering och AI för äldre verksamhetssystem och slutna portaler. Joel Hägvall hjälper er från teknisk förstudie till pilot.",
+      "ogTitle": "Automation där färdiga integrationer saknas",
+      "ogDescription": "Jag kopplar ihop äldre system, slutna kundportaler och moderna verktyg. Börja med en teknisk förstudie."
+    },
+    "contact": {
+      "title": "Kontakta Joel Hägvall | Hägvall Labs",
+      "description": "Vilka system vill ni koppla ihop? Kontakta Joel Hägvall om egna integrationer, reverse engineering och en teknisk förstudie.",
+      "ogTitle": "Vilka system vill ni koppla ihop?",
+      "ogDescription": "Berätta vad ni gör för hand. Ett kostnadsfritt första samtal, sedan ett separat förslag på en betald teknisk förstudie.",
+      "schemaName": "Kontakta Hägvall Labs"
+    },
+    "about": {
+      "title": "Därför startade jag Hägvall Labs",
+      "description": "Joel Hägvall om att bygga bort manuellt arbete mellan äldre och slutna system med egna integrationer, reverse engineering och AI.",
+      "ogTitle": "Därför startade jag Hägvall Labs",
+      "ogDescription": "När kopplingen saknas blir en människa integrationen. Jag undersöker systemen och bygger bort manuella steg.",
+      "schemaName": "Om Hägvall Labs"
+    },
+    "socialTagline": "Automation av äldre och slutna system",
+    "socialAlt": "Hägvall Labs: automation av äldre och slutna system",
+    "organization": "Hägvall Labs bygger automation för äldre och slutna verksamhetssystem med egna integrationer, reverse engineering och AI. Uppdrag börjar med en teknisk förstudie."
+  }
+}

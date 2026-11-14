@@ -1,16 +1,16 @@
 # Hägvall Labs
 
-> Hägvall Labs is Joel Hägvall's software company in Stockholm, Sweden. He builds software, APIs and AI automation for businesses, with information security and privacy at the core. His first product, Maskera, finds and masks personal data in text before it is used in AI systems, logs or analytics tools.
+> Hägvall Labs is Joel Hägvall's software company in Stockholm, Sweden. He automates work across legacy business systems, closed customer portals and modern tools through custom integrations, reverse engineering and AI. Engagements begin with a paid technical feasibility study after a free initial call. He also builds Maskera, a product that detects and masks personal data in text.
 
 Key facts:
 
 - Company: Hägvall Labs AB (Swedish org. no. 559598-0110, Stockholm, Sweden), founded and run by Joel Hägvall
-- Focus: information security, privacy, artificial intelligence
+- Focus: automation where ready-made integrations are missing, including legacy and closed systems; reverse engineering within agreed and permitted access
 - First product: Maskera (https://maskera.dev), which detects and masks personal data (names, personal identity numbers, addresses, phone numbers) in free text before it reaches AI systems, logs or analytics tools; built for Swedish text and Swedish personal data formats. Detects free-text names, places, organizations and street addresses with its own 43 MB Swedish NER model, and structured data with checksum-aware rules: personnummer, samordningsnummer, organisationsnummer, phone numbers, email, postal codes, apartment numbers, bankgiro, plusgiro, IBAN, card numbers, IP addresses and links. Each item becomes a placeholder such as [NAMN_1] that can be restored locally
 - Open artifacts: Maskera source on GitHub (https://github.com/joelhagvall/maskera), package on npm (https://www.npmjs.com/package/maskera), Swedish NER model on Hugging Face (https://huggingface.co/joelhagvall/maskera-sv-ner)
-- Deployment: primarily self-hosted, installed in the customer's own IT environment; no data leaves the customer's infrastructure
-- Offering: software development, APIs and integrations, AI SDK implementation and automation, information security and privacy consulting; Maskera pilot projects, software licenses, installation and support
-- Way of working: AI-assisted development (Codex, Claude, MCP) with CI/CD and strict quality gates; small fast releases; the site itself scores top marks in Lighthouse on every page, with perfect scores for accessibility and SEO, measured daily against the live site by a public GitHub Actions workflow and shown on the home page
+- Deployment: system access, permissions, data handling and hosting are agreed per engagement; Maskera supports self-hosted deployment
+- Offering: paid technical feasibility studies covering access, constraints and maintenance needs; separately quoted pilots with scope, price and measurable goals; agreed operations and maintenance after evaluation; Maskera remains a separate product
+- Way of working: direct contact with Joel throughout; custom adapters and web interface automation where appropriate; AI for interpreting unstructured input, explicit rules for checks and updates, human approval, logs and handover documentation. The home page workflow is illustrative, not a published customer case. Website Lighthouse reports remain linked from the footer
 - Privacy: the website uses no cookies and runs privacy-friendly visitor analytics with Cloudflare Web Analytics, without browser storage or identified users; detailed data is kept for 7 days and an aggregated sample for 6 months
 - Market: companies and organizations, primarily in Sweden; direct sales via website, digital contact, demonstrations and agreements
 - Payment: invoice and bank transfer
@@ -22,13 +22,13 @@ Key facts:
 
 The site is bilingual: Swedish (default) and English (under /en).
 
-- [Home (Swedish)](https://hagvall-labs.com/): Company overview, services and contact
+- [Home (Swedish)](https://hagvall-labs.com/): Legacy and closed system automation, illustrative workflow, a short introduction to reverse engineering and feasibility studies, and contact
 - [Home (English)](https://hagvall-labs.com/en): Same content in English
 - [Maskera (Swedish)](https://hagvall-labs.com/maskera): Product page with the detected data types, use cases (AI systems, logs, analytics), deployment model and pilot projects
 - [Maskera (English)](https://hagvall-labs.com/en/maskera): Same content in English
-- [About (Swedish)](https://hagvall-labs.com/om): Why Joel started Hägvall Labs: automating away manual glue work, why Maskera exists, a link to his post "Automate Everything Possible" (https://joelhagvall.com/blog/automate-everything), and two side projects: J.A.R.V.I.S (https://github.com/joelhagvall/jarvis-chat), a private macOS assistant with local AI over MCP, and Data Wipe Mailer (https://data-wipe-mailer.vercel.app/, source https://github.com/joelhagvall/data-wipe-mailer), which helps people send GDPR deletion requests
+- [About (Swedish)](https://hagvall-labs.com/om): Why Joel started Hägvall Labs, detailed integration and reverse engineering methods, access controls, logging, handover and maintenance, why Maskera exists, and his post "Automate Everything Possible" (https://joelhagvall.com/blog/automate-everything). Two selected personal projects: Jarvis Panel (https://github.com/joelhagvall/jarvis-panel), a home panel connecting laundry booking, calendar and music through custom integrations, and Data Wipe Mailer (https://data-wipe-mailer.vercel.app/, source https://github.com/joelhagvall/data-wipe-mailer), which prepares deletion-request emails for the user to review, complete and send in their email app. These are Joel's own projects, not customer case studies. More projects: https://joelhagvall.com/projects
 - [About (English)](https://hagvall-labs.com/en/about): Same content in English
-- [Contact (Swedish)](https://hagvall-labs.com/kontakt): Direct contact with Joel Hägvall, email and how a pilot starts
+- [Contact (Swedish)](https://hagvall-labs.com/kontakt): Direct contact with Joel Hägvall, email, free initial call and a separately priced feasibility study before a pilot
 - [Contact (English)](https://hagvall-labs.com/en/contact): Same content in English
 - [Privacy (Swedish)](https://hagvall-labs.com/integritet): Visitor analytics, hosting, retention periods and data protection rights
 - [Privacy (English)](https://hagvall-labs.com/en/privacy): Same content in English

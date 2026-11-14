@@ -10,6 +10,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { execFileSync } from 'node:child_process'
 import * as fontkit from 'fontkit'
+import { copy } from '../src/i18n'
 import { BRAND_PATHS } from '../src/components/BrandSymbol'
 
 const ROOT = join(import.meta.dir, '..')
@@ -265,8 +266,8 @@ for (const v of variants) {
 }
 
 // Social
-const ogSv = socialCard('Mjukvara, AI och automation från Stockholm')
-const ogEn = socialCard('Software, AI and automation from Stockholm')
+const ogSv = socialCard(copy.sv.meta.socialTagline)
+const ogEn = socialCard(copy.en.meta.socialTagline)
 png(ogSv, 1200, 630, join(OUT, 'social/og-image-sv.png'))
 png(ogEn, 1200, 630, join(OUT, 'social/og-image-en.png'))
 png(symbolTile(1024, 'color', WHITE, 0.6), 1024, 1024, join(OUT, 'social/avatar-white-1024.png'))

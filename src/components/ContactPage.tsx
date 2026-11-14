@@ -1,3 +1,4 @@
+import { copy as translations } from '../i18n'
 import { useEffect, useRef, useState } from 'react'
 import { contactEmail } from '../seo'
 import type { Lang } from '../seo'
@@ -14,54 +15,7 @@ import {
   sheet,
 } from './ui'
 
-const copy = {
-  sv: {
-    title: 'Hör av dig.',
-    body: 'Du skriver direkt till mig, Joel. Ingen säljkö, inget ”vi återkommer inom fem arbetsdagar”. Jag läser allt själv och svarar oftast samma dag.',
-    emailLabel: 'Mejla mig på',
-    copyBtn: 'Kopiera adressen',
-    copiedBtn: 'Kopierat!',
-    openBtn: 'Öppna i mejlprogram',
-    stepsTitle: 'Så brukar det gå till',
-    steps: [
-      {
-        title: 'Du mejlar',
-        body: 'Berätta kort vad ni vill lösa: en produktfråga, en pilot eller ett uppdrag. Ett par rader räcker.',
-      },
-      {
-        title: 'Vi ses digitalt',
-        body: 'Ett kort möte där vi går igenom ert case. Handlar det om en produkt visar jag den på era egna exempel, inte en tillrättalagd demo.',
-      },
-      {
-        title: 'Vi börjar smått',
-        body: 'En pilot eller ett avgränsat första uppdrag med tydliga mål och fast tidsram. Sen bestämmer ni er, med bevis på bordet.',
-      },
-    ],
-  },
-  en: {
-    title: 'Get in Touch.',
-    body: 'You write directly to me, Joel. No sales queue, no “we’ll get back to you within five business days”. I read everything myself and usually reply the same day.',
-    emailLabel: 'Email me at',
-    copyBtn: 'Copy Address',
-    copiedBtn: 'Copied!',
-    openBtn: 'Open in Mail App',
-    stepsTitle: 'How It Usually Goes',
-    steps: [
-      {
-        title: 'You Email',
-        body: 'Tell me briefly what you want to solve: a product question, a pilot or a project. A few lines are enough.',
-      },
-      {
-        title: 'We Meet Online',
-        body: 'A short call where we walk through your case. If it’s about a product, I show it on your own examples, not a polished canned demo.',
-      },
-      {
-        title: 'We Start Small',
-        body: 'A pilot or a scoped first project with clear goals and a fixed timeline. Then you decide, with proof on the table.',
-      },
-    ],
-  },
-}
+const copy = { sv: translations.sv.contact, en: translations.en.contact }
 
 function CopyEmailButton({ label, copied }: { label: string; copied: string }) {
   const [isCopied, setIsCopied] = useState(false)
@@ -123,10 +77,7 @@ export function ContactPage({ lang }: { lang: Lang }) {
             </a>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <CopyEmailButton label={t.copyBtn} copied={t.copiedBtn} />
-              <a
-                href={`mailto:${contactEmail}`}
-                className={btnPrimary}
-              >
+              <a href={`mailto:${contactEmail}`} className={btnPrimary}>
                 {t.openBtn}
               </a>
             </div>

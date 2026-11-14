@@ -1,19 +1,20 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ContactPage } from '../components/ContactPage'
 import { contactJsonLd, pageHead } from '../seo'
+import { copy } from '../i18n'
+
+const t = copy.sv.meta.contact
 
 export const Route = createFileRoute('/kontakt')({
   head: () =>
     pageHead({
       lang: 'sv',
       page: 'contact',
-      title: 'Kontakta Joel Hägvall | Hägvall Labs',
-      description:
-        'Kontakta Joel Hägvall om Maskera, pilotprojekt eller utvecklingsuppdrag. Du får svar direkt från personen som bygger och levererar.',
-      ogTitle: 'Kontakta Joel Hägvall | Hägvall Labs',
-      ogDescription:
-        'Skriv direkt till personen som bygger produkterna. Svar oftast samma dag.',
-      jsonLd: contactJsonLd('Kontakta Hägvall Labs', 'sv'),
+      title: t.title,
+      description: t.description,
+      ogTitle: t.ogTitle,
+      ogDescription: t.ogDescription,
+      jsonLd: contactJsonLd(t.schemaName, 'sv'),
     }),
   component: () => <ContactPage lang="sv" />,
 })

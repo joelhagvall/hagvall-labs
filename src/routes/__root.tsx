@@ -1,3 +1,4 @@
+import { copy as translations } from '../i18n'
 import { useEffect, useRef, useState } from 'react'
 import {
   HeadContent,
@@ -213,42 +214,7 @@ const favicon =
       '</svg>',
   )
 
-const chrome = {
-  sv: {
-    menu: 'Meny',
-    products: 'Produkter',
-    maskeraDesc: 'Maskera personuppgifter i text',
-    services: 'Tjänster',
-    contact: 'Kontakt',
-    privacy: 'Integritet',
-    about: 'Om',
-    orgNr: 'org.nr',
-    runBy: 'Drivs av',
-    noCookies: 'Inga cookies.',
-    lhChecked: 'Lighthouse mäts dagligen mot den här sajten: se',
-    lhReports: 'rapporterna',
-    lhVerify: 'eller kolla själv i',
-    skip: 'Hoppa till innehållet',
-    homeAria: 'Hägvall Labs, startsida',
-  },
-  en: {
-    menu: 'Menu',
-    products: 'Products',
-    maskeraDesc: 'Mask personal data in text',
-    services: 'Services',
-    contact: 'Contact',
-    privacy: 'Privacy',
-    about: 'About',
-    orgNr: 'org. no.',
-    runBy: 'Founded and run by',
-    noCookies: 'No cookies.',
-    lhChecked: 'Lighthouse is measured daily against this site: see',
-    lhReports: 'the reports',
-    lhVerify: 'or verify it yourself in',
-    skip: 'Skip to Content',
-    homeAria: 'Hägvall Labs, Home',
-  },
-}
+const chrome = { sv: translations.sv.navigation, en: translations.en.navigation }
 
 // The footer links to the published Lighthouse reports (lighthouseReportsUrl
 // in seo.ts) and to Google's own PageSpeed Insights, so anyone can read or
@@ -300,7 +266,7 @@ export const Route = createRootRoute({
           url: site + '/',
           logo: site + '/brand/hagvall-labs-symbol.svg',
           description:
-            'Hägvall Labs develops, licenses and sells software and digital services for information security, privacy protection and artificial intelligence.',
+            translations.en.meta.organization,
           email: contactEmail,
           contactPoint: {
             '@type': 'ContactPoint',

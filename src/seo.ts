@@ -1,3 +1,5 @@
+import { copy } from './i18n'
+
 export const site = 'https://hagvall-labs.com'
 
 // Temporary until hello@hagvall-labs.com is live. Referenced everywhere the
@@ -8,7 +10,7 @@ export const contactEmail = 'work@joelhagvall.com'
 // the footer and the JSON-LD so the URLs live in exactly one place.
 // The public Lighthouse check (.github/workflows/lighthouse.yml) runs against
 // the live site, keeps src/lighthouse-scores.json current and publishes the
-// HTML reports here. Linked from the footer and the home page's score panel.
+// HTML reports here. Linked from the footer.
 export const lighthouseReportsUrl = 'https://joelhagvall.github.io/hagvall-labs/'
 
 export const founderLinks = {
@@ -59,8 +61,8 @@ export function pageFromPath(pathname: string): PageKey {
     set and optional JSON-LD. Canonicals must come from here (route heads),
     never from __root.tsx, where they would merge into duplicates. */
 const ogImageAlt: Record<Lang, string> = {
-  sv: 'Hägvall Labs: mjukvara, AI och automation från Stockholm',
-  en: 'Hägvall Labs: software, AI and automation from Stockholm',
+  sv: copy.sv.meta.socialAlt,
+  en: copy.en.meta.socialAlt,
 }
 
 export function pageHead(opts: {

@@ -1,0 +1,166 @@
+{
+  "about": {
+    "title": "Why I Started Hägvall Labs",
+    "intro": "I’m a developer, and what bugs me most is rarely the code. It’s everything around it: people copying data between systems by hand, waiting on a file from someone else, double-checking things a script could check.",
+    "paragraphs": [
+      "Often the information sits in a legacy business system or a closed web portal. The system does its job, but the connection to the next step is missing. A person ends up moving the data.",
+      "That’s why I focus on automating legacy and closed systems. I start by investigating what can actually be connected."
+    ],
+    "maskeraAfter": " came from needing it myself. The moment you wire AI into real data, names and personal ID numbers end up in prompts and logs, and I couldn’t find anything that worked well for Swedish.",
+    "solo": "It’s just me. I talk to you, investigate the systems and build the solution.",
+    "postBefore": "I wrote more about how I think about this in ",
+    "postAfter": ".",
+    "projectsTitle": "Selected Projects",
+    "projectsIntro": "Personal projects showing how I build integrations and simplify manual steps.",
+    "projectsMore": "See More Projects on My Portfolio",
+    "projects": {
+      "jarvisPanel": {
+        "name": "Jarvis Panel",
+        "body": "My home panel connects laundry booking, calendar and music. I built custom integrations, including where no open APIs are available."
+      },
+      "dataWipe": {
+        "name": "Data Wipe Mailer",
+        "body": "I built a web app that prepares emails requesting deletion of personal data. You review, complete and send them in your email app."
+      }
+    },
+    "source": "Source on GitHub",
+    "closing": "Tell me which systems you use and what you still need to do by hand.",
+    "cta": "Tell Me About Your Systems",
+    "methodItems": [
+      {
+        "title": "Custom Integrations",
+        "body": "I connect systems through the interfaces and data exports available. Where a ready-made connector is missing, I build the part your workflow needs."
+      },
+      {
+        "title": "Reverse Engineering",
+        "body": "When documentation falls short, I analyze a system’s interfaces and communication within agreed and permitted access. The result may be a custom adapter or web interface automation."
+      },
+      {
+        "title": "AI Where Interpretation Helps",
+        "body": "AI can interpret emails, PDFs and free text. Explicit rules govern checks and updates. Uncertain information goes to a person for review."
+      }
+    ],
+    "methodTitle": "Integration and Reverse Engineering",
+    "deliveryTitle": "Going Live",
+    "deliveryBody": "You and I agree on permissions, data handling and approval steps. Logs and checks help detect failures and changed interfaces. I document integrations and dependencies so someone else can take over. Support and changes have an agreed scope."
+  },
+  "contact": {
+    "title": "Which Systems Do You Want to Connect?",
+    "body": "Tell me which systems you use, what you do by hand and how often the task comes up. A few lines are enough. You write directly to me, Joel.",
+    "emailLabel": "Email me at",
+    "copyBtn": "Copy Address",
+    "copiedBtn": "Copied!",
+    "openBtn": "Open in Mail App",
+    "stepsTitle": "From First Email to a Decision",
+    "steps": [
+      {
+        "title": "An Initial Call",
+        "body": "I walk through the workflow with you and see whether the project is a fit. The call is free. Product questions about Maskera are welcome too."
+      },
+      {
+        "title": "A Paid Feasibility Study",
+        "body": "You approve scope and price before I start. You get my assessment of access, feasibility and how much maintenance a solution would need."
+      },
+      {
+        "title": "You Choose the Next Step",
+        "body": "If the study shows a practical way forward, you receive a separate quote for a pilot. Or you can stop there and keep the assessment. Timeline and price depend on what the study finds."
+      }
+    ]
+  },
+  "navigation": {
+    "menu": "Menu",
+    "products": "Products",
+    "maskeraDesc": "Mask personal data in text",
+    "services": "How I Work",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "about": "About",
+    "orgNr": "org. no.",
+    "runBy": "Founded and run by",
+    "noCookies": "No cookies.",
+    "lhChecked": "Lighthouse is measured daily against this site: see",
+    "lhReports": "the reports",
+    "lhVerify": "or verify it yourself in",
+    "skip": "Skip to Content",
+    "homeAria": "Hägvall Labs, Home"
+  },
+  "home": {
+    "heroKicker": "Custom Integrations and Reverse Engineering",
+    "heroTitle": "Automation for Systems Without Off‑the‑Shelf Integrations.",
+    "heroBody": "I connect legacy business systems, closed customer portals and modern tools, and automate steps that are still done by hand. I use AI where emails and documents need interpreting.",
+    "ctaPrimary": "Tell Me About Your Systems",
+    "ctaSecondary": "See an Example Workflow",
+    "exampleTitle": "From Customer Portal to Business Software.",
+    "exampleBody": "Delivery status in a portal. The paperwork in a PDF. The same details need to be entered into your business software.",
+    "exampleLabel": "Illustrative Workflow",
+    "exampleSteps": [
+      {
+        "title": "Collect",
+        "body": "Read status and documents from the customer portal."
+      },
+      {
+        "title": "Check",
+        "body": "Interpret the input and validate the details."
+      },
+      {
+        "title": "Approve",
+        "body": "Have an employee review exceptions."
+      },
+      {
+        "title": "Update",
+        "body": "Transfer approved details and log the change."
+      }
+    ],
+    "exampleNote": "The feasibility study shows what your systems can support.",
+    "pilotTitle": "Start With a Technical Feasibility Study.",
+    "pilotIntro": "The first call is free. You then decide whether to commission a paid technical feasibility study.",
+    "pilotSteps": [
+      {
+        "title": "Investigate",
+        "body": "I assess access, feasibility and maintenance needs."
+      },
+      {
+        "title": "Test",
+        "body": "Once you approve a separate quote, I build and test a focused pilot with clear scope, pricing and measurable goals."
+      },
+      {
+        "title": "Go Live",
+        "body": "After evaluating the pilot, you decide whether to put the solution into operation with an agreed maintenance plan."
+      }
+    ],
+    "productBody": "I also build Maskera, which masks personal data before AI calls.",
+    "productLink": "Read About Maskera",
+    "aboutTitle": "You Work Directly With Me.",
+    "aboutP1": "I’m Joel Hägvall. I take the first call, carry out the feasibility study and build the integration.",
+    "aboutMore": "More About Me and My Approach",
+    "aboutRole": "Founder and Developer",
+    "aboutCta": "Tell Me About Your Systems",
+    "methodTitle": "Reverse Engineering Where Needed.",
+    "methodBody": "When documentation falls short, I analyze a system’s interfaces and communication and build custom connections. All work stays within agreed and permitted access."
+  },
+  "meta": {
+    "home": {
+      "title": "Legacy and Closed System Automation | Hägvall Labs",
+      "description": "Custom integrations, reverse engineering and AI for legacy business systems and closed portals. Work with Joel Hägvall from feasibility study to pilot.",
+      "ogTitle": "Automation for Systems Without Off-the-Shelf Integrations",
+      "ogDescription": "I connect legacy software, closed customer portals and modern tools. Start with a technical feasibility study."
+    },
+    "contact": {
+      "title": "Contact Joel Hägvall | Hägvall Labs",
+      "description": "Which systems do you want to connect? Contact Joel Hägvall about custom integrations, reverse engineering and a technical feasibility study.",
+      "ogTitle": "Which Systems Do You Want to Connect?",
+      "ogDescription": "Tell me what you do by hand. A free first call, followed by a separate proposal for a paid technical feasibility study.",
+      "schemaName": "Contact Hägvall Labs"
+    },
+    "about": {
+      "title": "Why I Started Hägvall Labs",
+      "description": "Joel Hägvall on removing manual work between legacy and closed systems with custom integrations, reverse engineering and AI.",
+      "ogTitle": "Why I Started Hägvall Labs",
+      "ogDescription": "When the connection is missing, a person becomes the integration. I investigate systems and remove manual steps.",
+      "schemaName": "About Hägvall Labs"
+    },
+    "socialTagline": "Automation for legacy and closed systems",
+    "socialAlt": "Hägvall Labs: automation for legacy and closed systems",
+    "organization": "Hägvall Labs builds automation for legacy and closed business systems through custom integrations, reverse engineering and AI. Projects begin with a technical feasibility study."
+  }
+}
