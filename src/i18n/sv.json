@@ -1,4 +1,12 @@
 {
+  "maskPreview": {
+    "example": "Exempel",
+    "freeText": "Fri text",
+    "structured": "Strukturerade uppgifter",
+    "view": "Visa text",
+    "original": "Original",
+    "masked": "Maskerat"
+  },
   "about": {
     "title": "Därför startade jag Hägvall Labs",
     "intro": "Jag är utvecklare, och det som stör mig mest är sällan koden. Det är allt runt den: folk som kopierar data mellan system för hand, väntar på en fil från någon annan och dubbelkollar saker som ett skript hade kunnat kolla.",

@@ -1,4 +1,12 @@
 {
+  "maskPreview": {
+    "example": "Swedish example",
+    "freeText": "Free Text",
+    "structured": "Structured Data",
+    "view": "Text view",
+    "original": "Original",
+    "masked": "Masked"
+  },
   "about": {
     "title": "Why I Started Hägvall Labs",
     "intro": "I’m a developer, and what bugs me most is rarely the code. It’s everything around it: people copying data between systems by hand, waiting on a file from someone else, double-checking things a script could check.",

@@ -81,6 +81,9 @@ for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "integritet:/integri
     case " $* " in *" $name "*) ;; *) continue ;; esac
   fi
   echo "== $path"
+  if [[ $name == maskera || $name == enmaskera ]]; then
+    BASE="$BASE" bun scripts/check-mask-preview.ts "$path" || FAIL=1
+  fi
   lighthouse_ok=true
   for run in $(seq 1 "$LH_RUNS"); do
     if ! run_lighthouse "$S/lh-$name-$run.json" "$S/lh-$name-$run.err" \

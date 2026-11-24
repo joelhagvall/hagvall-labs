@@ -1,4 +1,7 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
+import { SegmentedControl, SegmentedControlItem } from '@ui-sdk/react/segmented-control'
+import { Tabs, TabsList, TabsPanel, TabsTab } from '@ui-sdk/react/tabs'
+import { copy as translations } from '../i18n'
 import { Link } from '@tanstack/react-router'
 import { maskeraLinks, pagePaths } from '../seo'
 import type { Lang } from '../seo'
@@ -20,14 +23,8 @@ import {
   sheet,
 } from './ui'
 
-/* The masking preview, ported one-to-one from maskera-cloud
-   (apps/web/src/lib/labels.ts + the HeroMaskPreview in routes/index.tsx):
-   one hue per PII type, tinted highlights in the source text and placeholder
-   pills that settle in with a staggered rise. Colour is reinforcement, never
-   identity: every pill also carries its label as text.
-   Duplicated in both page components on purpose: a shared module would be
-   split into its own chunk, and an extra request near the LCP paint costs a
-   simulated round-trip in Lighthouse's lantern model. */
+/* The preview uses Maskera’s token colours and placeholders. Each pill
+   carries its label in text as well as colour. */
 
 type LabelMeta = { sv: string; light: string }
 
@@ -75,125 +72,100 @@ const tokenClass = `rounded-sm border px-[5px] font-mono text-[0.92em] whitespac
 const highlightClass =
   'rounded-xs bg-(--pill)/16 pill-underline'
 
-// The preview sentence, one segment per run of text. Labelled segments
-// render highlighted in the before-row and as placeholder pills in the
-// after-row, with the exact recipes from maskera-cloud so the card shows
-// what a real response looks like.
-const PREVIEW_SEGMENTS: Array<{ text: string; label?: string }> = [
-  { text: 'Anna Lindqvist', label: 'NAMN' },
-  { text: ' (' },
-  // Intentionally invalid Luhn checksum, so this cannot be a real personnummer.
-  { text: '900101-0000', label: 'PERSONNUMMER' },
-  { text: ') på ' },
-  { text: 'Verkstadsgatan 12', label: 'ADRESS' },
-  { text: ' i ' },
-  { text: 'Malmö', label: 'PLATS' },
-  { text: ' undrar om sin faktura.' },
-]
+type PreviewSegment = { text: string; label?: string }
 
-function MaskPreview({
-  before,
-  after,
-  note,
-}: {
-  before: string
-  after: string
-  note?: string
-}) {
+// Both locales demonstrate Swedish source data. The same segments drive each
+// pair of views, so masking only replaces the labelled parts of the sample.
+const examples = {
+  freeText: [
+    { text: 'Anna Lindqvist', label: 'NAMN' },
+    { text: ' på ' },
+    { text: 'Verkstadsgatan 12', label: 'ADRESS' },
+    { text: ' i ' },
+    { text: 'Malmö', label: 'PLATS' },
+    { text: ' undrar om sin faktura.' },
+  ],
+  structured: [
+    { text: 'E-post: ' },
+    { text: 'anna@example.com', label: 'EPOST' },
+    { text: '\nIP-adress: ' },
+    { text: '192.0.2.42', label: 'IP_ADRESS' },
+  ],
+} satisfies Record<string, PreviewSegment[]>
+
+const views = ['original', 'masked'] as const
+
+function MaskPreview({ lang }: { lang: Lang }) {
+  const t = translations[lang].maskPreview
+  const [example, setExample] = useState<keyof typeof examples>('freeText')
   const ref = useRef<HTMLDivElement>(null)
-  // idle: SSR/first paint, pills statically visible (also the no-JS state).
-  // pending: JS confirmed the card is below the fold, pills hidden until it
-  // scrolls into view. inView: run the staggered pill entrance. This way the
-  // animation always plays when someone is actually looking at the card.
-  const [state, setState] = useState<'idle' | 'pending' | 'inView'>('idle')
+  const [inView, setInView] = useState(false)
 
   useEffect(() => {
-    const el = ref.current
-    if (!el || !('IntersectionObserver' in window)) {
-      setState('inView')
-      return
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setState('inView')
-          observer.disconnect()
-        } else {
-          setState('pending')
-        }
-      },
-      { threshold: 0.25 },
-    )
-    observer.observe(el)
+    if (!ref.current || !('IntersectionObserver' in window)) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setInView(true)
+        observer.disconnect()
+      }
+    }, { threshold: 0.25 })
+    observer.observe(ref.current)
     return () => observer.disconnect()
   }, [])
 
-  const pillState =
-    state === 'inView' ? 'mask-in' : state === 'pending' ? 'opacity-0' : ''
-
   return (
-    /* text-ink: the card can sit on the cobalt band (Maskera hero), where
-       the inherited color is white; uncolored runs in the preview text must
-       stay ink on the white card. */
-    <div ref={ref} className="rounded-xl border border-neutral-200 bg-white p-5 text-ink">
-      <p className="flex items-baseline justify-between gap-3 text-xs font-medium text-neutral-500">
-        <span>{before}</span>
-        {note ? (
-          <span className="font-normal text-neutral-600">{note}</span>
-        ) : null}
-      </p>
-      <p className="mt-2 text-sm leading-7">
-        {PREVIEW_SEGMENTS.map((segment, index) =>
-          segment.label ? (
-            <span
-              // Static list, index is the identity.
-              key={`${index}-${segment.text}`}
-              style={pillVars(segment.label)}
-              className={highlightClass}
+    <div ref={ref} className="on-white min-w-0 rounded-xl border border-neutral-200 bg-white p-5 text-ink">
+      <div className="mask-demo-control mb-5">
+        <p id="mask-example-label" className="mb-2 text-sm font-medium">{t.example}</p>
+        <SegmentedControl<keyof typeof examples>
+          aria-labelledby="mask-example-label"
+          value={example}
+          onValueChange={value => { if (value !== null) setExample(value) }}
+          className="grid grid-cols-[2fr_3fr] gap-1 rounded-lg border border-neutral-200 p-1"
+        >
+          {(['freeText', 'structured'] as const).map(key => (
+            <SegmentedControlItem
+              key={key}
+              value={key}
+              className="min-h-11 cursor-pointer rounded-md px-2 py-1 text-sm font-medium leading-tight text-neutral-700 hover:bg-neutral-100 aria-checked:bg-cobalt aria-checked:text-white aria-checked:hover:bg-cobalt-deep"
             >
-              {segment.text}
-            </span>
-          ) : (
-            <Fragment key={`${index}-${segment.text}`}>{segment.text}</Fragment>
-          ),
-        )}
-      </p>
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="my-3 size-4 text-neutral-400"
-      >
-        <path d="M12 4v16m0 0-5-5m5 5 5-5" />
-      </svg>
-      <p className="text-xs font-medium text-neutral-500">{after}</p>
-      <p className="mt-2 text-sm leading-7">
-        {PREVIEW_SEGMENTS.map((segment, index) =>
-          segment.label ? (
-            <span
-              key={`${index}-${segment.text}`}
-              style={{
-                ...pillVars(segment.label),
-                // Staggered by position so the pills land left to right.
-                animationDelay: `${0.15 + index * 0.08}s`,
-              }}
-              // inline-block is what lets mask-in translate the pill, but it
-              // also makes the box wrap a line box: leading-snug approximates
-              // the font box an inline token gets, so the pills do not grow
-              // into tall blocks.
-              className={`${tokenClass} inline-block leading-snug ${pillState}`}
-            >
-              [{segment.label}_1]
-            </span>
-          ) : (
-            <Fragment key={`${index}-${segment.text}`}>{segment.text}</Fragment>
-          ),
-        )}
-      </p>
+              {t[key]}
+            </SegmentedControlItem>
+          ))}
+        </SegmentedControl>
+      </div>
+      <Tabs defaultValue="masked">
+        <TabsList aria-label={t.view} className="mask-demo-control inline-flex rounded-lg bg-neutral-100 p-1">
+          {views.map(view => (
+            <TabsTab key={view} value={view} className="rounded-md px-3 py-2 text-sm font-medium hover:text-cobalt aria-selected:bg-white aria-selected:text-cobalt aria-selected:shadow-flat-sm">
+              {t[view]}
+            </TabsTab>
+          ))}
+        </TabsList>
+        {views.map(view => (
+          <TabsPanel key={view} value={view} keepMounted className="mt-4">
+            <noscript><strong>{t[view]}</strong></noscript>
+            <p lang="sv" className="min-h-24 whitespace-pre-line text-base leading-8">
+              {examples[example].map(({ text, label }, index) => {
+                if (!label) return <Fragment key={index}>{text}</Fragment>
+                if (view === 'original') {
+                  return <span key={index} style={pillVars(label)} className={highlightClass}>{text}</span>
+                }
+                return (
+                  <span
+                    key={label}
+                    translate="no"
+                    style={{ ...pillVars(label), animationDelay: `${index * 0.05}s` }}
+                    className={`${tokenClass} inline-block leading-snug ${inView ? 'mask-in' : ''}`}
+                  >
+                    [{label}_1]
+                  </span>
+                )
+              })}
+            </p>
+          </TabsPanel>
+        ))}
+      </Tabs>
     </div>
   )
 }
@@ -320,8 +292,6 @@ const copy = {
     ctaVisit: 'Besök maskera.dev',
     ctaDemo: 'Hör av dig',
     previewBefore: 'Er text',
-    previewAfter: 'Det AI-modellen ser',
-    previewNote: '',
     fitTitle: 'Där Maskera passar in',
     useCases: [
       {
@@ -406,8 +376,6 @@ const copy = {
     ctaVisit: 'Visit maskera.dev',
     ctaDemo: 'Get in Touch',
     previewBefore: 'Your text',
-    previewAfter: 'What the AI model sees',
-    previewNote: 'Example in Swedish',
     fitTitle: 'Where Maskera Fits',
     useCases: [
       {
@@ -535,11 +503,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
               </Link>
             </div>
           </div>
-          <MaskPreview
-            before={t.previewBefore}
-            after={t.previewAfter}
-            note={t.previewNote}
-          />
+          <MaskPreview lang={lang} />
         </div>
       </section>
 

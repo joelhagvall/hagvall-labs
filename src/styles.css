@@ -154,3 +154,16 @@ textarea {
     animation: menu-in 0.16s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
+
+/* The prerendered demo remains a readable comparison without JavaScript. */
+@media (scripting: none) {
+  .mask-demo-control {
+    display: none;
+  }
+  @layer base {
+    /* Tailwind Preflight hides [hidden] with !important in the base layer. */
+    .mask-demo-control ~ [role="tabpanel"][hidden] {
+      display: block !important;
+    }
+  }
+}
