@@ -74,7 +74,7 @@ elif [ "$BI" -ge 500 ];  then CPU=2
 else CPU=1; fi
 echo "benchmarkIndex $BI -> cpuSlowdownMultiplier $CPU"
 
-for entry in "home:/" "maskera:/maskera" "kontakt:/kontakt" "integritet:/integritet" "om:/om" "en:/en" "enmaskera:/en/maskera" "encontact:/en/contact" "enprivacy:/en/privacy" "enabout:/en/about"; do
+for entry in "home:/" "maskera:/maskera" "projekt:/projekt" "kontakt:/kontakt" "integritet:/integritet" "om:/om" "en:/en" "enmaskera:/en/maskera" "enprojects:/en/projects" "encontact:/en/contact" "enprivacy:/en/privacy" "enabout:/en/about"; do
   name="${entry%%:*}"
   path="${entry#*:}"
   if [ $# -gt 0 ]; then

@@ -9,6 +9,7 @@ import {
   heroBand,
   heroBodyOnCobalt,
   heroTitle,
+  linkCobalt,
   linkInk,
   itemTitle,
   itemBody,
@@ -17,23 +18,6 @@ import {
 } from './ui'
 
 const automatePostUrl = 'https://joelhagvall.com/blog/automate-everything'
-const portfolioUrl = 'https://joelhagvall.com/projects'
-
-// Personal projects that demonstrate integrations and simpler workflows.
-// Full write-ups live in the portfolio; these are not client case studies.
-// The name links to a live demo where one exists, else to the source; a
-// project with a demo also gets a quieter source link.
-const projects = [
-  {
-    key: 'jarvisPanel',
-    url: 'https://github.com/joelhagvall/jarvis-panel',
-  },
-  {
-    key: 'dataWipe',
-    url: 'https://data-wipe-mailer.vercel.app/',
-    source: 'https://github.com/joelhagvall/data-wipe-mailer',
-  },
-] as const
 
 const copy = { sv: translations.sv.about, en: translations.en.about }
 
@@ -100,56 +84,11 @@ export function AboutPage({ lang }: { lang: Lang }) {
 
           <h2 className={`mt-16 ${sectionTitleSm}`}>{t.projectsTitle}</h2>
           <p className={itemBody}>{t.projectsIntro}</p>
-          {/* role="list": Safari drops list semantics under list-style: none. */}
-          <ul role="list" className="mt-6 space-y-6">
-            {projects.map((project) => (
-              <li key={project.key}>
-                <a
-                  href={project.url}
-                  {...externalLinkProps}
-                  translate="no"
-                  className={`group text-lg font-semibold tracking-tight ${linkInk}`}
-                >
-                  {t.projects[project.key].name}
-                  <span
-                    aria-hidden="true"
-                    className={`ml-1 inline-block ${btnArrow}`}
-                  >
-                    ↗
-                  </span>
-                </a>
-                <p className="mt-1 text-pretty leading-relaxed text-neutral-600">
-                  {t.projects[project.key].body}
-                </p>
-                {'source' in project && (
-                  <a
-                    href={project.source}
-                    {...externalLinkProps}
-                    className={`group mt-2 inline-block text-sm text-neutral-600 ${linkInk}`}
-                  >
-                    {t.source}
-                    <span
-                      aria-hidden="true"
-                      className={`ml-1 inline-block ${btnArrow}`}
-                    >
-                      ↗
-                    </span>
-                  </a>
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <a
-            href={portfolioUrl}
-            {...externalLinkProps}
-            className={`group mt-6 inline-block ${linkInk}`}
-          >
-            {t.projectsMore}
-            <span aria-hidden="true" className={`ml-1 inline-block ${btnArrow}`}>
-              ↗
-            </span>
-          </a>
+          <p className="mt-4 leading-relaxed">
+            <Link to={pagePaths.projects[lang]} className={linkCobalt}>
+              {t.projectsCta}
+            </Link>
+          </p>
 
           <p className="mt-16 text-pretty text-lg leading-relaxed text-neutral-700">
             {t.closing}

@@ -61,4 +61,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://hagvall-labs.com/en/about"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://hagvall-labs.com/om"/>
   </url>
+  <url>
+    <loc>https://hagvall-labs.com/projekt</loc>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://hagvall-labs.com/projekt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://hagvall-labs.com/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://hagvall-labs.com/projekt"/>
+  </url>
+  <url>
+    <loc>https://hagvall-labs.com/en/projects</loc>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://hagvall-labs.com/projekt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://hagvall-labs.com/en/projects"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://hagvall-labs.com/projekt"/>
+  </url>
 </urlset>

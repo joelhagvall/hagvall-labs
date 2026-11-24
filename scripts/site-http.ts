@@ -148,6 +148,7 @@ export function markHtmlPage(headers: Headers, site: string, pathname: string) {
 // the RFC 9116 legacy location for the real file under /.well-known/.
 const aliases: Record<string, string> = {
   '/about': '/en/about',
+  '/projects': '/en/projects',
   '/contact': '/en/contact',
   '/privacy': '/en/privacy',
   '/security.txt': '/.well-known/security.txt',

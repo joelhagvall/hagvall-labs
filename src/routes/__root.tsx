@@ -401,6 +401,13 @@ function ProductsMenu({ lang, tone }: { lang: Lang; tone: HeaderTone }) {
           </Link>
           <div className="mt-1 border-t border-neutral-200 pt-1 sm:hidden">
             <Link
+              to={pagePaths.projects[lang]}
+              onClick={close}
+              className={itemClass}
+            >
+              {t.projects}
+            </Link>
+            <Link
               to={pagePaths.home[lang]}
               hash="services"
               onClick={close}
@@ -487,6 +494,12 @@ function RootLayout() {
           >
             <ProductsMenu lang={lang} tone={tone} />
             <Link
+              to={pagePaths.projects[lang]}
+              className={`hidden transition-colors sm:block ${tone.hover}`}
+            >
+              {t.projects}
+            </Link>
+            <Link
               to={pagePaths.home[lang]}
               hash="services"
               className={`hidden transition-colors sm:block ${tone.hover}`}
@@ -550,6 +563,13 @@ function RootLayout() {
           </div>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             <Link
+              to={pagePaths.projects[lang]}
+              preload="viewport"
+              className="transition-colors hover:text-ink"
+            >
+              {t.projects}
+            </Link>
+            <Link
               to={pagePaths.about[lang]}
               preload="viewport"
               className="transition-colors hover:text-ink"
@@ -593,6 +613,7 @@ const notFoundCopy = {
     pages: {
       home: 'Startsidan',
       maskera: 'Maskera',
+      projects: 'Projekt',
       about: 'Om',
       contact: 'Kontakt',
       privacy: 'Integritet',
@@ -609,6 +630,7 @@ const notFoundCopy = {
     pages: {
       home: 'Home',
       maskera: 'Maskera',
+      projects: 'Projects',
       about: 'About',
       contact: 'Contact',
       privacy: 'Privacy',

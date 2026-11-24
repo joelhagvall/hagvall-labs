@@ -19,19 +19,8 @@
     "postBefore": "Jag har skrivit mer om hur jag tänker i ",
     "postAfter": " (på engelska).",
     "projectsTitle": "Utvalda projekt",
-    "projectsIntro": "Egna projekt som visar hur jag bygger integrationer och förenklar manuella steg.",
-    "projectsMore": "Se fler projekt på min portfolio",
-    "projects": {
-      "jarvisPanel": {
-        "name": "Jarvis Panel",
-        "body": "Min hemmapanel kopplar ihop tvättbokning, kalender och musik. Jag har byggt egna integrationer även där öppna API:er saknas."
-      },
-      "dataWipe": {
-        "name": "Data Wipe Mailer",
-        "body": "Jag byggde en webbapp som förbereder mejl med begäran om radering av personuppgifter. Du granskar, kompletterar och skickar dem i ditt mejlprogram."
-      }
-    },
-    "source": "Källkoden på GitHub",
+    "projectsIntro": "Jag har samlat egna byggen som visar hur jag gör API:er, MCP-kopplingar och integrationer mot äldre och slutna system.",
+    "projectsCta": "Se utvalda projekt",
     "closing": "Berätta vilka system ni använder och vad ni fortfarande behöver göra för hand.",
     "cta": "Berätta om era system",
     "methodItems": [
@@ -79,6 +68,7 @@
     "menu": "Meny",
     "products": "Produkter",
     "maskeraDesc": "Maskera personuppgifter i text",
+    "projects": "Projekt",
     "services": "Så jobbar jag",
     "contact": "Kontakt",
     "privacy": "Integritet",
@@ -144,7 +134,64 @@
     "aboutRole": "Grundare och utvecklare",
     "aboutCta": "Berätta om era system",
     "methodTitle": "Reverse engineering när det behövs.",
-    "methodBody": "När dokumentationen inte räcker analyserar jag systemens gränssnitt och kommunikation och bygger egna kopplingar. Allt sker inom överenskommen och tillåten åtkomst."
+    "methodBody": "När dokumentationen inte räcker analyserar jag systemens gränssnitt och kommunikation och bygger egna kopplingar. Allt sker inom överenskommen och tillåten åtkomst.",
+    "methodLink": "Se exempel på vad jag byggt"
+  },
+  "projects": {
+    "title": "Utvalda projekt",
+    "intro": "Egna byggen som visar hur jag bygger API:er, MCP-kopplingar och integrationer där färdiga lösningar saknas. Det här är mina egna projekt, inte kunduppdrag.",
+    "labels": {
+      "problem": "Utgångsläge",
+      "built": "Byggt",
+      "control": "Kontroll"
+    },
+    "items": {
+      "webForms": {
+        "name": "Äldre bokningsportal till API och MCP",
+        "problem": "Bokningsportalen i ASP.NET Web Forms saknar helt API och kräver flerstegsformulär i webbläsaren.",
+        "built": "Egen adapter och MCP-verktyg som hanterar inloggning, lediga pass, bokning och avbokning från chatt och skript.",
+        "control": "Kontrollerar bokningskvot och läser tillbaka listan efter varje ändring för att bekräfta resultatet.",
+        "imageAlt": "Skärmdump av en lokal Eneo-chatt som kollar lediga tvättider och bokar via ett eget MCP-verktyg ovanpå en ASP.NET Web Forms-portal.",
+        "imageCaption": "MCP-verktyget i aktion i Eneo: läser lediga pass, visar kvot och bokar direkt mot portalen."
+      },
+      "tillsynRadar": {
+        "name": "Tillsyn Radar",
+        "problem": "Skolinspektionen, IVO, Arbetsmiljöverket och IMY publicerar tillsynsbeslut på separata webbsidor och i PDF:er utan öppet API eller RSS.",
+        "built": "Automatisk insamling, allvarlighetsklassning, filtrerbart gränssnitt, larm och MCP-server.",
+        "control": "Deterministisk spärr som avvisar personuppgifter och personnummer före lagring.",
+        "imageAlt": "Skärmdump av Tillsyn Radar i syntetiskt demoläge med filtrering och normaliserade tillsynsbeslut från IVO och Skolinspektionen.",
+        "imageCaption": "Syntetisk demodata i Tillsyn Radar."
+      },
+      "regulatedMcp": {
+        "name": "MCP-kopplingar mot reglerade API:er och AI-plattformar",
+        "problem": "Vård-API:er, myndighetsdata och äldre portaler kan inte anropas direkt som verktyg i en AI-plattform.",
+        "built": "Read-only MCP-server mot Cambio Open Services (labbsvar för syntetiska testpatienter) samt MCP-adaptrar för svenska AI-plattformar som Eneo.",
+        "control": "Skilda läs- och skrivverktyg, maskinläsbara felkoder och offline-demo på syntetiska testdata.",
+        "imageAlt": "Skärmdump av en lokal Eneo-chatt som anropar Tillsyn Radar via MCP och presenterar ett syntetiskt tillsynsbeslut i tabellform med källänk.",
+        "imageCaption": "Eneo anropar MCP-verktyget i demoläge och returnerar strukturerat svar med beslutslänk."
+      },
+      "localInbox": {
+        "name": "Lokal dokumentinkorg med read-only MCP",
+        "problem": "Brev och kvitton ligger inlåsta i en sluten webbportal utan öppet API för egen sökning.",
+        "built": "Lokal, sökbar inkorg och read-only MCP-koppling så att en AI-assistent kan hitta rätt brev eller kvitto på datorn.",
+        "control": "Synkar först när användaren själv godkänner sessionen, utan lagrade lösenord eller molnuppladdning.",
+        "imageAlt": "Skärmdump av den lokala dokumentinkorgen i syntetiskt demoläge med sökfält, brev, kvitto och integritetsnotis.",
+        "imageCaption": "Syntetiskt demoläge i den lokala dokumentinkorgen."
+      },
+      "jarvisPanel": {
+        "name": "Jarvis Panel",
+        "problem": "Tvättbokning, kalender, kollektivtrafik och musik ligger i separata system, flera utan öppet API.",
+        "built": "Egen 7-tumspanel med ESPHome, röststyrning och lokala integrationer mot Home Assistant.",
+        "control": "Kör helt på eget lokalt nätverk med tydliga anrop mot varje underliggande integration.",
+        "imageAlt": "Skärmdump av Jarvis Panel med väder, kollektivtrafik, kalender och lokal röstassistent som lägger in en kalenderhändelse.",
+        "imageCaption": "Jarvis Panel med kalender, avgångar och lokal röststyrning."
+      }
+    },
+    "more": "Se fler projekt på min portfolio",
+    "zoomLabel": "Förstora skärmdump",
+    "close": "Stäng",
+    "closing": "Har ni ett system som saknar API eller färdig koppling? Berätta vad ni gör för hand i dag.",
+    "cta": "Berätta om era system"
   },
   "meta": {
     "home": {
@@ -166,6 +213,13 @@
       "ogTitle": "Därför startade jag Hägvall Labs",
       "ogDescription": "När kopplingen saknas blir en människa integrationen. Jag undersöker systemen och bygger bort manuella steg.",
       "schemaName": "Om Hägvall Labs"
+    },
+    "projects": {
+      "title": "Utvalda projekt | Hägvall Labs",
+      "description": "Egna byggen med API:er, MCP-kopplingar och reverse engineering mot äldre webbportaler, myndighetskällor och lokala system.",
+      "ogTitle": "Utvalda projekt",
+      "ogDescription": "Exempel på hur jag bygger API:er, MCP-kopplingar och integrationer där färdiga lösningar saknas.",
+      "schemaName": "Utvalda projekt, Hägvall Labs"
     },
     "socialTagline": "Automation av äldre och slutna system",
     "socialAlt": "Hägvall Labs: automation av äldre och slutna system",

@@ -8,6 +8,7 @@ import {
   brandOnCobalt,
   btnPrimary,
   btnPrimaryOnCobalt,
+  btnSecondary,
   btnSecondaryOnCobalt,
   container,
   externalLinkProps,
@@ -136,6 +137,12 @@ export function HomePage({ lang }: { lang: Lang }) {
             </p>
             <h3 className={`mt-8 ${itemTitle}`}>{t.methodTitle}</h3>
             <p className={itemBody}>{t.methodBody}</p>
+            <Link
+              to={pagePaths.projects[lang]}
+              className={`mt-6 ${btnSecondary}`}
+            >
+              {t.methodLink}
+            </Link>
           </div>
           <div className="rounded-3xl bg-neutral-50 p-6 sm:p-8">
             <h3 className="text-sm font-semibold text-neutral-600">

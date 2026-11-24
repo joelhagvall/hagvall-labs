@@ -38,6 +38,7 @@ export type Lang = 'sv' | 'en'
 export const pagePaths = {
   home: { sv: '/', en: '/en' },
   maskera: { sv: '/maskera', en: '/en/maskera' },
+  projects: { sv: '/projekt', en: '/en/projects' },
   contact: { sv: '/kontakt', en: '/en/contact' },
   privacy: { sv: '/integritet', en: '/en/privacy' },
   about: { sv: '/om', en: '/en/about' },
@@ -47,6 +48,9 @@ export type PageKey = keyof typeof pagePaths
 
 export function pageFromPath(pathname: string): PageKey {
   if (pathname.endsWith('/maskera')) return 'maskera'
+  if (pathname.endsWith('/projekt') || pathname.endsWith('/projects')) {
+    return 'projects'
+  }
   if (pathname.endsWith('/kontakt') || pathname.endsWith('/contact')) {
     return 'contact'
   }
@@ -219,5 +223,17 @@ export function aboutJsonLd(name: string, lang: Lang) {
     inLanguage: lang,
     about: { '@id': site + '/#organization' },
     mainEntity: { '@id': site + '/#founder' },
+  }
+}
+
+export function projectsJsonLd(name: string, lang: Lang) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    url: site + pagePaths.projects[lang],
+    inLanguage: lang,
+    about: { '@id': site + '/#organization' },
+    author: { '@id': site + '/#founder' },
   }
 }

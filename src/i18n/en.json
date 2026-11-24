@@ -19,19 +19,8 @@
     "postBefore": "I wrote more about how I think about this in ",
     "postAfter": ".",
     "projectsTitle": "Selected Projects",
-    "projectsIntro": "Personal projects showing how I build integrations and simplify manual steps.",
-    "projectsMore": "See More Projects on My Portfolio",
-    "projects": {
-      "jarvisPanel": {
-        "name": "Jarvis Panel",
-        "body": "My home panel connects laundry booking, calendar and music. I built custom integrations, including where no open APIs are available."
-      },
-      "dataWipe": {
-        "name": "Data Wipe Mailer",
-        "body": "I built a web app that prepares emails requesting deletion of personal data. You review, complete and send them in your email app."
-      }
-    },
-    "source": "Source on GitHub",
+    "projectsIntro": "I’ve collected personal builds showing how I create APIs, MCP connectors and integrations for legacy and closed systems.",
+    "projectsCta": "See Selected Projects",
     "closing": "Tell me which systems you use and what you still need to do by hand.",
     "cta": "Tell Me About Your Systems",
     "methodItems": [
@@ -79,6 +68,7 @@
     "menu": "Menu",
     "products": "Products",
     "maskeraDesc": "Mask personal data in text",
+    "projects": "Projects",
     "services": "How I Work",
     "contact": "Contact",
     "privacy": "Privacy",
@@ -144,7 +134,64 @@
     "aboutRole": "Founder and Developer",
     "aboutCta": "Tell Me About Your Systems",
     "methodTitle": "Reverse Engineering Where Needed.",
-    "methodBody": "When documentation falls short, I analyze a system’s interfaces and communication and build custom connections. All work stays within agreed and permitted access."
+    "methodBody": "When documentation falls short, I analyze a system’s interfaces and communication and build custom connections. All work stays within agreed and permitted access.",
+    "methodLink": "See Examples of What I’ve Built"
+  },
+  "projects": {
+    "title": "Selected Projects",
+    "intro": "Personal builds showing how I create APIs, MCP connectors and integrations where ready-made options are missing. These are my own projects, not client engagements.",
+    "labels": {
+      "problem": "Starting point",
+      "built": "Built",
+      "control": "Safeguards"
+    },
+    "items": {
+      "webForms": {
+        "name": "Legacy Booking Portal to API and MCP",
+        "problem": "The ASP.NET Web Forms booking portal has no API and requires multi-step form clicks in a browser.",
+        "built": "A custom adapter and MCP toolset covering login, slot lookup, booking and cancellation from chat or scripts.",
+        "control": "Checks booking quota and re-reads the list after every change to confirm the result.",
+        "imageAlt": "Screenshot of a local Eneo chat checking available laundry slots and booking through a custom MCP tool built on top of an ASP.NET Web Forms portal.",
+        "imageCaption": "The MCP tool running in Eneo (Swedish UI): checking availability, quota and booking directly against the portal."
+      },
+      "tillsynRadar": {
+        "name": "Tillsyn Radar",
+        "problem": "Skolinspektionen, IVO, Arbetsmiljöverket and IMY publish supervisory decisions across separate web pages and PDFs with no open API or RSS.",
+        "built": "Automated collection, severity classification, filterable UI, alerts and an MCP server.",
+        "control": "A deterministic gate rejects personal data and Swedish personal ID numbers before storage.",
+        "imageAlt": "Screenshot of Tillsyn Radar in synthetic demo mode showing filters and normalized supervisory decisions from IVO and Skolinspektionen.",
+        "imageCaption": "Synthetic demo data in Tillsyn Radar."
+      },
+      "regulatedMcp": {
+        "name": "MCP Connectors for Regulated APIs and AI Platforms",
+        "problem": "Healthcare APIs, authority feeds and legacy portals cannot be called directly as tools inside an AI platform.",
+        "built": "A read-only MCP server for Cambio Open Services (lab results for synthetic test patients) and adapters for Swedish AI platforms such as Eneo.",
+        "control": "Separate read and write tools, machine-readable error states and an offline demo on synthetic test data.",
+        "imageAlt": "Screenshot of a local Eneo chat calling Tillsyn Radar over MCP and rendering a synthetic supervisory decision table with a source link.",
+        "imageCaption": "Eneo calling the MCP tool in demo mode (Swedish UI) and returning a structured answer with a source link."
+      },
+      "localInbox": {
+        "name": "Local Document Inbox With Read-Only MCP",
+        "problem": "Letters and receipts sit inside a closed web portal with no open API for personal search.",
+        "built": "A local, searchable inbox and read-only MCP connector so an AI assistant can find the right letter or receipt on the user’s machine.",
+        "control": "Syncs only when the user approves the session directly, with no stored passwords or cloud upload.",
+        "imageAlt": "Screenshot of the local document inbox in synthetic demo mode showing search, sample letter, sample receipt and privacy notice.",
+        "imageCaption": "Synthetic demo mode in the local document inbox (Swedish UI)."
+      },
+      "jarvisPanel": {
+        "name": "Jarvis Panel",
+        "problem": "Laundry booking, calendar, public transit and music live in separate tools, several without an open API.",
+        "built": "A 7-inch ESPHome touchscreen panel with voice control and custom local integrations in Home Assistant.",
+        "control": "Runs on the local network with explicit calls to each underlying integration.",
+        "imageAlt": "Screenshot of Jarvis Panel showing weather, public transit departures, calendar and a local voice assistant adding an event.",
+        "imageCaption": "Jarvis Panel showing calendar, transit departures and local voice control."
+      }
+    },
+    "more": "See More Projects on My Portfolio",
+    "zoomLabel": "Enlarge screenshot",
+    "close": "Close",
+    "closing": "Working with a system that lacks an API or off-the-shelf connector? Tell me what you still do by hand.",
+    "cta": "Tell Me About Your Systems"
   },
   "meta": {
     "home": {
@@ -166,6 +213,13 @@
       "ogTitle": "Why I Started Hägvall Labs",
       "ogDescription": "When the connection is missing, a person becomes the integration. I investigate systems and remove manual steps.",
       "schemaName": "About Hägvall Labs"
+    },
+    "projects": {
+      "title": "Selected Projects | Hägvall Labs",
+      "description": "Personal builds showing custom APIs, MCP connectors and reverse engineering across legacy web portals, authority feeds and local systems.",
+      "ogTitle": "Selected Projects",
+      "ogDescription": "Examples of how I build APIs, MCP connectors and integrations where off-the-shelf options are missing.",
+      "schemaName": "Selected Projects, Hägvall Labs"
     },
     "socialTagline": "Automation for legacy and closed systems",
     "socialAlt": "Hägvall Labs: automation for legacy and closed systems",

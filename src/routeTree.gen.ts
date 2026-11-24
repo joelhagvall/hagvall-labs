@@ -14,11 +14,13 @@ import { Route as IntegritetRouteImport } from './routes/integritet'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as MaskeraRouteImport } from './routes/maskera'
 import { Route as OmRouteImport } from './routes/om'
+import { Route as ProjektRouteImport } from './routes/projekt'
 import { Route as EnIndexRouteImport } from './routes/en/index'
 import { Route as EnAboutRouteImport } from './routes/en/about'
 import { Route as EnContactRouteImport } from './routes/en/contact'
 import { Route as EnMaskeraRouteImport } from './routes/en/maskera'
 import { Route as EnPrivacyRouteImport } from './routes/en/privacy'
+import { Route as EnProjectsRouteImport } from './routes/en/projects'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -43,6 +45,11 @@ const MaskeraRoute = MaskeraRouteImport.update({
 const OmRoute = OmRouteImport.update({
   id: '/om',
   path: '/om',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjektRoute = ProjektRouteImport.update({
+  id: '/projekt',
+  path: '/projekt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EnIndexRoute = EnIndexRouteImport.update({
@@ -70,6 +77,11 @@ const EnPrivacyRoute = EnPrivacyRouteImport.update({
   path: '/en/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EnProjectsRoute = EnProjectsRouteImport.update({
+  id: '/en/projects',
+  path: '/en/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,10 +89,12 @@ export interface FileRoutesByFullPath {
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
   '/om': typeof OmRoute
+  '/projekt': typeof ProjektRoute
   '/en/about': typeof EnAboutRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/privacy': typeof EnPrivacyRoute
+  '/en/projects': typeof EnProjectsRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRoutesByTo {
@@ -89,10 +103,12 @@ export interface FileRoutesByTo {
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
   '/om': typeof OmRoute
+  '/projekt': typeof ProjektRoute
   '/en/about': typeof EnAboutRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/privacy': typeof EnPrivacyRoute
+  '/en/projects': typeof EnProjectsRoute
   '/en': typeof EnIndexRoute
 }
 export interface FileRoutesById {
@@ -102,10 +118,12 @@ export interface FileRoutesById {
   '/kontakt': typeof KontaktRoute
   '/maskera': typeof MaskeraRoute
   '/om': typeof OmRoute
+  '/projekt': typeof ProjektRoute
   '/en/about': typeof EnAboutRoute
   '/en/contact': typeof EnContactRoute
   '/en/maskera': typeof EnMaskeraRoute
   '/en/privacy': typeof EnPrivacyRoute
+  '/en/projects': typeof EnProjectsRoute
   '/en/': typeof EnIndexRoute
 }
 export interface FileRouteTypes {
@@ -116,10 +134,12 @@ export interface FileRouteTypes {
     | '/kontakt'
     | '/maskera'
     | '/om'
+    | '/projekt'
     | '/en/about'
     | '/en/contact'
     | '/en/maskera'
     | '/en/privacy'
+    | '/en/projects'
     | '/en/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,10 +148,12 @@ export interface FileRouteTypes {
     | '/kontakt'
     | '/maskera'
     | '/om'
+    | '/projekt'
     | '/en/about'
     | '/en/contact'
     | '/en/maskera'
     | '/en/privacy'
+    | '/en/projects'
     | '/en'
   id:
     | '__root__'
@@ -140,10 +162,12 @@ export interface FileRouteTypes {
     | '/kontakt'
     | '/maskera'
     | '/om'
+    | '/projekt'
     | '/en/about'
     | '/en/contact'
     | '/en/maskera'
     | '/en/privacy'
+    | '/en/projects'
     | '/en/'
   fileRoutesById: FileRoutesById
 }
@@ -153,10 +177,12 @@ export interface RootRouteChildren {
   KontaktRoute: typeof KontaktRoute
   MaskeraRoute: typeof MaskeraRoute
   OmRoute: typeof OmRoute
+  ProjektRoute: typeof ProjektRoute
   EnAboutRoute: typeof EnAboutRoute
   EnContactRoute: typeof EnContactRoute
   EnMaskeraRoute: typeof EnMaskeraRoute
   EnPrivacyRoute: typeof EnPrivacyRoute
+  EnProjectsRoute: typeof EnProjectsRoute
   EnIndexRoute: typeof EnIndexRoute
 }
 
@@ -197,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projekt': {
+      id: '/projekt'
+      path: '/projekt'
+      fullPath: '/projekt'
+      preLoaderRoute: typeof ProjektRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/en/': {
       id: '/en/'
       path: '/en'
@@ -232,6 +265,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/en/projects': {
+      id: '/en/projects'
+      path: '/en/projects'
+      fullPath: '/en/projects'
+      preLoaderRoute: typeof EnProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -241,10 +281,12 @@ const rootRouteChildren: RootRouteChildren = {
   KontaktRoute: KontaktRoute,
   MaskeraRoute: MaskeraRoute,
   OmRoute: OmRoute,
+  ProjektRoute: ProjektRoute,
   EnAboutRoute: EnAboutRoute,
   EnContactRoute: EnContactRoute,
   EnMaskeraRoute: EnMaskeraRoute,
   EnPrivacyRoute: EnPrivacyRoute,
+  EnProjectsRoute: EnProjectsRoute,
   EnIndexRoute: EnIndexRoute,
 }
 export const routeTree = rootRouteImport
