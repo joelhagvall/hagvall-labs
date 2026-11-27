@@ -26,9 +26,16 @@ export const maskeraLinks = {
   huggingFace: 'https://huggingface.co/joelhagvall/maskera-sv-ner',
 }
 
+// The product site in each page language: home and the plan comparison.
+export const maskeraSite = {
+  home: { sv: 'https://maskera.dev', en: 'https://maskera.dev/en' },
+  services: { sv: 'https://maskera.dev/tjanster', en: 'https://maskera.dev/en/services' },
+}
+
 // Published version of the maskera npm package, used in the
-// SoftwareApplication JSON-LD. Bump when a new version is published.
-export const maskeraVersion = '0.10.2'
+// SoftwareApplication JSON-LD. CI fails when npm has a newer one
+// (scripts/check-maskera-version.ts), so bump it then.
+export const maskeraVersion = '0.11.1'
 
 export type Lang = 'sv' | 'en'
 
@@ -168,7 +175,8 @@ export function homeJsonLd() {
 }
 
 export function maskeraJsonLd(description: string) {
-  const appId = 'https://maskera.dev/#software'
+  // The same node maskera.dev declares, so the two sites describe one entity.
+  const appId = 'https://maskera.dev/#app'
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -178,7 +186,7 @@ export function maskeraJsonLd(description: string) {
         name: 'Maskera',
         applicationCategory: 'SecurityApplication',
         url: 'https://maskera.dev',
-        operatingSystem: 'Self-hosted (Linux, Docker)',
+        operatingSystem: 'Chrome, Edge, Firefox, Node.js',
         softwareVersion: maskeraVersion,
         license: 'https://opensource.org/license/mit/',
         downloadUrl: maskeraLinks.npm,

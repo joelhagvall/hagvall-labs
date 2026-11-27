@@ -126,7 +126,7 @@
         "body": "När piloten är utvärderad bestämmer ni om lösningen ska tas i drift med avtalad förvaltning."
       }
     ],
-    "productBody": "Jag bygger också Maskera, som maskerar personuppgifter före AI-anrop.",
+    "productBody": "Jag bygger också Maskera, som maskerar personuppgifter innan de når AI, direkt i ChatGPT och Claude eller i egen kod.",
     "productLink": "Läs om Maskera",
     "aboutTitle": "Du arbetar direkt med mig.",
     "aboutP1": "Jag heter Joel Hägvall. Jag tar första samtalet, gör förstudien och bygger integrationen.",
@@ -199,6 +199,13 @@
       "description": "Egna integrationer, reverse engineering och AI för äldre verksamhetssystem och slutna portaler. Joel Hägvall hjälper er från teknisk förstudie till pilot.",
       "ogTitle": "Automation där färdiga integrationer saknas",
       "ogDescription": "Jag kopplar ihop äldre system, slutna kundportaler och moderna verktyg. Börja med en teknisk förstudie."
+    },
+    "maskera": {
+      "title": "Maskera personuppgifter före AI | Hägvall Labs",
+      "description": "Maskera hittar och maskerar namn, personnummer och adresser innan text når AI. Som tillägg för ChatGPT och Claude, för AI-agenter eller som npm-paket.",
+      "ogTitle": "Maskera personuppgifter före AI | Hägvall Labs",
+      "ogDescription": "Maskera personuppgifter före AI, direkt i ChatGPT och Claude eller i egen kod. Körs lokalt och är byggd i Sverige.",
+      "schemaDescription": "Maskera hittar och maskerar personuppgifter i text innan de når AI-system, loggar eller analysverktyg: som webbläsartillägg, för AI-agenter via lokal proxy och MCP eller som npm-paket. Maskeringen körs lokalt."
     },
     "contact": {
       "title": "Kontakta Joel Hägvall | Hägvall Labs",

@@ -1,0 +1,97 @@
+{
+  "heroTitle": "Mask Personal Data Before It Reaches Your AI.",
+  "heroBody": "Maskera finds and masks names, personal identity numbers, addresses and phone numbers in text before it reaches AI systems, logs or analytics tools. Built for Swedish text and Swedish personal data.",
+  "ctaVisit": "Visit maskera.dev",
+  "ctaDemo": "Get in Touch",
+  "productsTitle": "Three Ways to Use Maskera",
+  "products": [
+    {
+      "title": "Browser Extension",
+      "body": "Masks right inside ChatGPT, Claude, Gemini, Copilot, Perplexity and Mistral, in Chrome, Edge and Firefox. Free to start. Pro and Team add more AI redactions, your own protected words and rollout across the organization."
+    },
+    {
+      "title": "AI Agents",
+      "body": "A local proxy and MCP server in front of agents like Claude Code and Codex, so only masked text reaches the model. Open source."
+    },
+    {
+      "title": "Your Own Code",
+      "body": "npm packages for web apps and Node services: fixed rules with zero dependencies, or the rules together with the Swedish AI model. Open source."
+    }
+  ],
+  "productsLink": "Compare Plans on maskera.dev",
+  "previewBefore": "Your text",
+  "fitTitle": "Where Maskera Fits",
+  "useCases": [
+    {
+      "title": "AI Systems",
+      "body": "Send prompts and documents to AI models without leaking names, personal identity numbers or contact details."
+    },
+    {
+      "title": "Logs",
+      "body": "Keep your logs useful for debugging, minus the personal data."
+    },
+    {
+      "title": "Analytics",
+      "body": "Feed analytics and BI tools with text that is free of personal data."
+    }
+  ],
+  "detectTitle": "What Maskera Detects",
+  "detectBody": "Each item is swapped for a placeholder like [NAMN_1] or [PERSONNUMMER_1]. The key to restore them stays on your side, so the AI model’s answer can be filled back in with the real values, locally.",
+  "detectGroups": [
+    {
+      "title": "Free Text",
+      "body": "My own 43 MB Swedish AI model catches what rules never can: names, places, organizations and street addresses, even in lowercase, all caps and genitive forms, the way people actually type.",
+      "items": {
+        "NAMN": "Names",
+        "PLATS": "Places",
+        "ORGANISATION": "Organizations",
+        "ADRESS": "Street addresses"
+      }
+    },
+    {
+      "title": "Structured Data",
+      "body": "Rules with format checks and checksums, so something like 2019-2024 is never mistaken for a bankgiro number. Your own formats, like case or customer numbers, join as rules of their own.",
+      "items": {
+        "PERSONNUMMER": "Personal identity numbers",
+        "SAMORDNINGSNUMMER": "Coordination numbers",
+        "ORGANISATIONSNUMMER": "Organization numbers",
+        "TELEFON": "Phone numbers",
+        "EPOST": "Email",
+        "POSTNUMMER": "Postal codes",
+        "LAGENHETSNUMMER": "Apartment numbers",
+        "BANKGIRO": "Bankgiro",
+        "PLUSGIRO": "Plusgiro",
+        "IBAN": "IBAN",
+        "KORTNUMMER": "Card numbers",
+        "IP_ADRESS": "IP addresses",
+        "URL": "Links"
+      }
+    }
+  ],
+  "builtTitle": "How It’s Built",
+  "principles": [
+    {
+      "title": "Runs Locally",
+      "body": "Masking happens in the browser, in the extension or in your own Node process. The text and the key that restores it are never sent to Maskera."
+    },
+    {
+      "title": "Built for GDPR",
+      "body": "Masking personal data early is data minimization for real: less data to protect, fewer systems in scope."
+    },
+    {
+      "title": "Simple to Integrate",
+      "body": "A straightforward API that fits the flows you already have: before the AI call, before the log write, before the export."
+    }
+  ],
+  "openTitle": "Inspect It Yourself",
+  "openBody": "The core of Maskera is open: the code is on GitHub, the packages on npm and the NER model on Hugging Face. You don’t have to take my word for how it works, you can read it and run it before you talk to me.",
+  "openLinks": {
+    "github": "Source on GitHub",
+    "npm": "Package on npm",
+    "huggingFace": "Model on Hugging Face"
+  },
+  "bottomTitle": "See Maskera in Practice.",
+  "bottomBodyBefore": "The extension is free to start at ",
+  "bottomBodyAfter": ". If you want to test Maskera on your own texts or roll it out across the organization, I’m happy to run a pilot with you.",
+  "bottomCta": "Get in Touch"
+}

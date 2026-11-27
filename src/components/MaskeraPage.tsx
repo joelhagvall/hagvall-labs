@@ -2,8 +2,9 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { SegmentedControl, SegmentedControlItem } from '@ui-sdk/react/segmented-control'
 import { Tabs, TabsList, TabsPanel, TabsTab } from '@ui-sdk/react/tabs'
 import { copy as translations } from '../i18n'
+import { maskeraCopy } from '../i18n/maskera'
 import { Link } from '@tanstack/react-router'
-import { maskeraLinks, pagePaths } from '../seo'
+import { maskeraLinks, maskeraSite, pagePaths } from '../seo'
 import type { Lang } from '../seo'
 import {
   btnArrow,
@@ -26,38 +27,36 @@ import {
 /* The preview uses Maskera’s token colours and placeholders. Each pill
    carries its label in text as well as colour. */
 
-type LabelMeta = { sv: string; light: string }
-
-const LABELS: Record<string, LabelMeta> = {
+const LABEL_HUES: Record<string, string> = {
   // names
-  NAMN: { sv: 'Namn', light: '#1d4ed8' },
+  NAMN: '#1d4ed8',
   // places and addresses
-  PLATS: { sv: 'Plats', light: '#166534' },
-  ADRESS: { sv: 'Adress', light: '#b8420a' },
-  POSTNUMMER: { sv: 'Postnummer', light: '#3f6212' },
-  LAGENHETSNUMMER: { sv: 'Lägenhetsnr', light: '#065f46' },
+  PLATS: '#166534',
+  ADRESS: '#b8420a',
+  POSTNUMMER: '#3f6212',
+  LAGENHETSNUMMER: '#065f46',
   // organisations
-  ORGANISATION: { sv: 'Organisation', light: '#713f12' },
-  ORGANISATIONSNUMMER: { sv: 'Org.nummer', light: '#854d0e' },
+  ORGANISATION: '#713f12',
+  ORGANISATIONSNUMMER: '#854d0e',
   // structured ids and contact details
-  PERSONNUMMER: { sv: 'Personnummer', light: '#b91c1c' },
-  SAMORDNINGSNUMMER: { sv: 'Samordningsnr', light: '#be123c' },
-  EPOST: { sv: 'E-post', light: '#0369a1' },
-  TELEFON: { sv: 'Telefon', light: '#115e59' },
-  IBAN: { sv: 'IBAN', light: '#6d28d9' },
-  BANKGIRO: { sv: 'Bankgiro', light: '#7e22ce' },
-  PLUSGIRO: { sv: 'Plusgiro', light: '#a21caf' },
-  KORTNUMMER: { sv: 'Kortnummer', light: '#be185d' },
-  REGNUMMER: { sv: 'Reg.nummer', light: '#4338ca' },
-  IP_ADRESS: { sv: 'IP-adress', light: '#334155' },
-  URL: { sv: 'Länk', light: '#075985' },
+  PERSONNUMMER: '#b91c1c',
+  SAMORDNINGSNUMMER: '#be123c',
+  EPOST: '#0369a1',
+  TELEFON: '#115e59',
+  IBAN: '#6d28d9',
+  BANKGIRO: '#7e22ce',
+  PLUSGIRO: '#a21caf',
+  KORTNUMMER: '#be185d',
+  REGNUMMER: '#4338ca',
+  IP_ADRESS: '#334155',
+  URL: '#075985',
 }
 
-const FALLBACK_LIGHT = '#334155'
+const FALLBACK_HUE = '#334155'
 
 /** Tinted pill: the hue drives text, background and border together. */
 function pillVars(label: string): React.CSSProperties {
-  return { '--pill': LABELS[label]?.light ?? FALLBACK_LIGHT } as React.CSSProperties
+  return { '--pill': LABEL_HUES[label] ?? FALLBACK_HUE } as React.CSSProperties
 }
 
 const PILL_COLOURS = 'text-(--pill) border-(--pill)/45 bg-(--pill)/10'
@@ -282,178 +281,8 @@ function IconIntegrate({ className }: { className?: string }) {
 }
 
 const useCaseIcons = [IconAI, IconLogs, IconChart]
+const openLinkKeys = ['github', 'npm', 'huggingFace'] as const
 const principleIcons = [IconHosted, IconShield, IconIntegrate]
-
-const copy = {
-  sv: {
-    heroTitle: 'Maskera personuppgifter innan de når er AI.',
-    heroBody:
-      'Maskera hittar och maskerar namn, personnummer, adresser och telefonnummer i text, innan den används i AI-system, loggar eller analysverktyg. Byggd för svensk text och svenska personuppgifter.',
-    ctaVisit: 'Besök maskera.dev',
-    ctaDemo: 'Hör av dig',
-    previewBefore: 'Er text',
-    fitTitle: 'Där Maskera passar in',
-    useCases: [
-      {
-        title: 'AI-system',
-        body: 'Skicka prompter och dokument till AI-modeller utan att läcka namn, personnummer eller kontaktuppgifter.',
-      },
-      {
-        title: 'Loggar',
-        body: 'Behåll loggarna användbara för felsökning, minus personuppgifterna.',
-      },
-      {
-        title: 'Analys',
-        body: 'Mata analys- och BI-verktyg med text som är fri från personuppgifter.',
-      },
-    ],
-    detectTitle: 'Vad Maskera hittar',
-    detectBody:
-      'Varje uppgift byts mot en platshållare som [NAMN_1] eller [PERSONNUMMER_1]. Nyckeln för att återställa dem stannar hos er, så svaret från AI-modellen kan fyllas i med de riktiga värdena igen, lokalt.',
-    detectGroups: [
-      {
-        title: 'Fri text',
-        body: 'Min egen svenska AI-modell på 43 MB hittar det som regler aldrig kan: namn, platser, organisationer och gatuadresser, även i gemener, versaler och genitiv, så som folk faktiskt skriver.',
-        items: [
-          ['NAMN', 'Namn'],
-          ['PLATS', 'Platser'],
-          ['ORGANISATION', 'Organisationer'],
-          ['ADRESS', 'Gatuadresser'],
-        ],
-      },
-      {
-        title: 'Strukturerade uppgifter',
-        body: 'Regler med formatkontroller och checksummor, så att något som 2019-2024 aldrig tas för ett bankgironummer. Egna format, som ärende- eller kundnummer, läggs till som egna regler.',
-        items: [
-          ['PERSONNUMMER', 'Personnummer'],
-          ['SAMORDNINGSNUMMER', 'Samordningsnummer'],
-          ['ORGANISATIONSNUMMER', 'Organisationsnummer'],
-          ['TELEFON', 'Telefonnummer'],
-          ['EPOST', 'E-post'],
-          ['POSTNUMMER', 'Postnummer'],
-          ['LAGENHETSNUMMER', 'Lägenhetsnummer'],
-          ['BANKGIRO', 'Bankgiro'],
-          ['PLUSGIRO', 'Plusgiro'],
-          ['IBAN', 'IBAN'],
-          ['KORTNUMMER', 'Kortnummer'],
-          ['IP_ADRESS', 'IP-adresser'],
-          ['URL', 'Länkar'],
-        ],
-      },
-    ],
-    builtTitle: 'Så är den byggd',
-    principles: [
-      {
-        title: 'Self-hosted som standard',
-        body: 'Maskera installeras hos er och texten stannar hos er. Inga molnberoenden, ingen tredje part i flödet.',
-      },
-      {
-        title: 'Byggd för GDPR',
-        body: 'Att maskera personuppgifter tidigt är dataminimering på riktigt: mindre data att skydda, färre system som omfattas.',
-      },
-      {
-        title: 'Enkel att integrera',
-        body: 'Ett rakt API som passar in i flödena ni redan har: före AI-anropet, före loggningen, före exporten.',
-      },
-    ],
-    openTitle: 'Granska själv',
-    openBody:
-      'Kärnan i Maskera är öppen: koden ligger på GitHub, paketet på npm och NER-modellen på Hugging Face. Ni behöver inte ta mitt ord för hur den fungerar, ni kan läsa den och köra den innan ni pratar med mig.',
-    openLinks: [
-      { label: 'Källkod på GitHub', href: maskeraLinks.github, destination: 'github.com' },
-      { label: 'Paketet på npm', href: maskeraLinks.npm, destination: 'npmjs.com' },
-      { label: 'Modellen på Hugging Face', href: maskeraLinks.huggingFace, destination: 'huggingface.co' },
-    ],
-    bottomTitle: 'Se Maskera i praktiken.',
-    bottomBodyA:
-      'Hur träffsäker är den? Det får piloten svara på, inte ett säljblad. Jag kör pilotprojekt med företag och organisationer i Sverige. Hör av dig så visar jag hur det ser ut, eller läs mer på ',
-    bottomCta: 'Hör av dig',
-  },
-  en: {
-    heroTitle: 'Mask Personal Data Before It Reaches Your AI.',
-    heroBody:
-      'Maskera finds and masks names, personal identity numbers, addresses and phone numbers in text, before it is used in AI systems, logs or analytics tools. Built for Swedish text and Swedish personal data.',
-    ctaVisit: 'Visit maskera.dev',
-    ctaDemo: 'Get in Touch',
-    previewBefore: 'Your text',
-    fitTitle: 'Where Maskera Fits',
-    useCases: [
-      {
-        title: 'AI Systems',
-        body: 'Send prompts and documents to AI models without leaking names, personal identity numbers or contact details.',
-      },
-      {
-        title: 'Logs',
-        body: 'Keep your logs useful for debugging, minus the personal data.',
-      },
-      {
-        title: 'Analytics',
-        body: 'Feed analytics and BI tools with text that is free of personal data.',
-      },
-    ],
-    detectTitle: 'What Maskera Detects',
-    detectBody:
-      'Each item is swapped for a placeholder like [NAMN_1] or [PERSONNUMMER_1]. The key to restore them stays on your side, so the AI model’s answer can be filled back in with the real values, locally.',
-    detectGroups: [
-      {
-        title: 'Free Text',
-        body: 'My own 43 MB Swedish AI model catches what rules never can: names, places, organizations and street addresses, even in lowercase, all caps and genitive forms, the way people actually type.',
-        items: [
-          ['NAMN', 'Names'],
-          ['PLATS', 'Places'],
-          ['ORGANISATION', 'Organizations'],
-          ['ADRESS', 'Street addresses'],
-        ],
-      },
-      {
-        title: 'Structured Data',
-        body: 'Rules with format checks and checksums, so something like 2019-2024 is never mistaken for a bankgiro number. Your own formats, like case or customer numbers, join as rules of their own.',
-        items: [
-          ['PERSONNUMMER', 'Personal identity numbers'],
-          ['SAMORDNINGSNUMMER', 'Coordination numbers'],
-          ['ORGANISATIONSNUMMER', 'Organization numbers'],
-          ['TELEFON', 'Phone numbers'],
-          ['EPOST', 'Email'],
-          ['POSTNUMMER', 'Postal codes'],
-          ['LAGENHETSNUMMER', 'Apartment numbers'],
-          ['BANKGIRO', 'Bankgiro'],
-          ['PLUSGIRO', 'Plusgiro'],
-          ['IBAN', 'IBAN'],
-          ['KORTNUMMER', 'Card numbers'],
-          ['IP_ADRESS', 'IP addresses'],
-          ['URL', 'Links'],
-        ],
-      },
-    ],
-    builtTitle: 'How It’s Built',
-    principles: [
-      {
-        title: 'Self-Hosted by Default',
-        body: 'Maskera is installed on your side and the text stays on your side. No cloud dependencies, no third party in the flow.',
-      },
-      {
-        title: 'Built for GDPR',
-        body: 'Masking personal data early is data minimization for real: less data to protect, fewer systems in scope.',
-      },
-      {
-        title: 'Simple to Integrate',
-        body: 'A straightforward API that fits the flows you already have: before the AI call, before the log write, before the export.',
-      },
-    ],
-    openTitle: 'Inspect It Yourself',
-    openBody:
-      'The core of Maskera is open: the code is on GitHub, the package on npm and the NER model on Hugging Face. You don’t have to take my word for how it works, you can read it and run it before you talk to me.',
-    openLinks: [
-      { label: 'Source on GitHub', href: maskeraLinks.github, destination: 'github.com' },
-      { label: 'Package on npm', href: maskeraLinks.npm, destination: 'npmjs.com' },
-      { label: 'Model on Hugging Face', href: maskeraLinks.huggingFace, destination: 'huggingface.co' },
-    ],
-    bottomTitle: 'See Maskera in Practice.',
-    bottomBodyA:
-      'How accurate is it? That’s for the pilot to answer, not a sales deck. I run pilot projects with companies and organizations in Sweden. Get in touch and I’ll show you what it looks like, or read more at ',
-    bottomCta: 'Get in Touch',
-  },
-}
 
 /** The small arrow in the flow diagram: down while it stacks, right beside. */
 function FlowArrow() {
@@ -474,7 +303,7 @@ function FlowArrow() {
 }
 
 export function MaskeraPage({ lang }: { lang: Lang }) {
-  const t = copy[lang]
+  const t = maskeraCopy[lang]
 
   return (
     <>
@@ -488,7 +317,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
             <p className={heroBodyOnCobalt}>{t.heroBody}</p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
-                href="https://maskera.dev"
+                href={maskeraSite.home[lang]}
                 {...externalLinkProps}
                 className={btnPrimaryOnCobalt}
                 translate="no"
@@ -510,6 +339,30 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
       {/* The white sheet rolls over the band. Sections are separated by
           space, not rules. */}
       <div className={sheet}>
+        {/* The three products, plain text with one link out to the plan
+            comparison: prices and quotas live on maskera.dev only. */}
+        <section className={container}>
+          <h2 className={sectionTitle}>{t.productsTitle}</h2>
+          <ul className="mt-10 grid gap-10 sm:grid-cols-3 sm:gap-8">
+            {t.products.map((item) => (
+              <li key={item.title}>
+                <h3 className={itemTitle}>{item.title}</h3>
+                <p className={itemBody}>{item.body}</p>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={maskeraSite.services[lang]}
+            {...externalLinkProps}
+            className={`mt-10 ${btnSecondary} group`}
+          >
+            {t.productsLink}
+            <span aria-hidden="true" className={btnArrow}>
+              ↗
+            </span>
+          </a>
+        </section>
+
         {/* Where it fits, drawn as the flow it is: text with personal data
             goes in, Maskera sits in the stream, masked text fans out to
             the three kinds of destination. */}
@@ -578,7 +431,7 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
                   {group.body}
                 </p>
                 <ul className="mt-4 flex flex-wrap gap-2">
-                  {group.items.map(([label, name]) => (
+                  {Object.entries(group.items).map(([label, name]) => (
                     <li
                       key={label}
                       style={pillVars(label)}
@@ -621,14 +474,14 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
               </p>
             </div>
             <ul className="mt-8 flex flex-col gap-3 md:mt-0">
-              {t.openLinks.map((link) => (
-                <li key={link.href}>
+              {openLinkKeys.map((key) => (
+                <li key={key}>
                   <a
-                    href={link.href}
+                    href={maskeraLinks[key]}
                     {...externalLinkProps}
                     className={`${btnSecondary} group w-full justify-between bg-white md:w-64`}
                   >
-                    {link.label}
+                    {t.openLinks[key]}
                     <span aria-hidden="true" className={btnArrow}>
                       ↗
                     </span>
@@ -643,16 +496,16 @@ export function MaskeraPage({ lang }: { lang: Lang }) {
           <div className={`${container} text-center`}>
             <h2 className={sectionTitle}>{t.bottomTitle}</h2>
             <p className="mx-auto mt-4 max-w-xl text-pretty leading-relaxed text-neutral-600">
-              {t.bottomBodyA}
+              {t.bottomBodyBefore}
               <a
-                href="https://maskera.dev"
+                href={maskeraSite.home[lang]}
                 {...externalLinkProps}
                 className={linkInk}
                 translate="no"
               >
                 maskera.dev
               </a>
-              .
+              {t.bottomBodyAfter}
             </p>
             <Link to={pagePaths.contact[lang]} className={`mt-8 ${btnPrimary}`}>
               {t.bottomCta}

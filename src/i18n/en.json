@@ -126,7 +126,7 @@
         "body": "After evaluating the pilot, you decide whether to put the solution into operation with an agreed maintenance plan."
       }
     ],
-    "productBody": "I also build Maskera, which masks personal data before AI calls.",
+    "productBody": "I also build Maskera, which masks personal data before it reaches AI, right inside ChatGPT and Claude or in your own code.",
     "productLink": "Read About Maskera",
     "aboutTitle": "You Work Directly With Me.",
     "aboutP1": "I’m Joel Hägvall. I take the first call, carry out the feasibility study and build the integration.",
@@ -199,6 +199,13 @@
       "description": "Custom integrations, reverse engineering and AI for legacy business systems and closed portals. Work with Joel Hägvall from feasibility study to pilot.",
       "ogTitle": "Automation for Systems Without Off-the-Shelf Integrations",
       "ogDescription": "I connect legacy software, closed customer portals and modern tools. Start with a technical feasibility study."
+    },
+    "maskera": {
+      "title": "Mask Personal Data Before AI | Hägvall Labs",
+      "description": "Maskera finds and masks names, identity numbers and addresses before text reaches AI. As an extension for ChatGPT and Claude, for AI agents or as npm packages.",
+      "ogTitle": "Mask Personal Data Before AI | Hägvall Labs",
+      "ogDescription": "Mask personal data before AI, right inside ChatGPT and Claude or in your own code. Runs locally and is built in Sweden.",
+      "schemaDescription": "Maskera finds and masks personal data in text before it reaches AI systems, logs or analytics tools: as a browser extension, for AI agents through a local proxy and MCP, or as npm packages. Masking runs locally."
     },
     "contact": {
       "title": "Contact Joel Hägvall | Hägvall Labs",

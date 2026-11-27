@@ -49,6 +49,9 @@ jobs:
       - name: Typecheck
         run: bun x tsc --noEmit
 
+      - name: Maskera version matches npm
+        run: bun scripts/check-maskera-version.ts
+
       - name: Build
         run: bun run build
 

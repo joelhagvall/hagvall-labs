@@ -1,0 +1,97 @@
+{
+  "heroTitle": "Maskera personuppgifter innan de når er AI.",
+  "heroBody": "Maskera hittar och maskerar namn, personnummer, adresser och telefonnummer i text innan den når AI-system, loggar eller analysverktyg. Byggd för svensk text och svenska personuppgifter.",
+  "ctaVisit": "Besök maskera.dev",
+  "ctaDemo": "Hör av dig",
+  "productsTitle": "Tre sätt att använda Maskera",
+  "products": [
+    {
+      "title": "Webbläsartillägg",
+      "body": "Maskerar direkt i ChatGPT, Claude, Gemini, Copilot, Perplexity och Mistral, i Chrome, Edge och Firefox. Gratis att börja med. Pro och Team lägger till fler AI-maskeringar, egna skyddade ord och utrullning i hela organisationen."
+    },
+    {
+      "title": "AI-agenter",
+      "body": "En lokal proxy och MCP-server framför agenter som Claude Code och Codex, så att bara maskerad text når modellen. Öppen källkod."
+    },
+    {
+      "title": "Egen kod",
+      "body": "npm-paket för webbappar och Node-tjänster: fasta regler utan beroenden, eller reglerna tillsammans med den svenska AI-modellen. Öppen källkod."
+    }
+  ],
+  "productsLink": "Jämför planerna på maskera.dev",
+  "previewBefore": "Er text",
+  "fitTitle": "Där Maskera passar in",
+  "useCases": [
+    {
+      "title": "AI-system",
+      "body": "Skicka prompter och dokument till AI-modeller utan att läcka namn, personnummer eller kontaktuppgifter."
+    },
+    {
+      "title": "Loggar",
+      "body": "Behåll loggarna användbara för felsökning, minus personuppgifterna."
+    },
+    {
+      "title": "Analys",
+      "body": "Mata analys- och BI-verktyg med text som är fri från personuppgifter."
+    }
+  ],
+  "detectTitle": "Vad Maskera hittar",
+  "detectBody": "Varje uppgift byts mot en platshållare som [NAMN_1] eller [PERSONNUMMER_1]. Nyckeln för att återställa dem stannar hos er, så svaret från AI-modellen kan fyllas i med de riktiga värdena igen, lokalt.",
+  "detectGroups": [
+    {
+      "title": "Fri text",
+      "body": "Min egen svenska AI-modell på 43 MB hittar det som regler aldrig kan: namn, platser, organisationer och gatuadresser, även i gemener, versaler och genitiv, så som folk faktiskt skriver.",
+      "items": {
+        "NAMN": "Namn",
+        "PLATS": "Platser",
+        "ORGANISATION": "Organisationer",
+        "ADRESS": "Gatuadresser"
+      }
+    },
+    {
+      "title": "Strukturerade uppgifter",
+      "body": "Regler med formatkontroller och checksummor, så att något som 2019-2024 aldrig tas för ett bankgironummer. Egna format, som ärende- eller kundnummer, läggs till som egna regler.",
+      "items": {
+        "PERSONNUMMER": "Personnummer",
+        "SAMORDNINGSNUMMER": "Samordningsnummer",
+        "ORGANISATIONSNUMMER": "Organisationsnummer",
+        "TELEFON": "Telefonnummer",
+        "EPOST": "E-post",
+        "POSTNUMMER": "Postnummer",
+        "LAGENHETSNUMMER": "Lägenhetsnummer",
+        "BANKGIRO": "Bankgiro",
+        "PLUSGIRO": "Plusgiro",
+        "IBAN": "IBAN",
+        "KORTNUMMER": "Kortnummer",
+        "IP_ADRESS": "IP-adresser",
+        "URL": "Länkar"
+      }
+    }
+  ],
+  "builtTitle": "Så är den byggd",
+  "principles": [
+    {
+      "title": "Körs lokalt",
+      "body": "Maskeringen sker i webbläsaren, i tillägget eller i er egen Node-process. Texten och nyckeln som återställer den skickas aldrig till Maskera."
+    },
+    {
+      "title": "Byggd för GDPR",
+      "body": "Att maskera personuppgifter tidigt är dataminimering på riktigt: mindre data att skydda, färre system som omfattas."
+    },
+    {
+      "title": "Enkel att integrera",
+      "body": "Ett rakt API som passar in i flödena ni redan har: före AI-anropet, före loggningen, före exporten."
+    }
+  ],
+  "openTitle": "Granska själv",
+  "openBody": "Kärnan i Maskera är öppen: koden ligger på GitHub, paketen på npm och NER-modellen på Hugging Face. Ni behöver inte ta mitt ord för hur den fungerar, ni kan läsa den och köra den innan ni pratar med mig.",
+  "openLinks": {
+    "github": "Källkod på GitHub",
+    "npm": "Paketet på npm",
+    "huggingFace": "Modellen på Hugging Face"
+  },
+  "bottomTitle": "Se Maskera i praktiken.",
+  "bottomBodyBefore": "Tillägget är gratis att börja med på ",
+  "bottomBodyAfter": ". Vill ni testa Maskera på egna texter eller rulla ut det i hela organisationen kör jag gärna en pilot med er.",
+  "bottomCta": "Hör av dig"
+}
