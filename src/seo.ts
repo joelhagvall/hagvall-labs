@@ -35,7 +35,7 @@ export const maskeraSite = {
 // Published version of the maskera npm package, used in the
 // SoftwareApplication JSON-LD. CI fails when npm has a newer one
 // (scripts/check-maskera-version.ts), so bump it then.
-export const maskeraVersion = '0.11.1'
+export const maskeraVersion = '0.11.2'
 
 export type Lang = 'sv' | 'en'
 
